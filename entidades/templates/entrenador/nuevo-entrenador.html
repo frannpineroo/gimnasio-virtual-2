@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINING! - Nuevo Entrenador</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/entrenadores.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/style.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/variables-entrenador.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/nuevo-entrenador.css" />
+</head>
+<body>
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <!-- Formulario de Ejercicio -->
+        <div class="form-section">
+            <div class="section-header">
+                <h2 class="section-title" id="form-title">Crear Nuevo Entrenador</h2>
+                <a href="entrenador.html" class="btn btn-white">
+                    <i class="fas fa-arrow-left"></i> Cancelar
+                </a>
+            </div>
+
+            <form id="coach-form" class="coach-form" enctype="multipart/form-data">
+                <input type="hidden" id="coach-id" value="">
+                
+                <div class="form-group">
+                    <label for="coach-name">Nombre *</label>
+                    <input type="text" id="coach-name" placeholder="Ej: Tomás" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="coach-last_name">Apellido *</label>
+                    <input type="text" id="coach-last_name" placeholder="Ej: Perez" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="coach-dni">DNI (solo números) *</label>
+                    <input type="text" id="coach-dni" placeholder="Ej: 20999888" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="coach-email">Email *</label>
+                    <input type="text" id="coach-email" placeholder="Ej: tomasperez@gmail.com" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="coach-phone">Teléfono (solo números) *</label>
+                    <input type="text" id="coach-phone" placeholder="Ej: 3515115115" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="coach-speciality">Especialidad *</label>
+                    <input type="text" id="coach-speciality" placeholder="Ej: Pilates" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="coach-certification">Certificación *</label>
+                    <input type="text" id="coach-certification" placeholder="Ej: Profesor de Ed. Fisica" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="coach-years_of_exp">Años de Experiencia *</label>
+                    <input type="text" id="coach-years_of_exp" placeholder="Ej: 10" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="coach-status">Estado del Entrenador *</label>
+                    <select id="coach-status" required>
+                        <option value="">Selecciona un estado</option>
+                        <option value="active">Activo</option>
+                        <option value="inactive">Inactivo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="coach-hiring_date">Fecha Contratado *</label>
+                    <input type="text" id="coach-hiring_date" placeholder="Ej: 10/10/2010" required />
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-white" id="cancel-btn">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-save">
+                        <i class="fas fa-save"></i> <span id="submit-text">Guardar Ejercicio</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="/gym_frontend/static/js/nuevo-entrenador.js"></script>
+</body>
+</html>

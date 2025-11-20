@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINING! - Nuevo Registro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/variables-cliente.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/base.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/rutina-cliente.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/nuevo-registro.css" />
+</head>
+<body>
+    <header class="cabecera-cliente">
+        <div class="contenido-cabecera">
+            <div class="info-cliente">
+                <img src="https://via.placeholder.com/50" alt="Cliente" class="avatar-cliente">
+                <div class="detalles-cliente">
+                    <h1>Nuevo Registro</h1>
+                    <p>Selecciona la semana y día de entrenamiento</p>
+                </div>
+            </div>
+            <div class="acciones-cabecera">
+                <button class="btn btn-outline" id="btn-volver">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="principal-cliente">
+        <div class="contenedor-nuevo-registro">
+            <div class="tarjeta-seleccion tarjeta">
+                <div class="progreso-rutina">
+                    <h2 class="titulo-registro">Tu Progreso</h2>
+                    <div class="barra-progreso">
+                        <div class="progreso-completado" id="barra-progreso"></div>
+                    </div>
+                    
+                    <div class="estadisticas-progreso">
+                        <div class="estadistica">
+                            <span class="valor-estadistica" id="semanas-completadas">0</span>
+                            <span class="etiqueta-estadistica">Semanas Completadas</span>
+                        </div>
+                        <div class="estadistica">
+                            <span class="valor-estadistica" id="dias-completados">0</span>
+                            <span class="etiqueta-estadistica">Días Completados</span>
+                        </div>
+                        <div class="estadistica">
+                            <span class="valor-estadistica" id="progreso-total">0%</span>
+                            <span class="etiqueta-estadistica">Progreso Total</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="seleccion-entrenamiento">
+                    <div class="grupo-seleccion">
+                        <label class="etiqueta-seleccion">
+                            <i class="fas fa-calendar-week"></i> Semana de Entrenamiento
+                        </label>
+                        <select class="select-semana" id="select-semana"></select>
+                    </div>
+
+                    <div class="grupo-seleccion">
+                        <label class="etiqueta-seleccion">
+                            <i class="fas fa-dumbbell"></i> Día de Entrenamiento
+                        </label>
+                        <select class="select-dia" id="select-dia"></select>
+                    </div>
+                </div>
+
+                <div class="info-dia" id="info-dia">
+                    <div class="titulo-dia" id="titulo-dia">Selecciona un día</div>
+                    <div class="ejercicios-dia" id="ejercicios-dia">
+                        Los ejercicios aparecerán aquí
+                    </div>
+                </div>
+
+                <!-- ACCIONES ACTUALIZADAS - SOLO BOTÓN CENTRADO -->
+                <div class="acciones-registro">
+                    <button class="btn-entrenamiento-grande" id="btn-iniciar-entrenamiento">
+                        <i class="fas fa-play-circle"></i> Iniciar Entrenamiento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/gym_frontend/static/js/nuevo-registro.js"></script>
+</body>
+</html>

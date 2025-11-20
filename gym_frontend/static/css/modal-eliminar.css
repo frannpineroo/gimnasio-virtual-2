@@ -1,0 +1,109 @@
+/* Estilos para el modal de confirmación */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-primary, #1a1a1a);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-icon {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-icon i {
+            font-size: 48px;
+            color: #ff4444;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--text-primary, #ffffff);
+        }
+
+        .modal-message {
+            font-size: 16px;
+            text-align: center;
+            color: var(--text-secondary, #a0a0a0);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .modal-btn-cancel {
+            background-color: var(--bg-secondary, #2a2a2a);
+            color: var(--text-primary, #ffffff);
+        }
+
+        .modal-btn-cancel:hover {
+            background-color: var(--bg-tertiary, #3a3a3a);
+        }
+
+        .modal-btn-delete {
+            background-color: #ff4444;
+            color: #ffffff;
+        }
+
+        .modal-btn-delete:hover {
+            background-color: #cc0000;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }

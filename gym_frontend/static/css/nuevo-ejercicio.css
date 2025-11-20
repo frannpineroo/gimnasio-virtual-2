@@ -1,0 +1,230 @@
+@import url('variables-entrenador.css');
+@import url('base.css');
+
+/* IMPORTANTE: Resetear estilos del sidebar heredados de style.css */
+.main-content {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    width: 100% !important;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* Contenedor principal centrado */
+.form-section {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+}
+
+/* Header del usuario */
+.header {
+    text-align: center;
+    padding: var(--spacing-lg) 0;
+    margin-bottom: var(--spacing-xl);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    justify-content: center;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.user-profile h4 {
+    margin: 0;
+    font-size: var(--font-size-normal);
+    color: var(--text-primary);
+}
+
+.user-profile p {
+    margin: 0;
+    font-size: var(--font-size-small);
+    color: var(--text-secondary);
+}
+
+/* Cabecera de la sección */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--card-border);
+}
+
+.section-title {
+    font-size: var(--font-size-title);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Formulario */
+.client-form {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--card-border);
+    padding: var(--spacing-xl);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: var(--font-size-normal);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    font-size: var(--font-size-normal);
+    font-family: var(--font-family);
+    transition: var(--transition-normal);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--text-secondary);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* CORRECCIÓN SOLAMENTE PARA EL FONDO DE LA LISTA DE MÚSCULOS */
+.form-group select {
+    background-color: #1a1a1a !important;
+}
+
+.form-group select option {
+    background: #1a1a1a !important;
+    color: var(--text-primary) !important;
+}
+
+/* Botones */
+.btn {
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: var(--font-size-normal);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-white {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--card-border);
+}
+
+.btn-white:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary-color);
+}
+
+.btn-save {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #28a428 100%);
+    color: #000;
+    font-weight: 700;
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(50, 205, 50, 0.4);
+}
+
+.form-actions {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--card-border);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-section {
+        padding: var(--spacing-lg);
+        max-width: 100%;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+
+    .btn-white {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .client-form {
+        padding: var(--spacing-lg);
+    }
+}
+
+@media (max-width: 480px) {
+    .form-section {
+        padding: var(--spacing-md);
+    }
+
+    .client-form {
+        padding: var(--spacing-md);
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .header {
+        padding: var(--spacing-md) 0;
+    }
+
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+    }
+}

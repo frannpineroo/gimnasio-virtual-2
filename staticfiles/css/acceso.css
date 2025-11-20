@@ -1,0 +1,186 @@
+:root {
+    /* Variables de colores */
+    --primary-color: #32CD32;
+    --primary-dark: #28a428;
+    --text-primary: #ffffff;
+    --text-secondary: #f0f0f0;
+    --card-bg: #1e1e1e;
+    --darker-bg: #0a5c0a;
+    --card-border: #333333;
+    --gray-light: #555555;
+    --background-gradient: linear-gradient(135deg, #32CD32 0%, #0a5c0a 100%);
+    
+    /* Variables de espaciado */
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* Variables de tipografía */
+    --font-family: 'Inter', sans-serif;
+    --font-size-small: 0.875rem;
+    --font-size-normal: 1rem;
+    --font-size-subtitle: 1.25rem;
+    --font-size-title: 1.5rem;
+    
+    /* Variables de bordes y efectos */
+    --border-radius: 8px;
+    --border-radius-lg: 12px;
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background: var(--background-gradient);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+}
+
+.form-container {
+    display: none;
+    width: 100%;
+}
+
+.form-container.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.title {
+    text-align: center;
+    font-size: var(--font-size-title);
+    font-weight: 700;
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: var(--spacing-md);
+}
+
+.input-group input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-xs);
+    font-size: var(--font-size-normal);
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--gray-light);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.input-group input:focus {
+    border-bottom-color: var(--primary-color);
+}
+
+.input-group label {
+    position: absolute;
+    top: var(--spacing-sm);
+    left: var(--spacing-xs);
+    font-size: var(--font-size-normal);
+    color: var(--text-secondary);
+    pointer-events: none;
+    transition: all var(--transition-fast);
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    top: -10px;
+    font-size: var(--font-size-small);
+    color: var(--primary-color);
+}
+
+.btn-primary {
+    width: 100%;
+    padding: var(--spacing-sm);
+    background-color: var(--primary-color);
+    color: var(--text-primary);
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-normal);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-normal);
+    margin-top: var(--spacing-md);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.links {
+    text-align: center;
+    margin-top: var(--spacing-md);
+}
+
+.links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: var(--font-size-small);
+    transition: color var(--transition-fast);
+}
+
+.links a:hover {
+    color: var(--primary-color);
+}
+
+.auth-links {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--spacing-lg);
+    border-top: 1px solid var(--card-border);
+    padding-top: var(--spacing-md);
+}
+
+.auth-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+}
+
+.auth-links a:hover {
+    color: var(--primary-dark);
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: var(--spacing-lg);
+    }
+}

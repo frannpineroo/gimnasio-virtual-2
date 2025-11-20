@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINING! - Clientes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    <link rel="stylesheet" href="{% static 'css/variables-entrenador.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/header.css' %}" /> 
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}" /> 
+    <link rel="stylesheet" href="{% static 'css/clientes.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/modal-eliminar.css' %}" />
+</head>
+<body>
+    <!-- Contenedores para header y sidebar -->
+    <div id="header-container"></div>
+    <div id="sidebar-container"></div>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+
+        <!-- Sección de Clientes -->
+        <div class="clients-section">
+            <div class="section-header">
+                <h2 class="section-title">Gestión de Clientes</h2>
+                    <i class="fas fa-plus"></i> Nuevo Cliente
+                </a>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label"><i class="fas fa-search"></i> Buscar</label>
+                    <div class="search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Buscar cliente..." id="search-input" />
+                    </div>
+                </div>
+
+                <!-- Botón para resetear filtros -->
+                <div class="filter-group">
+                    <label class="filter-label" style="opacity: 0;">Acciones</label>
+                </div>
+            </div>
+
+            <!-- Tabla de Clientes -->
+            <div class="clients-table-container">
+                <table class="clients-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>DNI</th>
+                            <th>Teléfono</th>
+                            <th>Experiencia</th>
+                            <th>Objetivo</th>
+                            <th>Lesiones</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clients-table-body">
+                        <tr id="loading-row">
+                            <td colspan="9" style="text-align:center; padding: 30px;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #32CD32;"></i> Cargando clientes...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="modal-title">¿Estás seguro?</h3>
+            <p class="modal-message">
+                ¿Estás seguro que quieres eliminar este cliente? Esta acción no se puede deshacer.
+            </p>
+            <div class="modal-actions">
+                <button id="cancel-delete" class="modal-btn modal-btn-cancel">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button id="confirm-delete" class="modal-btn modal-btn-delete">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para cargar componentes y luego inicializar scripts
+        async function loadComponents() {
+            try {
+                // Cargar header
+                const headerResponse = await fetch('/entrenador/components/header.html');
+                const headerData = await headerResponse.text();
+                const headerContainer = document.getElementById('header-container');
+                if (headerContainer) {
+                    headerContainer.innerHTML = headerData;
+                }
+
+                // Cargar sidebar
+                const sidebarResponse = await fetch('/entrenador/components/sidebar.html');
+                const sidebarData = await sidebarResponse.text();
+                const sidebarContainer = document.getElementById('sidebar-container');
+                if (sidebarContainer) {
+                    sidebarContainer.innerHTML = sidebarData;
+                }
+
+                // Esperar un momento para que el DOM se actualice
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                // Inicializar scripts de los componentes
+                if (typeof initSidebar === 'function') initSidebar();
+                if (typeof initHeader === 'function') initHeader();
+
+            } catch (error) {
+                console.error('Error cargando componentes:', error);
+            }
+        }
+
+        // Cargar componentes primero
+        loadComponents();
+    </script>
+    
+    <!-- Scripts - se cargan después de que el DOM esté listo -->
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/header.js' %}"></script>
+    <script src="{% static 'js/clientes.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

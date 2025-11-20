@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINING! - Gestión de Equipo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/variables-entrenador.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/style.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/equipos.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/nuevo-equipo.css" />
+</head>
+<body>
+    <!-- Contenido Principal -->
+    <main class="main-content">
+
+        <!-- Formulario de Ejercicio -->
+        <div class="form-section">
+            <div class="section-header">
+                <h2 class="section-title" id="form-title">Crear Nuevo Equipo</h2>
+                <a href="equipos.html" class="btn btn-white">
+                    <i class="fas fa-arrow-left"></i> Volver a Equipos
+                </a>
+            </div>
+
+            <form id="equipment-form" class="equipment-form" enctype="multipart/form-data">
+                <input type="hidden" id="equipment-id" value="">
+                
+                <div class="form-group">
+                    <label for="equipment-name">Nombre del Equipo *</label>
+                    <input type="text" id="equipment-name" placeholder="Ej: Press de Banca" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="equipment-description">Descripción</label>
+                    <textarea id="equipment-description" rows="4" placeholder="Describe el equipo..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Categoría *</label>
+                    <input type="text" id="category" placeholder="Ej: Polea" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Modelo *</label>
+                    <input type="text" id="model" placeholder="Ej: Para piernas" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Estado *</label>
+                    <select id="status" required>
+                        <option value="">Selecciona un estado</option>
+                        <option value="available">Disponible</option>
+                        <option value="in_maintenance">En mantenimiento</option>
+                        <option value="out_of_order">Fuera de servicio</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="condition">Condición *</label>
+                    <select id="condition" required>
+                        <option value="">Selecciona un elemento</option>
+                        <option value="new">Nuevo</option>
+                        <option value="good">Excelente Estado</option>
+                        <option value="fair">Buen Estado</option>
+                        <option value="poor">Pobre Estado</option>
+                    </select>
+                </div>
+
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-white" id="cancel-btn">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-save">
+                        <i class="fas fa-save"></i> <span id="submit-text">Guardar Equipo</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="/gym_frontend/static/js/nuevo-equipo.js"></script>
+</body>
+</html>

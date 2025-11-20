@@ -1,0 +1,80 @@
+@import url('variables-entrenador.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background: linear-gradient(135deg, var(--darker-bg) 0%, #0a0a0a 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.5;
+}
+
+/* Botones base */
+.btn {
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: var(--font-size-normal);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+    background-color: rgba(50, 205, 50, 0.1);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: #000;
+    font-weight: 700;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(50, 205, 50, 0.3);
+}
+
+/* Utilidades de texto */
+.texto-primario { color: var(--text-primary); }
+.texto-secundario { color: var(--text-secondary); }
+.texto-centro { text-align: center; }
+
+/* Utilidades de espaciado */
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+
+/* Utilidades de display */
+.flex { display: flex; }
+.flex-columna { flex-direction: column; }
+.flex-centro { justify-content: center; align-items: center; }
+.flex-entre { justify-content: space-between; }
+.flex-envolver { flex-wrap: wrap; }
+.espacio-sm { gap: var(--spacing-sm); }
+.espacio-md { gap: var(--spacing-md); }
+.espacio-lg { gap: var(--spacing-lg); }
+
+/* Card base */
+.tarjeta {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-md);
+}

@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINING! - Inicio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    <link rel="stylesheet" href="{% static 'css/variables-entrenador.css' %}">
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+</head>
+<body>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="welcome-section">
+            <h2>Bienvenido al Panel de Control</h2>
+            <p>Gestiona tus clientes, ejercicios y rutinas de entrenamiento de manera eficiente con nuestra plataforma.</p>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-users"></i></div>
+                <h3 id="clients-count">0</h3>
+                <p>Clientes Activos</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-dumbbell"></i></div>
+                <h3 id="exercises-count">0</h3>
+                <p>Ejercicios Disponibles</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-clipboard-list"></i></div>
+                <h3 id="routines-count">0</h3>
+                <p>Rutinas Creadas</p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Scripts de la aplicación CORREGIDOS -->
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/header.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

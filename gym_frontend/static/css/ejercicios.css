@@ -1,0 +1,1015 @@
+/* EJERCICIOS.CSS - Sin estilos de modal */
+
+@import url('variables-entrenador.css');
+/* RESET Y ESTILOS BASE */
+/* ESTILOS ESPECÍFICOS PARA LA PÁGINA DE EJERCICIOS */
+
+.content-section {
+    padding: 0;
+}
+
+.exercises-section {
+    padding: 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+/* FORMULARIO DE EJERCICIO */
+.exercise-form {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--card-border);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--border-radius);
+    background-color: #1a1a1a;
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-normal);
+    transition: var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(50, 205, 50, 0.3);
+}
+
+.form-actions {
+    margin-top: var(--spacing-md);
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* TABLA DE EJERCICIOS */
+.exercises-table-container {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+}
+
+.exercises-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-normal);
+}
+
+.exercises-table thead {
+    background-color: rgba(50, 205, 50, 0.2);
+}
+
+.exercises-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--card-border);
+}
+
+.exercises-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--card-border);
+    color: var(--text-secondary);
+}
+
+.exercises-table tbody tr {
+    transition: var(--transition-fast);
+}
+
+.exercises-table tbody tr:hover {
+    background-color: rgba(50, 205, 50, 0.05);
+}
+
+.exercises-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.actions-cell {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+/* Botones de acción */
+.action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.action-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.edit-icon {
+    color: #ffc107;
+    border-color: #ffc107;
+}
+
+.edit-icon:hover {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.delete-icon {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.delete-icon:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Responsive para tabla */
+@media (max-width: 768px) {
+    .exercises-table-container {
+        overflow-x: auto;
+    }
+    
+    .exercises-table {
+        min-width: 600px;
+    }
+}
+
+/* Campo de búsqueda */
+.search {
+    display: flex;
+    align-items: center;
+    background-color: #1a1a1a;
+    border-radius: 20px;
+    padding: 8px 15px;
+    border: 1px solid var(--card-border);
+}
+
+.search input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    padding: 0 10px;
+    width: 200px;
+    font-family: var(--font-family);
+}
+
+.search input:focus {
+    outline: none;
+}
+
+/* Botones modernizados */
+.btn {
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: var(--font-size-normal);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-white {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #ffffff;
+}
+
+.btn-white:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border: 1px solid #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #32CD32, #2bb929);
+    color: #000;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.4s ease;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.btn-save:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2bb929, #32CD32);
+    z-index: -1;
+    transition: transform 0.5s ease;
+    transform: scaleX(0);
+    transform-origin: right;
+}
+
+.btn-save:hover:before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.btn-save:hover {
+    color: #fff;
+    box-shadow: 0 8px 15px rgba(50, 205, 50, 0.3);
+    transform: translateY(-3px);
+}
+
+.btn-save:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(50, 205, 50, 0.2);
+}
+
+/* Previsualización de imagen */
+.image-preview {
+    margin-top: 10px;
+    position: relative;
+}
+
+.image-preview img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+}
+
+.image-preview button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+/* Botones de acción en tabla */
+.actions-cell {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.edit-btn {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.delete-btn {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+
+/* Botón de eliminar imagen */
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* ===== SELECTORES PERSONALIZADOS MEJORADOS ===== */
+.filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.filter-group {
+    position: relative;
+}
+
+.filter-label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: var(--font-size-normal);
+    display: flex;
+    align-items: center;
+}
+
+.filter-label i {
+    margin-right: var(--spacing-xs);
+    color: var(--primary-color);
+}
+
+.custom-select {
+    position: relative;
+    width: 100%;
+}
+
+.select-trigger {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border: 2px solid var(--card-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md) var(--spacing-lg);
+    padding-right: 50px;
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-normal);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    position: relative;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+}
+
+.select-trigger:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(50, 205, 50, 0.2);
+}
+
+.select-trigger:after {
+    content: '';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border-right: 2px solid var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    transform: translateY(-50%) rotate(45deg);
+    transition: var(--transition-fast);
+}
+
+.select-trigger.active:after {
+    transform: translateY(-50%) rotate(-135deg);
+}
+
+.select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border: 2px solid var(--card-border);
+    border-top: none;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    z-index: 100;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.select-options.active {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.select-option {
+    padding: var(--spacing-md) var(--spacing-lg);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.select-option:last-child {
+    border-bottom: none;
+}
+
+.select-option:hover {
+    background-color: rgba(50, 205, 50, 0.1);
+}
+
+.select-option i {
+    margin-right: var(--spacing-md);
+    width: 20px;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.selected-value {
+    display: flex;
+    align-items: center;
+}
+
+.selected-value i {
+    margin-right: var(--spacing-sm);
+    color: var(--primary-color);
+}
+
+/* Estilos para la barra de desplazamiento */
+.select-options::-webkit-scrollbar {
+    width: 8px;
+}
+
+.select-options::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.Select-options::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.select-options::-webkit-scrollbar-thumb:hover {
+    background: #2bab2b;
+}
+
+/* Grupo muscular específico */
+.muscle-option[data-value="pectorales"] i { color: #FF6B6B; }
+.muscle-option[data-value="espalda"] i { color: #4ECDC4; }
+.muscle-option[data-value="hombros"] i { color: #FFE66D; }
+.muscle-option[data-value="biceps"] i { color: #36B5FF; }
+.muscle-option[data-value="triceps"] i { color: #9B5DE5; }
+.muscle-option[data-value="piernas"] i { color: #00BBF9; }
+.muscle-option[data-value="abdominales"] i { color: #F15BB5; }
+
+/* Elemento específico */
+.equipment-option[data-value="mancuerna"] i { color: #FF6B6B; }
+.equipment-option[data-value="barra"] i { color: #4ECDC4; }
+.equipment-option[data-value="polea"] i { color: #FFE66D; }
+.equipment-option[data-value="maquina"] i { color: #36B5FF; }
+.equipment-option[data-value="peso corporal"] i { color: #9B5DE5; }
+.equipment-option[data-value="banda"] i { color: #00BBF9; }
+
+/* CORRECCIÓN SOLAMENTE PARA EL FONDO DE LA LISTA DE MÚSCULOS DEL FILTRO */
+#muscle-group-filter {
+    background-color: #1a1a1a !important;
+}
+
+#muscle-group-filter option {
+    background: #1a1a1a !important;
+    color: var(--text-primary) !important;
+}
+
+@media (max-width: 768px) {
+    .filters {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Asegurar que los selectores desplegables se muestren correctamente */
+.select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border: 2px solid var(--card-border);
+    border-top: none;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000; /* Aumentado para asegurar que esté por encima de otros elementos */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.select-options.active {
+    max-height: 300px;
+    overflow-y: auto;
+    display: block; /* Asegurar que se muestre cuando está activo */
+}
+
+/* CORRECCIONES PARA SELECTORES DESPLEGABLES */
+.select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border: 2px solid var(--card-border);
+    border-top: none;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    display: block; /* Asegurar que es un elemento de bloque */
+}
+
+.select-options.active {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Asegurar que las opciones sean visibles */
+.select-option {
+    padding: var(--spacing-md) var(--spacing-lg);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    opacity: 1; /* Asegurar visibilidad */
+    visibility: visible; /* Asegurar visibilidad */
+}
+
+/* Corregir error tipográfico en la barra de desplazamiento */
+.select-options::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+/* Estilo para cuando el selector está activo */
+.select-trigger.active {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(50, 205, 50, 0.2);
+    z-index: 1001; /* Por encima de las opciones */
+}
+
+/* Asegurar que el icono de flecha se vea correctamente */
+.select-trigger:after {
+    content: '';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    border-right: 2px solid var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    transform: translateY(-50%) rotate(45deg);
+    transition: var(--transition-fast);
+}
+
+.select-trigger.active:after {
+    transform: translateY(-50%) rotate(-135deg);
+}
+
+/* Mejorar la visualización en dispositivos móviles */
+@media (max-width: 768px) {
+    .select-trigger {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .select-option {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+}
+
+
+
+
+
+
+
+
+
+/* Estilos para modales */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--card-border);
+    width: 95%; /* Más ancho que antes */
+    max-width: 700px; /* Aumentado de 600px a 700px */
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--card-border);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: var(--font-size-title);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.close-btn:hover {
+    color: var(--text-primary);
+    transform: scale(1.1);
+}
+
+.modal-body {
+    padding: var(--spacing-lg);
+}
+
+/* Mejoras específicas para el formulario dentro del modal */
+.modal-body .exercise-form {
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+}
+
+/* Mejor distribución de los botones en el modal */
+.modal-body .form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--card-border);
+}
+
+.modal-body .btn {
+    min-width: 140px; /* Ancho mínimo para que el texto quede bien */
+    justify-content: center;
+}
+
+/* Asegurar que el botón de guardar tenga espacio suficiente */
+.modal-body .btn-save {
+    min-width: 160px;
+}
+
+/* Responsive para modales */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 98%;
+        margin: 10px;
+        max-width: none; /* En móviles ocupa casi toda la pantalla */
+    }
+    
+    .modal-header,
+    .modal-body {
+        padding: var(--spacing-md);
+    }
+    
+    .modal-body .form-actions {
+        flex-direction: column;
+    }
+    
+    .modal-body .btn {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        width: 100%;
+        margin: 5px;
+        border-radius: var(--border-radius);
+    }
+    
+    .modal-header,
+    .modal-body {
+        padding: var(--spacing-sm);
+    }
+}
+
+
+
+
+
+
+
+
+/* Estilos para botón de eliminar */
+.delete-btn {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+
+.delete-btn:hover {
+    background-color: rgba(220, 53, 69, 0.25);
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+}
+
+/* Estilos para el botón de resetear filtros */
+#reset-filters {
+    height: 56px; /* Misma altura que los selectores */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+/* Estilos para notificaciones */
+.notificacion {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md) var(--spacing-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 2000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    max-width: 350px;
+}
+
+.notificacion.mostrar {
+    transform: translateX(0);
+}
+
+.notificacion-contenido {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.notificacion.success {
+    border-left: 4px solid var(--primary-color);
+}
+
+.notificacion.success i {
+    color: var(--primary-color);
+}
+
+.notificacion.info {
+    border-left: 4px solid #17a2b8;
+}
+
+.notificacion.info i {
+    color: #17a2b8;
+}
+
+.notificacion.error {
+    border-left: 4px solid #dc3545;
+}
+
+.notificacion.error i {
+    color: #dc3545;
+}
+
+/* Ajustes responsivos para los filtros */
+@media (max-width: 900px) {
+    .filters {
+        grid-template-columns: 1fr;
+    }
+    
+    #reset-filters {
+        width: 100%;
+    }
+}
+
+
+/* Estilos para la sección de filtros */
+.filters-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.filters-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: var(--spacing-lg);
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: var(--font-size-normal);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.filter-label i {
+    color: var(--primary-color);
+}
+
+/* Campo de búsqueda */
+.search {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: 0 16px;
+    border: 1px solid var(--card-border);
+    transition: var(--transition-normal);
+    height: 48px;
+}
+
+.search:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(50, 205, 50, 0.2);
+}
+
+.search input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    padding: 12px 0;
+    width: 100%;
+    font-family: var(--font-family);
+    font-size: var(--font-size-normal);
+}
+
+.search input:focus {
+    outline: none;
+}
+
+.search input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Select de filtro */
+.filter-select {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    font-size: var(--font-size-normal);
+    font-family: var(--font-family);
+    transition: var(--transition-normal);
+    height: 48px;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%2332CD32' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 12px;
+    padding-right: 40px;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 2px rgba(50, 205, 50, 0.2);
+}
+
+/* Botón reset */
+#reset-filters {
+    height: 48px;
+    white-space: nowrap;
+    min-width: 140px;
+}
+
+/* Responsive para filtros */
+@media (max-width: 968px) {
+    .filters-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    #reset-filters {
+        width: 100%;
+    }
+}
+
+/* Indicador de filtros activos */
+.filters-active {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(50, 205, 50, 0.1);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(50, 205, 50, 0.3);
+    font-size: var(--font-size-small);
+}
+
+.filters-active.hidden {
+    display: none;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    background: var(--primary-color);
+    color: #000;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.filter-tag button {
+    background: none;
+    border: none;
+    color: #000;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-tag button:hover {
+    background: rgba(0, 0, 0, 0.1);
+}

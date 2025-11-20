@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINING! - Nuevo Cliente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/clientes.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/style.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/variables-entrenador.css" />
+    <link rel="stylesheet" href="/gym_frontend/static/css/nuevo-cliente.css" />
+</head>
+<body>
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="header">
+            <div class="user-profile">
+                <div class="user-avatar">JD</div>
+                <div>
+                    <h4>Juan Delgado</h4>
+                    <p>Entrenador certificado</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de Cliente -->
+        <div class="form-section">
+            <div class="section-header">
+                <h2 class="section-title">Crear Nuevo Cliente</h2>
+                <a href="clientes.html" class="btn btn-white">
+                    <i class="fas fa-times"></i> Volver
+                </a>
+            </div>
+
+            <form id="client-form" class="client-form">
+                <div class="form-group">
+                    <label for="user-name">Nombre *</label>
+                    <input type="text" id="user-name" placeholder="Ej: Tomás" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="user-lastname">Apellido *</label>
+                    <input type="text" id="user-lastname" placeholder="Ej: Gómez" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="user-dni">DNI(solo numeros) *</label>
+                    <input type="text" id="user-dni" placeholder="Ej: 20490320" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="user-mail">Email *</label>
+                    <input type="text" id="user-mail" placeholder="Ej: tomasgomez@gmail.com" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="user-phone">Teléfono(solo numeros) *</label>
+                    <input type="text" id="user-phone" placeholder="Ej: 3517394023" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="experience_level">Nivel de Experiencia *</label>
+                    <select id="experience_level" required>
+                        <option value="">Selecciona un Nivel</option>
+                        <option value="beginner">Principiante</option>
+                        <option value="intermediate">Intermedio</option>
+                        <option value="advanced">Avanzado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="goal">Meta *</label>
+                    <textarea type="text" id="goal" placeholder="Ej: Musculatura" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="injuries">Lesiones</label>
+                    <textarea id="injuries" rows="4" placeholder="Describe las lesiones..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Estado *</label>
+                    <select id="status" required>
+                        <option value="">Estado del Cliente</option>
+                        <option value="active">Activo</option>
+                        <option value="inactive">Inactivo</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-save">
+                        <i class="fas fa-save"></i> Guardar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="/gym_frontend/static/js/nuevo-cliente.js"></script>
+</body>
+</html>

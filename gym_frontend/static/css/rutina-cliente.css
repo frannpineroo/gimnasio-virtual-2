@@ -1,0 +1,378 @@
+@import url('variables-entrenador.css');
+@import url('base.css');
+
+.info-cliente {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.avatar-cliente {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+}
+
+/* .detalles-cliente h1 {
+    font-size: var(--font-size-title);
+    font-weight: 700;
+    margin-bottom: 4px;
+} */
+
+.detalles-cliente p {
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+}
+
+.acciones-cabecera {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Main Content */
+.principal-cliente {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+}
+
+/* Información de la Rutina */
+.tarjeta-info-rutina {
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.cabecera-rutina {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.titulo-rutina {
+    font-size: var(--font-size-title);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.meta-rutina {
+    display: flex;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.item-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.valor-meta {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.etiqueta-meta {
+    font-size: var(--font-size-small);
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.descripcion-rutina {
+    color: var(--text-secondary);
+    margin-top: var(--spacing-md);
+    line-height: 1.6;
+}
+
+/* Navegación entre días */
+.navegacion-dias {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+}
+
+.navegacion-dias::-webkit-scrollbar {
+    height: 6px;
+}
+
+.navegacion-dias::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+.navegacion-dias::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+.pestaña-dia {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius);
+    color: var(--text-secondary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.pestaña-dia:hover {
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+}
+
+.pestaña-dia.activa {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: #000;
+    border-color: var(--primary-color);
+}
+
+/* Ejercicios del día */
+.ejercicios-dia {
+    display: none;
+}
+
+.ejercicios-dia.activa {
+    display: block;
+    animation: aparecer 0.5s ease;
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tarjeta-ejercicio {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    border: 1px solid var(--card-border);
+    margin-bottom: var(--spacing-md);
+    transition: var(--transition-normal);
+}
+
+.tarjeta-ejercicio:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.cabecera-ejercicio {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.imagen-ejercicio {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.info-ejercicio {
+    flex: 1;
+}
+
+.nombre-ejercicio {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 1.1rem;
+}
+
+.meta-ejercicio {
+    display: flex;
+    gap: var(--spacing-md);
+    font-size: var(--font-size-small);
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+}
+
+.meta-ejercicio span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.descripcion-ejercicio {
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+    line-height: 1.5;
+    margin-top: var(--spacing-sm);
+}
+
+/* Configuración del ejercicio */
+.configuracion-ejercicio {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.titulo-configuracion {
+    font-size: var(--font-size-normal);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--primary-color);
+}
+
+.contenedor-series {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--spacing-sm);
+}
+
+.tarjeta-serie {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.numero-serie {
+    font-size: var(--font-size-small);
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.detalles-serie {
+    font-weight: 600;
+}
+
+.notas-ejercicio {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    border-left: 3px solid var(--primary-color);
+}
+
+.titulo-notas {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--primary-color);
+}
+
+.contenido-notas {
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+}
+
+/* Registro de entrenamiento */
+.registro-entrenamiento {
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.cabecera-registro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.titulo-registro {
+    font-size: var(--font-size-subtitle);
+    font-weight: 600;
+}
+
+.acciones-registro {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Footer */
+.pie-cliente {
+    text-align: center;
+    padding: var(--spacing-lg);
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+    border-top: 1px solid var(--card-border);
+    margin-top: var(--spacing-xl);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .contenido-cabecera {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+
+    .acciones-cabecera {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .cabecera-rutina {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .meta-rutina {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .item-meta {
+        flex: 1;
+    }
+
+    .cabecera-ejercicio {
+        flex-direction: column;
+    }
+
+    .imagen-ejercicio {
+        width: 100%;
+        height: 150px;
+    }
+
+    .contenedor-series {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .cabecera-registro {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .acciones-registro {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 480px) {
+    .principal-cliente {
+        padding: var(--spacing-md);
+    }
+
+    .tarjeta-info-rutina,
+    .registro-entrenamiento {
+        padding: var(--spacing-md);
+    }
+
+    .contenedor-series {
+        grid-template-columns: 1fr;
+    }
+
+    .pestaña-dia {
+        padding: 10px 16px;
+        font-size: var(--font-size-small);
+    }
+}

@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINING! - Ejercicios</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    <link rel="stylesheet" href="{% static 'css/variables-entrenador.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/header.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/ejercicios.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/modal-eliminar.css' %}" />
+</head>
+<body>
+    <!-- Contenido Principal -->
+    <main class="main-content">
+
+            <!-- Sección de Ejercicios -->
+            <div class="exercises-section">
+                <div class="section-header">
+                    <h2 class="section-title">Gestión de Ejercicios</h2>
+                    <a href="/entrenador/nuevo-ejercicio/" class="btn btn-white">
+                        <i class="fas fa-plus"></i> Agregar Ejercicio
+                    </a>
+                </div>
+
+                <div class="filters-section">
+        <div class="filters-container">
+            <!-- Filtro por nombre -->
+            <div class="filter-group">
+                <label for="search-input" class="filter-label">
+                    <i class="fas fa-search"></i> Buscar por nombre
+                </label>
+                <div class="search">
+                    <input type="text" id="search-input" placeholder="Escribe para buscar ejercicios...">
+                </div>
+            </div>
+
+            <!-- Filtro por grupo muscular -->
+            <div class="filter-group">
+                <label for="muscle-group-filter" class="filter-label">
+                    <i class="fas fa-filter"></i> Filtrar por grupo muscular
+                </label>
+                <select id="muscle-group-filter" class="filter-select">
+                    <option value="">Todos los grupos musculares</option>
+                    <option value="pectorales">Pectorales</option>
+                    <option value="espalda">Espalda</option>
+                    <option value="hombros">Hombros</option>
+                    <option value="biceps">Bíceps</option>
+                    <option value="triceps">Tríceps</option>
+                    <option value="piernas">Piernas</option>
+                    <option value="abdominales">Abdominales</option>
+                </select>
+            </div>
+
+            <!-- Botón reset -->
+            <div class="filter-group">
+                <label class="filter-label" style="visibility: hidden;">Reset</label>
+                <button id="reset-filters" class="btn btn-white">
+                    <i class="fas fa-redo"></i> Resetear filtros
+                </button>
+            </div>
+        </div>
+    </div>
+
+            <!-- Tabla de Ejercicios -->
+            <div class="exercises-table-container">
+                <table class="exercises-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Grupo Muscular</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="exercises-table-body">
+                        <tr id="loading-row">
+                            <td colspan="5" style="text-align:center; padding: 30px;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #32CD32;"></i> Cargando ejercicios...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="modal-title">¿Estás seguro?</h3>
+            <p class="modal-message">
+                ¿Estás seguro que quieres eliminar este ejercicio? Esta acción no se puede deshacer.
+            </p>
+            <div class="modal-actions">
+                <button id="cancel-delete" class="modal-btn modal-btn-cancel">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button id="confirm-delete" class="modal-btn modal-btn-delete">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+            <!-- Modal para Editar Ejercicio --->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-dumbbell"></i> Editar Ejercicio</h3>
+                <button type="button" class="close-btn" id="close-edit-modal" aria-label="Cerrar modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-exercise-form" class="exercise-form">
+                    <input type="hidden" id="edit-exercise-id">
+                    
+                    <div class="form-group">
+                        <label for="edit-exercise-name">
+                            <i class="fas fa-tag"></i> Nombre del Ejercicio *
+                        </label>
+                        <input type="text" id="edit-exercise-name" placeholder="Ej: Sentadilla con barra" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-muscle-group">
+                            <i class="fas fa-muscle"></i> Grupo Muscular *
+                        </label>
+                        <select id="edit-muscle-group" required>
+                            <option value="">Selecciona un grupo muscular</option>
+                            <option value="pectorales">Pectorales</option>
+                            <option value="espalda">Espalda</option>
+                            <option value="hombros">Hombros</option>
+                            <option value="biceps">Bíceps</option>
+                            <option value="triceps">Tríceps</option>
+                            <option value="piernas">Piernas</option>
+                            <option value="abdominales">Abdominales</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-exercise-description">
+                            <i class="fas fa-file-alt"></i> Descripción
+                        </label>
+                        <textarea id="edit-exercise-description" rows="5" 
+                                placeholder="Describe el ejercicio, técnica correcta, precauciones, variaciones..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-white" id="cancel-edit-btn">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-save">
+                            <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- otros scripts -->
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/header.js' %}"></script>
+    <script src="{% static 'js/ejercicios.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

@@ -3,7 +3,13 @@ from .models import Exercise
 from django.shortcuts import render
 from django.http import HttpResponseServerError
 from django.template import TemplateDoesNotExist
+from django.contrib.auth.forms import UserCreationForm
 
+def sign_up(request):
+    title = "Registro de nuevo usuario"
+    return render(request, 'acceso/signup.html', {
+        'mytitle': title
+    })
 
 
 def home_view(request):

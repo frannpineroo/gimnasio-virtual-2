@@ -11,6 +11,7 @@ urlpatterns = [
     # incluir todas las rutas de la app 'entidades' bajo /entrenador/
     # entidades/urls.py ya contiene las rutas HTML y la subruta 'api/' para la API
     path('entrenador/', include(('entidades.urls', 'entrenador'), namespace='entrenador')),
+    path('acceso/', include(('entidades.urls', 'acceso'), namespace='acceso')),
 ]
 
 # servir archivos estáticos en desarrollo

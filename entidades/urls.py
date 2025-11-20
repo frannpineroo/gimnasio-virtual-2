@@ -22,7 +22,8 @@ router.register(r'equipos', api_views.EquipmentViewSet)
 
 urlpatterns = [
     # Vistas HTML
-    path('', views.home_view, name='home'),       
+    path('', views.home_view, name='home'),
+    path('signup/', views.sign_up, name='signup'),     
     path('clientes/', views.clients_page, name='clientes'),
     path('clientes/nuevo/', views.new_client, name='nuevo_cliente'),
 

@@ -8,7 +8,7 @@ from entidades.views import home_view, sign_up
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
-    path('signup/', sign_up),
+    path('signup/', sign_up, name='signup'),
 
     # incluir todas las rutas de la app 'entidades' bajo /entrenador/
     # entidades/urls.py ya contiene las rutas HTML y la subruta 'api/' para la API

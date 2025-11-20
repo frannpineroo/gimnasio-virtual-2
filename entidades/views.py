@@ -1,14 +1,26 @@
 from django.shortcuts import render
 from .models import Exercise
 from django.shortcuts import render
-from django.http import HttpResponseServerError
+from django.http import HttpResponseServerError, HttpResponse
 from django.template import TemplateDoesNotExist
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 def sign_up(request):
-    return render(request, 'acceso/signup.html', {
-        'form': UserCreationForm()
-    })
+    if request.method == 'GET':
+        return render(request, 'acceso/signup.html', {
+            'form': UserCreationForm()
+        })
+    else:
+        if request.POST['password1'] == request.POST['password2']:
+            # registrar usuario
+            user = User.objects.create_user(
+                username=request.POST['username'],
+                password=request.POST['password1'])
+            user.save()
+            return HttpResponse("Usuario creado exitosamente")
+        return HttpResponse("Contraseñas no coinciden")
+    
 
 def home_view(request):
     try:

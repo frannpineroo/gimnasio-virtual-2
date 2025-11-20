@@ -6,17 +6,15 @@ from django.template import TemplateDoesNotExist
 from django.contrib.auth.forms import UserCreationForm
 
 def sign_up(request):
-    title = "Registro de nuevo usuario"
     return render(request, 'acceso/signup.html', {
-        'mytitle': title
+        'form': UserCreationForm()
     })
-
 
 def home_view(request):
     try:
-        return render(request, 'entrenador/index.html')
+        return render(request, 'entrenador/home.html')
     except TemplateDoesNotExist:
-        return HttpResponseServerError("Template entrenador/index.html no encontrado.")
+        return HttpResponseServerError("Template entrenador/home.html no encontrado.")
 
 def clients_page(request):
     try:

@@ -1,3 +1,9 @@
 <h1>Registro</h1>
 
-{{ mytitle }}
+<form action="/signup/" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button>
+        Registrarse
+    </button>
+</form>

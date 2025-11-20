@@ -1,12 +1,14 @@
+from django import views
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from entidades.views import home_view
+from entidades.views import home_view, sign_up
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
+    path('signup/', sign_up),
 
     # incluir todas las rutas de la app 'entidades' bajo /entrenador/
     # entidades/urls.py ya contiene las rutas HTML y la subruta 'api/' para la API

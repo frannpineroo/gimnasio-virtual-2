@@ -14,12 +14,21 @@ def sign_up(request):
     else:
         if request.POST['password1'] == request.POST['password2']:
             # registrar usuario
-            user = User.objects.create_user(
+            try:
+                user = User.objects.create_user(
                 username=request.POST['username'],
                 password=request.POST['password1'])
-            user.save()
-            return HttpResponse("Usuario creado exitosamente")
-        return HttpResponse("Contraseñas no coinciden")
+                user.save()
+                return HttpResponse("Usuario creado exitosamente")
+            except:
+                return render(request, 'acceso/signup.html', {
+                    'form': UserCreationForm(),
+                    'error': 'El nombre del usaurio ya existe.'
+                })
+        return render(request, 'acceso/signup.html', {
+                    'form': UserCreationForm(),
+                    'error': 'Las contraseñas no coinciden.'
+                })
     
 
 def home_view(request):

@@ -1,10 +1,10 @@
-from django.shortcuts import render
-from .models import Exercise
-from django.shortcuts import render
-from django.http import HttpResponseServerError, HttpResponse
+from django.shortcuts import render, redirect
+from django.http import HttpResponseServerError
 from django.template import TemplateDoesNotExist
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth import login
+from django.db import IntegrityError
 
 def sign_up(request):
     if request.method == 'GET':
@@ -19,8 +19,9 @@ def sign_up(request):
                 username=request.POST['username'],
                 password=request.POST['password1'])
                 user.save()
-                return HttpResponse("Usuario creado exitosamente")
-            except:
+                login(request, user)
+                return redirect('home')
+            except IntegrityError:
                 return render(request, 'acceso/signup.html', {
                     'form': UserCreationForm(),
                     'error': 'El nombre del usaurio ya existe.'

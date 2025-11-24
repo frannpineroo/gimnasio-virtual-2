@@ -1,0 +1,80 @@
+/* ESTILOS ESPECÍFICOS PARA LA PÁGINA DE RUTINAS */
+.routines-section {
+    padding: 20px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.section-title {
+    font-size: var(--font-size-title);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Ajustes específicos para la tabla de rutinas */
+.data-table td:nth-child(2) { /* Descripción */
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Badges para niveles */
+.level-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: var(--font-size-small);
+    font-weight: 500;
+}
+
+.level-beginner {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+}
+
+.level-intermediate {
+    background-color: rgba(255, 152, 0, 0.2);
+    color: #FF9800;
+}
+
+.level-advanced {
+    background-color: rgba(244, 67, 54, 0.2);
+    color: #F44336;
+}
+
+/* Botón de peligro */
+.btn-danger {
+    background-color: rgba(220, 53, 69, 0.9);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: rgba(220, 53, 69, 1);
+    transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .section-header .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .filters {
+        grid-template-columns: 1fr;
+    }
+}

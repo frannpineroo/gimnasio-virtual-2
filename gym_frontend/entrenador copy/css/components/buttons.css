@@ -1,0 +1,74 @@
+/* BOTONES REUTILIZABLES */
+.btn {
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: var(--font-size-normal);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #32CD32, #2bb929);
+    color: #000;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.4s ease;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2bb929, #32CD32);
+    z-index: -1;
+    transition: transform 0.5s ease;
+    transform: scaleX(0);
+    transform-origin: right;
+}
+
+.btn-primary:hover:before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    box-shadow: 0 8px 15px rgba(50, 205, 50, 0.3);
+    transform: translateY(-3px);
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #ffffff;
+}
+
+.btn-secondary:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}

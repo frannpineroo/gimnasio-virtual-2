@@ -1,4 +1,39 @@
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Gym!</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li>
+                <a href="./home.html">Inicio</a>
+            </li>
+            <li>
+                <a href="./clientes.html">Inicio</a>
+            </li>
+            <li>
+                <a href="./ejercicios.html">Inicio</a>
+            </li>
+            <li>
+                <a href="./rutinas.html">Inicio</a>
+            </li>
+            <li>
+                <a href="./equipos.html">Inicio</a>
+            </li>
+            <li>
+                <a href="./entrenador.html">Inicio</a>
+            </li>
+        </ul>
+    </nav>
+
+    {{ block content }}
+    {% endblock %}
+
+</body>
+</html>
 <aside class="sidebar">
     <div class="app-name">
         <h1>TRAINING!</h1>

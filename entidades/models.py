@@ -29,8 +29,6 @@ class Coach(models.Model):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     specialty = models.CharField(max_length=100, blank=True, null=True)
-    certifications = models.TextField(blank=True, null=True)
-    years_of_experience = models.IntegerField(default=0)
     status = models.CharField(max_length=50, choices=[
         ('active', 'Active'),
         ('inactive', 'Inactive')
@@ -114,6 +112,7 @@ class Rutine(models.Model):
     description = models.TextField(blank=True, null=True)
     time_week = models.IntegerField()
     days_per_week = models.IntegerField(default=3)
+    goal = models.CharField(max_length=100, blank=True, null=True)
     coach = models.ForeignKey(Coach, on_delete=models.SET_NULL, null=True, related_name='routines')
     client = models.ForeignKey('Client', on_delete=models.CASCADE, null=True, blank=True, related_name='routines')
     is_template = models.BooleanField(default=False)

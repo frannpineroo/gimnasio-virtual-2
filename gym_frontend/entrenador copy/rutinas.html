@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINING! - Rutinas</title>
+    
+    <!-- CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- CSS OPTIMIZADO CON RUTAS CORRECTAS -->
+    <link rel="stylesheet" href="css/base/variables.css" />
+    <link rel="stylesheet" href="css/base/globals.css" />
+    <link rel="stylesheet" href="css/components/header.css" />
+    <link rel="stylesheet" href="css/components/sidebar.css" />
+    <link rel="stylesheet" href="css/components/table.css" />
+    <link rel="stylesheet" href="css/components/buttons.css" />
+    <link rel="stylesheet" href="css/components/modal.css" />
+    <link rel="stylesheet" href="css/components/filters.css" />
+    <link rel="stylesheet" href="css/pages/rutinas.css" />
+</head>
+<body>
+    <main class="main-content">
+        <!-- El header se insertará aquí -->
+
+        <!-- Sección de Rutinas -->
+        <div class="routines-section">
+            <div class="section-header">
+                <h2 class="section-title">Gestión de Rutinas</h2>
+                <button class="btn btn-primary" id="add-routine-btn" onclick="window.location.href='nueva-rutina.html'">
+                    <i class="fas fa-plus"></i> Nueva Rutina
+                </button>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label"><i class="fas fa-search"></i> Buscar</label>
+                    <div class="search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Buscar rutina..." id="search-input" />
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label"><i class="fas fa-filter"></i> Tipo</label>
+                    <div class="custom-select" id="type-select">
+                        <div class="select-trigger">
+                            <div class="selected-value">
+                                <i class="fas fa-list"></i>
+                                <span>Todos los tipos</span>
+                            </div>
+                        </div>
+                        <div class="select-options">
+                            <div class="select-option type-option" data-value="">
+                                <i class="fas fa-list"></i>
+                                <span>Todos los tipos</span>
+                            </div>
+                            <div class="select-option type-option" data-value="template">
+                                <i class="fas fa-clone"></i>
+                                <span>Plantilla</span>
+                            </div>
+                            <div class="select-option type-option" data-value="assigned">
+                                <i class="fas fa-user-check"></i>
+                                <span>Asignada</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label"><i class="fas fa-signal"></i> Nivel</label>
+                    <div class="custom-select" id="level-select">
+                        <div class="select-trigger">
+                            <div class="selected-value">
+                                <i class="fas fa-list"></i>
+                                <span>Todos los niveles</span>
+                            </div>
+                        </div>
+                        <div class="select-options">
+                            <div class="select-option level-option" data-value="">
+                                <i class="fas fa-list"></i>
+                                <span>Todos los niveles</span>
+                            </div>
+                            <div class="select-option level-option" data-value="beginner">
+                                <i class="fas fa-seedling"></i>
+                                <span>Principiante</span>
+                            </div>
+                            <div class="select-option level-option" data-value="intermediate">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Intermedio</span>
+                            </div>
+                            <div class="select-option level-option" data-value="advanced">
+                                <i class="fas fa-fire"></i>
+                                <span>Avanzado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" style="opacity: 0;">Acciones</label>
+                    <button id="reset-filters" class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> Resetear Filtros
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabla de Rutinas -->
+            <div class="table-container">
+                <table class="data-table" id="routines-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Días/Semana</th>
+                            <th>Duración</th>
+                            <th>Nivel</th>
+                            <th>Ejercicios</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="routines-table-body">
+                        <tr id="loading-row">
+                            <td colspan="7" style="text-align:center; padding: 30px;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #32CD32;"></i> Cargando rutinas...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para eliminar rutina -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirmar Eliminación</h2>
+                <button class="close-modal" id="close-delete-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar esta rutina? Esta acción no se puede deshacer.</p>
+                <p><strong>Nota:</strong> Si la rutina está asignada a clientes, no podrá ser eliminada.</p>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-delete">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" id="confirm-delete">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS OPTIMIZADOS -->
+    <script src="js/utils/constants.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/utils/storage.js"></script>
+    <script src="js/components/header.js"></script>
+    <script src="js/components/sidebar.js"></script>
+    <script src="js/components/table-manager.js"></script>
+    <script src="js/components/modal-manager.js"></script>
+    <script src="js/core/app.js"></script>
+    <script src="js/pages/rutinas.js"></script>
+</body>
+</html>

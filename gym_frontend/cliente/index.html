@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINING! - Mi Rutina</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/rutina-cliente.css" />
+</head>
+<body>
+    <!-- Header del Cliente -->
+    <header class="cabecera-cliente">
+        <div class="contenido-cabecera">
+            <div class="detalles-cliente">
+                <h1>Juan Pérez</h1>
+                <p>Objetivo: Ganancia muscular • Nivel: Intermedio</p>
+            </div>
+            <div class="acciones-cabecera">
+                <button class="btn btn-progreso" id="btn-ver-progreso">
+                    <i class="fas fa-chart-line"></i> Ver Progreso
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="principal-cliente">
+        <!-- Información de la Rutina -->
+        <div class="tarjeta-info-rutina tarjeta">
+            <div class="cabecera-rutina">
+                <h2 class="titulo-rutina">Rutina Fuerza Inicial</h2>
+                <div class="meta-rutina">
+                    <div class="item-meta">
+                        <span class="valor-meta">4</span>
+                        <span class="etiqueta-meta">Días/Semana</span>
+                    </div>
+                    <div class="item-meta">
+                        <span class="valor-meta">8</span>
+                        <span class="etiqueta-meta">Semanas</span>
+                    </div>
+                    <div class="item-meta">
+                        <span class="valor-meta">12</span>
+                        <span class="etiqueta-meta">Ejercicios</span>
+                    </div>
+                </div>
+            </div>
+            <p class="descripcion-rutina">
+                Rutina enfocada en el desarrollo de fuerza general para principiantes. Incluye ejercicios compuestos fundamentales y trabajo accesorio para equilibrar el desarrollo muscular.
+            </p>
+        </div>
+
+        <!-- Navegación entre días -->
+        <div class="navegacion-dias">
+            <div class="pestaña-dia activa" data-dia="1">Día 1: Pecho y Tríceps</div>
+            <div class="pestaña-dia" data-dia="2">Día 2: Espalda y Bíceps</div>
+            <div class="pestaña-dia" data-dia="3">Día 3: Piernas</div>
+            <div class="pestaña-dia" data-dia="4">Día 4: Hombros y Abdomen</div>
+        </div>
+
+        <!-- Día 1: Pecho y Tríceps -->
+        <div class="ejercicios-dia activa" id="dia-1">
+            <!-- Ejercicio 1 -->
+            <div class="tarjeta-ejercicio">
+                <div class="cabecera-ejercicio">
+                    <img src="https://via.placeholder.com/80" alt="Press de banca" class="imagen-ejercicio">
+                    <div class="info-ejercicio">
+                        <h3 class="nombre-ejercicio">Press de Banca</h3>
+                        <div class="meta-ejercicio">
+                            <span><i class="fas fa-running"></i> Pectorales</span>
+                            <span><i class="fas fa-dumbbell"></i> Barra</span>
+                            <span><i class="fas fa-clock"></i> 90s descanso</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="descripcion-ejercicio">
+                    Ejercicio básico para el desarrollo del pectoral. Acostado en un banco plano, bajar la barra al pecho y empujar hacia arriba manteniendo la espalda apoyada.
+                </p>
+                <div class="configuracion-ejercicio">
+                    <h4 class="titulo-configuracion">Configuración:</h4>
+                    <div class="contenedor-series">
+                        <div class="tarjeta-serie">
+                            <div class="numero-serie">Serie 1</div>
+                            <div class="detalles-serie">8-10 reps</div>
+                        </div>
+                        <div class="tarjeta-serie">
+                            <div class="numero-serie">Serie 2</div>
+                            <div class="detalles-serie">8-10 reps</div>
+                        </div>
+                        <div class="tarjeta-serie">
+                            <div class="numero-serie">Serie 3</div>
+                            <div class="detalles-serie">8-10 reps</div>
+                        </div>
+                        <div class="tarjeta-serie">
+                            <div class="numero-serie">Serie 4</div>
+                            <div class="detalles-serie">8-10 reps</div>
+                        </div>
+                    </div>
+                    <div class="notas-ejercicio">
+                        <div class="titulo-notas">Notas del entrenador:</div>
+                        <div class="contenido-notas">Mantener los codos a 45° y no arquear excesivamente la espalda baja.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ejercicio 2 -->
+            <div class="tarjeta-ejercicio">
+                <div class="cabecera-ejercicio">
+                    <img src="https://via.placeholder.com/80" alt="Fondos en paralelas" class="imagen-ejercicio">
+                    <div class="info-ejercicio">
+                        <h3 class="nombre-ejercicio">Fondos en Paralelas</h3>
+                        <div class="meta-ejercicio">
+                            <span><i class="fas fa-running"></i> Tríceps/Pecho</span>
+                            <span><i class="fas fa-dumbbell"></i> Peso Corporal</span>
+                            <span><i class="fas fa-clock"></i> 60s descanso</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="descripcion-ejercicio">
+                    Ejercicio para tríceps y pectoral inferior. Mantener el torso inclinado ligeramente hacia adelante para mayor énfasis en pectoral.
+                </p>
+                <div class="configuracion-ejercicio">
+                    <h4 class="titulo-configuracion">Configuración:</h4>
+                    <div class="contenedor-series">
+                        <div class="tarjeta-serie">
+                            <div class="numero-serie">Serie 1</div>
+                            <div class="detalles-serie">10-12 reps</div>
+                        </div>
+                        <div class="tarjeta-serie">
+                            <div class="numero-serie">Serie 2</div>
+                            <div class="detalles-serie">10-12 reps</div>
+                        </div>
+                        <div class="tarjeta-serie">
+                            <div class="numero-serie">Serie 3</div>
+                            <div class="detalles-serie">10-12 reps</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Día 2: Espalda y Bíceps (oculto inicialmente) -->
+        <div class="ejercicios-dia" id="dia-2">
+            <!-- Ejercicios del día 2... -->
+            <div class="tarjeta-ejercicio">
+                <div class="cabecera-ejercicio">
+                    <img src="https://via.placeholder.com/80" alt="Dominadas" class="imagen-ejercicio">
+                    <div class="info-ejercicio">
+                        <h3 class="nombre-ejercicio">Dominadas</h3>
+                        <div class="meta-ejercicio">
+                            <span><i class="fas fa-running"></i> Espalda</span>
+                            <span><i class="fas fa-dumbbell"></i> Peso Corporal</span>
+                            <span><i class="fas fa-clock"></i> 90s descanso</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="descripcion-ejercicio">
+                    Ejercicio fundamental para el desarrollo de la espalda. Colgarse de una barra y elevar el cuerpo hasta que la barbilla supere la barra.
+                </p>
+                <div class="configuracion-ejercicio">
+                    <h4 class="titulo-configuracion">Configuración:</h4>
+                    <div class="contenedor-series">
+                        <div class="tarjeta-serie">
+                            <div class="numero-serie">Serie 1</div>
+                            <div class="detalles-serie">6-8 reps</div>
+                        </div>
+                        <div class="tarjeta-serie">
+                            <div class="numero-serie">Serie 2</div>
+                            <div class="detalles-serie">6-8 reps</div>
+                        </div>
+                        <div class="tarjeta-serie">
+                            <div class="numero-serie">Serie 3</div>
+                            <div class="detalles-serie">6-8 reps</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registro de Entrenamiento - Solo botón Nuevo Registro -->
+        <div class="registro-entrenamiento tarjeta">
+            <div class="cabecera-registro">
+                <h3 class="titulo-registro">Registro de Entrenamiento</h3>
+                <div class="acciones-registro">
+                    <button class="btn btn-primary" id="btn-nuevo-registro">
+                        <i class="fas fa-plus"></i> Nuevo Registro
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="pie-cliente">
+        <p>TRAINING! • Sistema de Gestión de Rutinas</p>
+        <p>© 2023 Todos los derechos reservados</p>
+    </footer>
+
+    <script src="js/rutina-cliente.js"></script>
+</body>
+</html>

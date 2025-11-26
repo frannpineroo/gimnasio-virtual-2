@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import Exercise, User, Coach, Client, Asignature, Reminder, TrainingSession, Rutine, DayRutine, ExerciseRutine, ProgressRegister, Equipment
+from .models import (
+    Exercise, User, Coach, Client, Asignature, Reminder, 
+    TrainingSession, Rutine, DayRutine, ExerciseRutine, 
+    ProgressRegister, Equipment, MuscleGroup, MuscleSubgroup
+)
 
 # Register your models here.
 admin.site.register(Exercise)
@@ -14,3 +18,5 @@ admin.site.register(DayRutine)
 admin.site.register(ExerciseRutine)
 admin.site.register(ProgressRegister)
 admin.site.register(Equipment)
+admin.site.register(MuscleGroup)
+admin.site.register(MuscleSubgroup)

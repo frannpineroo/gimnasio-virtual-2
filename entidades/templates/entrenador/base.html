@@ -1,61 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Training Gym!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav>
         <ul>
             <li>
-                <a href="./home.html">Inicio</a>
+                <a href="{% url 'home' %}">Inicio</a>
             </li>
             <li>
-                <a href="./clientes.html">Clientes</a>
+                <a href="{% url 'entrenador:clients_page' %}">Alumnos</a>
             </li>
             <li>
-                <a href="./ejercicios.html">Ejercicios</a>
+                <a href="{% url 'entrenador:exercise_page' %}">Ejercicios</a>
             </li>
             <li>
-                <a href="./rutinas.html">Rutinas</a>
+                <a href="{% url 'entrenador:routine_page' %}">Rutinas</a>
             </li>
             <li>
-                <a href="./equipos.html">Equipos</a>
+                <a href="{% url 'entrenador:equipment_page' %}">Equipos</a>
             </li>
             <li>
-                <a href="./entrenador.html">Entrenadores</a>
+                <a href="{% url 'entrenador:trainers_page' %}">Entrenadores</a>
             </li>
         </ul>
     </nav>
 
+    <!-- Aquí va el contenido específico de cada página -->
+    {% block content %}
+    {% endblock %}
+
 </body>
 </html>
-<aside class="sidebar">
-    <div class="app-name">
-        <h1>TRAINING!</h1>
-    </div>
-
-    <div class="menu-section-title">Menú</div>
-
-    <div class="menu-items">
-        <a href="/entrenador/" class="menu-item" id="menu-inicio">
-            <i class="fas fa-home"></i><span>Inicio</span>
-        </a>
-        <a href="/entrenador/clientes/" class="menu-item" id="menu-clientes">
-            <i class="fas fa-users"></i><span>Clientes</span>
-        </a>
-        <a href="/entrenador/ejercicios/" class="menu-item" id="menu-ejercicios">
-            <i class="fas fa-dumbbell"></i><span>Ejercicios</span>
-        </a>
-        <a href="/entrenador/rutinas/" class="menu-item" id="menu-rutinas">
-            <i class="fas fa-clipboard-list"></i><span>Rutinas</span>
-        </a>
-        <a href="/entrenador/equipos/" class="menu-item" id="menu-equipos">
-            <i class="fas fa-dumbbell"></i><span>Equipos</span>
-        </a>
-        <a href="/entrenador/entrenadores/" class="menu-item" id="menu-entrenador">
-            <i class="fas fa-user-tie"></i><span>Entrenadores</span>
-        </a>
-    </div>
-</aside>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Training Gym!</title>
+    <!-- Aquí puedes agregar tus CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -13,24 +14,24 @@
                 <a href="{% url 'home' %}">Inicio</a>
             </li>
             <li>
-                <a href="{% url 'entrenador:clients_page' %}">Alumnos</a>
+                <a href="{% url 'entrenador:clientes' %}">Clientes</a>
             </li>
             <li>
-                <a href="{% url 'entrenador:exercise_page' %}">Ejercicios</a>
+                <a href="{% url 'entrenador:ejercicios' %}">Ejercicios</a>
             </li>
             <li>
-                <a href="{% url 'entrenador:routine_page' %}">Rutinas</a>
+                <a href="{% url 'entrenador:rutinas' %}">Rutinas</a>
             </li>
             <li>
-                <a href="{% url 'entrenador:equipment_page' %}">Equipos</a>
+                <a href="{% url 'entrenador:equipos' %}">Equipos</a>
             </li>
             <li>
-                <a href="{% url 'entrenador:trainers_page' %}">Entrenadores</a>
+                <a href="{% url 'entrenador:entrenadores' %}">Entrenadores</a>
             </li>
         </ul>
     </nav>
 
-    <!-- Aquí va el contenido específico de cada página -->
+    <!-- Aquí se inserta el contenido específico de cada página -->
     {% block content %}
     {% endblock %}
 

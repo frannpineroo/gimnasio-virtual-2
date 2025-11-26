@@ -34,7 +34,7 @@ def sign_up(request):
 
 def home_view(request):
     try:
-        return render(request, 'home.html')
+        return render(request, 'entrenador/home.html')
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/home.html no encontrado.")
 

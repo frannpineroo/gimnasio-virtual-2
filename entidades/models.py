@@ -1,10 +1,55 @@
 from django.db import models
 
+class MuscleGroup(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        db_table = 'muscle_groups'
+        verbose_name = 'Grupo Muscular'
+        verbose_name_plural = 'Grupos Musculares'
+
+class MuscleSubgroup(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    muscle_group = models.ForeignKey(
+        MuscleGroup, 
+        on_delete=models.CASCADE, 
+        related_name='subgroups'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.muscle_group.name} - {self.name}"
+    
+    class Meta:
+        db_table = 'muscle_subgroups'
+        verbose_name = 'Subgrupo Muscular'
+        verbose_name_plural = 'Subgrupos Musculares'
+        unique_together = ['name', 'muscle_group']
+
 class Exercise(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    muscle_group = models.TextField(max_length=255, blank=True, null=True)
+    muscle_group = models.ForeignKey(
+        MuscleGroup, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='exercises'
+    )
+    muscle_subgroup = models.ForeignKey(
+        MuscleSubgroup, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='exercises'
+    )
     
     def __str__(self):
         return self.name

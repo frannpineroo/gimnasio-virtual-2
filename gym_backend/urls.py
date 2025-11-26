@@ -7,7 +7,7 @@ from entidades.views import home_view, sign_up
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/', home_view, name='home'),
+    path('home', home_view, name='home'),
     path('signup/', sign_up, name='signup'),
 
     # incluir todas las rutas de la app 'entidades' bajo /entrenador/

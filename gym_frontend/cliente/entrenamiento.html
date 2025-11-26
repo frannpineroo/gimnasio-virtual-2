@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINING! - Entrenamiento en Curso</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/rutina-cliente.css" />
+    <link rel="stylesheet" href="css/entrenamiento.css" />
+</head>
+<body>
+    <!-- Header del Entrenamiento -->
+    <header class="cabecera-cliente">
+        <div class="contenido-cabecera">
+            <div class="info-cliente">
+                <img src="https://via.placeholder.com/50" alt="Cliente" class="avatar-cliente">
+                <div class="detalles-cliente">
+                    <h1>Entrenamiento en Curso</h1>
+                    <p id="info-dia-entrenamiento">Cargando información del día...</p>
+                </div>
+            </div>
+            <div class="acciones-cabecera">
+                <button class="btn btn-outline" id="btn-pausar-entrenamiento">
+                    <i class="fas fa-pause"></i> Pausar
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="principal-cliente">
+        <div class="contenedor-entrenamiento">
+            <!-- Temporizador de Descanso -->
+            <div class="temporizador-descanso" id="temporizador-descanso">
+                <div class="tiempo-restante" id="tiempo-restante">01:00</div>
+                <div class="etiqueta-temporizador">DESCANSO - SIGUIENTE SERIE</div>
+            </div>
+
+            <!-- Estado del Entrenamiento -->
+            <div class="estado-entrenamiento">
+                <div class="indicador-estado">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Ejercicio: <span id="contador-ejercicios">1/4</span></span>
+                </div>
+                <div class="indicador-estado">
+                    <i class="fas fa-list-ol"></i>
+                    <span>Series: <span id="contador-series">0/12</span></span>
+                </div>
+                <div class="indicador-estado">
+                    <i class="fas fa-clock"></i>
+                    <span>Tiempo: <span id="tiempo-transcurrido">00:00</span></span>
+                </div>
+            </div>
+
+            <!-- Carrusel de Ejercicios -->
+            <div class="carrusel-ejercicios">
+                <div class="controles-carrusel">
+                    <button class="btn-carrusel" id="btn-anterior">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="btn-carrusel" id="btn-siguiente">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="contenedor-carrusel">
+                    <div class="carrusel-interno" id="carrusel-interno">
+                        <!-- Los ejercicios se cargarán dinámicamente -->
+                    </div>
+                </div>
+                
+                <div class="indicadores-carrusel" id="indicadores-carrusel">
+                    <!-- Los indicadores se generarán dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Acciones de Entrenamiento -->
+            <div class="acciones-entrenamiento">
+                <button class="btn-terminar-entrenamiento" id="btn-terminar-entrenamiento">
+                    <i class="fas fa-flag-checkered"></i> Terminar Entrenamiento
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notificación -->
+    <div class="notificacion" id="notificacion">
+        ¡Tiempo de descanso terminado!
+    </div>
+
+    <script src="js/entrenamiento.js"></script>
+</body>
+</html>

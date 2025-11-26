@@ -1,0 +1,264 @@
+.contenedor-progreso {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* Header simplificado para progreso */
+.cabecera-cliente .contenido-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cabecera-cliente .detalles-cliente {
+    text-align: left;
+    flex: 1;
+}
+
+.cabecera-cliente .detalles-cliente h1 {
+    font-size: var(--font-size-title);
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.cabecera-cliente .detalles-cliente p {
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+}
+
+.cabecera-cliente .acciones-cabecera {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.tarjeta-selector {
+    padding: var(--spacing-lg);
+}
+
+.etiqueta-selector {
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    display: block;
+    color: var(--text-primary);
+}
+
+.select-ejercicio {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--border-radius);
+    background-color: #1a1a1a;
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    font-size: var(--font-size-normal);
+    transition: var(--transition-fast);
+}
+
+.select-ejercicio:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(50, 205, 50, 0.3);
+}
+
+.tarjeta-resumen {
+    padding: var(--spacing-lg);
+}
+
+.estadisticas-progreso {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.estadistica {
+    text-align: center;
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.valor-estadistica {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: block;
+}
+
+.etiqueta-estadistica {
+    font-size: var(--font-size-small);
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.tarjeta-grafico {
+    padding: var(--spacing-lg);
+}
+
+.contenedor-grafico {
+    margin-top: var(--spacing-md);
+    height: 300px;
+    position: relative;
+}
+
+.tarjeta-historial {
+    padding: var(--spacing-lg);
+}
+
+.contenedor-historial {
+    margin-top: var(--spacing-md);
+}
+
+.semana-progreso {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition-normal);
+}
+
+.semana-progreso:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.cabecera-semana {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.titulo-semana {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.fecha-semana {
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+}
+
+.series-semana {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-sm);
+}
+
+.serie-progreso {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+    text-align: center;
+}
+
+.numero-serie {
+    font-size: var(--font-size-small);
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.datos-serie {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.calculo-rm {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm);
+    background: rgba(50, 205, 50, 0.1);
+    border-radius: var(--border-radius);
+    border-left: 3px solid var(--primary-color);
+}
+
+.titulo-rm {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: var(--font-size-small);
+    margin-bottom: 4px;
+}
+
+.valor-rm {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Estados vacío */
+.estado-vacio {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--text-secondary);
+}
+
+.estado-vacio i {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .contenedor-progreso {
+        padding: var(--spacing-md);
+    }
+
+    .cabecera-cliente .contenido-cabecera {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        text-align: center;
+    }
+
+    .cabecera-cliente .detalles-cliente {
+        text-align: center;
+    }
+
+    .cabecera-cliente .acciones-cabecera {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .tarjeta-selector,
+    .tarjeta-resumen,
+    .tarjeta-grafico,
+    .tarjeta-historial {
+        padding: var(--spacing-md);
+    }
+
+    .estadisticas-progreso {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .contenedor-grafico {
+        height: 250px;
+    }
+
+    .cabecera-semana {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .series-semana {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .estadisticas-progreso {
+        grid-template-columns: 1fr;
+    }
+
+    .valor-estadistica {
+        font-size: 1.25rem;
+    }
+}

@@ -1,21 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TRAINING! - Entrenadores</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/variables-entrenador.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/style.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/header.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/sidebar.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/entrenadores.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/modal-eliminar.css" />
-</head>
-<body>
-    <!-- Contenido Principal -->
+{% extends 'entrenador/base.html' %}
+{% block content %}
     <main class="main-content">
 
         <!-- Sección de Entrenadores -->
@@ -74,11 +58,4 @@
             </div>
         </div>
     </div>
-    
-    <!-- otros scripts -->
-    <script src="/gym_frontend/static/js/sidebar.js"></script>
-    <script src="/gym_frontend/static/js/header.js"></script>
-    <script src="/gym_frontend/static/js/entrenador.js"></script>
-    <script src="/gym_frontend/static/js/main.js"></script>
-</body>
-</html>
+{% endblock %}

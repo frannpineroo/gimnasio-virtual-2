@@ -1,25 +1,5 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TRAINING! - Equipos</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
-    <link rel="stylesheet" href="{% static 'css/variables-entrenador.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/header.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/equipos.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/modal-eliminar.css' %}" />
-</head>
-<body>
-    <!-- Contenedores para header y sidebar -->
-    <div id="header-container"></div>
-    <div id="sidebar-container"></div>
-
+{% extends 'entrenador/base.html' %}
+{% block content %}
     <!-- Contenido Principal -->
     <main class="main-content">
 
@@ -79,7 +59,7 @@
         </div>
     </div>
 
-    <script>
+    <!-- <script>
         // Función para cargar componentes y luego inicializar scripts
         async function loadComponents() {
             try {
@@ -110,15 +90,6 @@
                 console.error('Error cargando componentes:', error);
             }
         }
-
-        // Cargar componentes primero
         loadComponents();
-    </script>
-    
-    <!-- otros scripts -->
-    <script src="{% static 'js/sidebar.js' %}"></script>
-    <script src="{% static 'js/header.js' %}"></script>
-    <script src="{% static 'js/equipos.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-</body>
-</html>
+    </script> -->
+{% endblock %}

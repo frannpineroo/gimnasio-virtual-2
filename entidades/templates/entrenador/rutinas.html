@@ -1,26 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TRAINING! - Rutinas</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
-    <link rel="stylesheet" href="{% static 'css/variables-entrenador.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/header.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/rutinas.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/modal-eliminar.css' %}" />
-</head>
-<body>
-    <!-- Contenedores para header y sidebar -->
-    <div id="header-container"></div>
-    <div id="sidebar-container"></div>
+{% extends 'entrenador/base.html' %}
 
-    <!-- Contenido Principal -->
+{% block content %}
     <main class="main-content">
 
         <!-- Sección de Rutinas -->
@@ -214,12 +194,12 @@
         </div>
     </div>
 
-    <!-- Scripts para indexar sidebar y header -->
+    <!-- Scripts para indexar sidebar y header
     <script>
-        // Función para cargar componentes y luego inicializar scripts
+        Función para cargar componentes y luego inicializar scripts
         async function loadComponents() {
             try {
-                // Cargar header
+                Cargar header
                 const headerResponse = await fetch('/entrenador/components/header.html');
                 const headerData = await headerResponse.text();
                 const headerContainer = document.getElementById('header-container');
@@ -227,7 +207,7 @@
                     headerContainer.innerHTML = headerData;
                 }
 
-                // Cargar sidebar
+                Cargar sidebar
                 const sidebarResponse = await fetch('/entrenador/components/sidebar.html');
                 const sidebarData = await sidebarResponse.text();
                 const sidebarContainer = document.getElementById('sidebar-container');
@@ -235,10 +215,10 @@
                     sidebarContainer.innerHTML = sidebarData;
                 }
 
-                // Esperar un momento para que el DOM se actualice
+                Esperar un momento para que el DOM se actualice
                 await new Promise(resolve => setTimeout(resolve, 100));
 
-                // Inicializar scripts de los componentes
+                 Inicializar scripts de los componentes
                 if (typeof initSidebar === 'function') initSidebar();
                 if (typeof initHeader === 'function') initHeader();
 
@@ -247,14 +227,6 @@
             }
         }
 
-        // Cargar componentes primero
         loadComponents();
-    </script>
-    
-    <!-- otros scripts -->
-    <script src="{% static 'js/sidebar.js' %}"></script>
-    <script src="{% static 'js/header.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-    <script src="{% static 'js/rutinas.js' %}"></script>
-</body>
-</html>
+    </script> -->
+{% endblock %}

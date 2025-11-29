@@ -78,28 +78,29 @@
             </div>
 
             <!-- Tabla de Clientes -->
-            <div class="table-container">
-                <table class="data-table" id="clients-table">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>DNI</th>
-                            <th>Experiencia</th>
-                            <th>Objetivo</th>
-                            <th>Lesiones</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="clients-table-body">
-                        <tr id="loading-row">
-                            <td colspan="7" style="text-align:center; padding: 30px;">
-                                <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #32CD32;"></i> Cargando clientes...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-container">
+            <table class="data-table" id="clients-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>DNI</th>
+                        <th>Teléfono</th>
+                        <th>Experiencia</th>
+                        <th>Objetivo</th>
+                        <th>Lesiones</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="clients-table-body">
+                    <tr id="loading-row">
+                        <td colspan="9" style="text-align:center; padding: 30px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #32CD32;"></i> Cargando clientes...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </main>
 
@@ -115,31 +116,46 @@
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="client-name">Nombre completo *</label>
-                        <input type="text" id="client-name" placeholder="Ej: Juan Pérez" required />
+                        <label for="client-name">Nombre *</label>
+                        <input type="text" id="client-name" placeholder="Ej: Juan" required />
                     </div>
                     
                     <div class="form-group">
-                        <label for="client-dni">DNI *</label>
-                        <input type="text" id="client-dni" placeholder="Ej: 12345678A" required />
+                        <label for="client-last-name">Apellido *</label>
+                        <input type="text" id="client-last-name" placeholder="Ej: Pérez" required />
                     </div>
                 </div>
-                
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="client-dni">DNI</label>
+                        <input type="text" id="client-dni" placeholder="Ej: 12345678A" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="client-phone">Teléfono</label>
+                        <input type="tel" id="client-phone" placeholder="Ej: +34 600 123 456" />
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label for="client-experience">Experiencia previa</label>
-                    <textarea id="client-experience" rows="2" placeholder="Describa la experiencia previa del cliente en entrenamiento..."></textarea>
+                    <label for="client-email">Email</label>
+                    <input type="email" id="client-email" placeholder="Ej: juan@example.com" />
                 </div>
                 
                 <div class="form-group">
-                    <label for="client-goal">Objetivo *</label>
-                    <select id="client-goal" required>
-                        <option value="">Selecciona un objetivo</option>
-                        <option value="perdida_grasa">Pérdida de grasa</option>
-                        <option value="ganancia_muscular">Ganancia muscular</option>
-                        <option value="mejora_rendimiento">Mejora de rendimiento</option>
-                        <option value="rehabilitacion">Rehabilitación</option>
-                        <option value="mantenimiento">Mantenimiento</option>
+                    <label for="client-experience">Nivel de Experiencia *</label>
+                    <select id="client-experience" required>
+                        <option value="">Selecciona un nivel</option>
+                        <option value="beginner">Principiante</option>
+                        <option value="intermediate">Intermedio</option>
+                        <option value="advanced">Avanzado</option>
                     </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="client-goal">Objetivo</label>
+                    <input type="text" id="client-goal" placeholder="Ej: Pérdida de grasa, ganancia muscular..." />
                 </div>
                 
                 <div class="form-group">
@@ -150,8 +166,8 @@
                 <div class="form-group">
                     <label for="client-status">Estado *</label>
                     <select id="client-status" required>
-                        <option value="activo">Activo</option>
-                        <option value="inactivo">Inactivo</option>
+                        <option value="active">Activo</option>
+                        <option value="inactive">Inactivo</option>
                     </select>
                 </div>
                 

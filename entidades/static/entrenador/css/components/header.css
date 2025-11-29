@@ -1,12 +1,9 @@
-/* Estilos para el componente Header */
+/* Estilos para el componente Header - VERSIÓN COMPACTA */
 .header {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    margin-bottom: var(--spacing-xl);
-    padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--card-border);
-    position: relative;
+    /* Eliminamos cualquier margin/padding extra */
 }
 
 .header-content {
@@ -23,19 +20,21 @@
     align-items: center;
     gap: var(--spacing-sm);
     cursor: pointer;
-    padding: 8px 16px;
+    padding: 6px 12px; /* Más compacto */
     border-radius: var(--border-radius);
     transition: var(--transition-fast);
-    background-color: rgba(255, 255, 255, 0);
+    background-color: rgba(255, 255, 255, 0.05); /* Fondo sutil */
+    border: 1px solid var(--card-border); /* Borde sutil */
 }
 
 .user-profile:hover {
     background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
 }
 
 .user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 32px; /* Más pequeño */
+    height: 32px; /* Más pequeño */
     border-radius: 50%;
     background-color: var(--primary-color);
     display: flex;
@@ -43,26 +42,36 @@
     justify-content: center;
     font-weight: bold;
     color: #000;
-    font-size: var(--font-size-small);
+    font-size: 12px; /* Texto más pequeño */
 }
 
 .user-info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px; /* Menor separación */
 }
 
 .user-info h4 {
     margin: 0;
-    font-size: var(--font-size-normal);
+    font-size: 14px; /* Texto más pequeño */
     font-weight: 600;
     color: var(--text-primary);
 }
 
 .user-info p {
     margin: 0;
-    font-size: var(--font-size-small);
+    font-size: 11px; /* Texto más pequeño */
     color: var(--text-secondary);
+}
+
+.user-profile i {
+    font-size: 12px; /* Icono más pequeño */
+    color: var(--text-secondary);
+    transition: var(--transition-fast);
+}
+
+.user-profile:hover i {
+    color: var(--primary-color);
 }
 
 .user-dropdown {
@@ -72,9 +81,9 @@
     background: var(--card-bg);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-lg);
-    width: 200px;
-    padding: 8px 0;
-    margin-top: 8px;
+    width: 180px; /* Un poco más angosto */
+    padding: 6px 0; /* Menor padding */
+    margin-top: 6px; /* Menor margen */
     display: none;
     z-index: 1000;
     border: 1px solid var(--card-border);
@@ -86,13 +95,13 @@
 }
 
 .dropdown-item {
-    padding: 10px 16px;
+    padding: 8px 12px; /* Más compacto */
     display: flex;
     align-items: center;
     transition: background 0.3s;
     cursor: pointer;
     color: var(--text-primary);
-    font-size: var(--font-size-small);
+    font-size: 13px; /* Texto más pequeño */
 }
 
 .dropdown-item:hover {
@@ -100,10 +109,11 @@
 }
 
 .dropdown-item i {
-    margin-right: 10px;
-    width: 16px;
+    margin-right: 8px; /* Menor espacio */
+    width: 14px; /* Iconos más pequeños */
     text-align: center;
     color: var(--primary-color);
+    font-size: 12px;
 }
 
 @keyframes fadeIn {
@@ -118,6 +128,10 @@
     }
     
     .user-profile {
-        padding: 8px 12px;
+        padding: 6px 10px;
+    }
+    
+    .header-container {
+        padding: var(--spacing-xs) var(--spacing-md);
     }
 }

@@ -1,36 +1,38 @@
-// HeaderComponent básico para que funcione
+// HeaderComponent para Django - SIN AJAX
 class HeaderComponent {
-    async load() {
+    async initialize() {
         try {
-            const response = await fetch('components/header.html');
-            if (!response.ok) throw new Error('No se pudo cargar header');
-            const html = await response.text();
-            
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-            return tempDiv.firstElementChild;
+            const existingHeader = document.querySelector('.header');
+            if (existingHeader) {
+                console.log('Header encontrado - inicializando funcionalidad Django');
+                this.initializeHeaderFunctionality(existingHeader);
+                return true;
+            } else {
+                console.warn('No se encontró header en el DOM');
+                return false;
+            }
         } catch (error) {
-            console.warn('Usando header de respaldo:', error);
-            return this.createFallbackHeader();
+            console.warn('Error inicializando header:', error);
+            return false;
         }
     }
 
-    createFallbackHeader() {
-        const header = document.createElement('div');
-        header.className = 'header';
-        header.innerHTML = `
-            <div class="header-content">
-                <div class="user-profile-container">
-                    <div class="user-profile">
-                        <div class="user-avatar">JD</div>
-                        <div class="user-info">
-                            <h4>Juan Delgado</h4>
-                            <p>Entrenador</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        return header;
+    initializeHeaderFunctionality(headerElement) {
+        const userProfile = headerElement.querySelector('.user-profile');
+        const userDropdown = headerElement.querySelector('.user-dropdown');
+        
+        if (userProfile && userDropdown) {
+            userProfile.addEventListener('click', () => {
+                userDropdown.classList.toggle('show');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!userProfile.contains(e.target)) {
+                    userDropdown.classList.remove('show');
+                }
+            });
+        }
     }
+
+    // ⚠️ ELIMINADO: load() y createFallbackHeader() - NO SE NECESITAN EN DJANGO
 }

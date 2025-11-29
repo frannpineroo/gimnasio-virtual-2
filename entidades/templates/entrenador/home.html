@@ -1,199 +1,193 @@
+{% extends 'entrenador/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TRAINING! - Inicio</title>
-    
-    <!-- CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    
-    <!-- CSS CON RUTAS DJANGO -->
-    <link rel="stylesheet" href="{% static 'entrenador/css/base/variables.css' %}" />
-    <link rel="stylesheet" href="{% static 'entrenador/css/base/globals.css' %}" />
-    <link rel="stylesheet" href="{% static 'entrenador/css/components/header.css' %}" />
-    <link rel="stylesheet" href="{% static 'entrenador/css/components/sidebar.css' %}" />
-    <link rel="stylesheet" href="{% static 'entrenador/css/components/table.css' %}" />
-    <link rel="stylesheet" href="{% static 'entrenador/css/components/buttons.css' %}" />
-    <link rel="stylesheet" href="{% static 'entrenador/css/components/modal.css' %}" />
-    <link rel="stylesheet" href="{% static 'entrenador/css/components/filters.css' %}" />
-    
-    <!-- ESTILOS ESPECÍFICOS DEL DASHBOARD -->
-    <style>
-        .welcome-section h2 {
-            font-size: var(--font-size-title);
-            font-weight: 700;
-            margin-bottom: var(--spacing-xs);
-            background: linear-gradient(90deg, var(--primary-color), var(--text-primary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            color: transparent; /* Fallback para navegadores que no soportan las propiedades webkit */
-        }
 
-        .welcome-section p {
-            color: var(--text-secondary);
-            font-size: 18px;
-            max-width: 600px;
-        }
+{% block title %}Inicio{% endblock %}
 
+{% block extra_css %}
+<style>
+    .welcome-section h2 {
+        font-size: var(--font-size-title);
+        font-weight: 700;
+        margin-bottom: var(--spacing-xs);
+        background: linear-gradient(90deg, var(--primary-color), var(--text-primary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+    }
+
+    .welcome-section p {
+        color: var(--text-secondary);
+        font-size: 18px;
+        max-width: 600px;
+    }
+
+    .stats-container {
+        display: flex;
+        gap: var(--spacing-lg);
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .stat-card {
+        flex: 1;
+        background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
+        border-radius: var(--border-radius-lg);
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--card-border);
+        transition: var(--transition-normal);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+    }
+
+    .stat-card .icon {
+        width: 50px;
+        height: 50px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: var(--spacing-md);
+    }
+
+    .stat-card .icon i {
+        font-size: 24px;
+        color: #000;
+    }
+
+    .stat-card h3 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .stat-card p {
+        color: var(--text-secondary);
+        font-size: var(--font-size-normal);
+    }
+
+    .section-title {
+        font-size: var(--font-size-subtitle);
+        font-weight: 700;
+        margin: var(--spacing-md) 0 var(--spacing-md);
+    }
+
+    .recent-activities {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-lg);
+    }
+
+    .activity-card {
+        background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
+        border-radius: var(--border-radius-lg);
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--card-border);
+        transition: var(--transition-normal);
+    }
+
+    .activity-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .activity-card h4 {
+        font-size: 20px;
+        margin-bottom: var(--spacing-sm);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+
+    .activity-card h4 i {
+        color: var(--primary-color);
+    }
+
+    .activity-card p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .activity-card .time {
+        color: var(--primary-color);
+        font-size: var(--font-size-small);
+        font-weight: 500;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
         .stats-container {
-            display: flex;
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
+            flex-direction: column;
         }
+    }
 
-        .stat-card {
-            flex: 1;
-            background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-lg);
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--card-border);
-            transition: var(--transition-normal);
-        }
+    /* ANIMACIONES */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-        .stat-card:hover {
-            transform: translateY(-8px);
-        }
+    .stat-card, .activity-card {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
 
-        .stat-card .icon {
-            width: 50px;
-            height: 50px;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: var(--spacing-md);
-        }
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .activity-card:nth-child(1) { animation-delay: 0.4s; }
+    .activity-card:nth-child(2) { animation-delay: 0.5s; }
+    .activity-card:nth-child(3) { animation-delay: 0.6s; }
+</style>
+{% endblock %}
 
-        .stat-card .icon i {
-            font-size: 24px;
-            color: #000;
-        }
+{% block content %}
+<div class="welcome-section">
+    <h2>Bienvenido al Panel de Control</h2>
+    <p>Gestiona tus clientes, ejercicios y rutinas de entrenamiento de manera eficiente con nuestra plataforma.</p>
+</div>
 
-        .stat-card h3 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .stat-card p {
-            color: var(--text-secondary);
-            font-size: var(--font-size-normal);
-        }
-
-        .section-title {
-            font-size: var(--font-size-subtitle);
-            font-weight: 700;
-            margin: var(--spacing-md) 0 var(--spacing-md);
-        }
-
-        .recent-activities {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--spacing-lg);
-        }
-
-        .activity-card {
-            background: linear-gradient(135deg, var(--card-bg) 0%, var(--darker-bg) 100%);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-lg);
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--card-border);
-            transition: var(--transition-normal);
-        }
-
-        .activity-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .activity-card h4 {
-            font-size: 20px;
-            margin-bottom: var(--spacing-sm);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-        }
-
-        .activity-card h4 i {
-            color: var(--primary-color);
-        }
-
-        .activity-card p {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .activity-card .time {
-            color: var(--primary-color);
-            font-size: var(--font-size-small);
-            font-weight: 500;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 900px) {
-            .stats-container {
-                flex-direction: column;
-            }
-        }
-
-        /* ANIMACIONES */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .stat-card, .activity-card {
-            animation: fadeIn 0.6s ease-out forwards;
-        }
-
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-        .activity-card:nth-child(1) { animation-delay: 0.4s; }
-        .activity-card:nth-child(2) { animation-delay: 0.5s; }
-        .activity-card:nth-child(3) { animation-delay: 0.6s; }
-    </style>
-</head>
-<body>
-    <main class="main-content">
-    <div class="welcome-section">
-            <h2>Bienvenido al Panel de Control</h2>
-            <p>Gestiona tus clientes, ejercicios y rutinas de entrenamiento de manera eficiente con nuestra plataforma.</p>
-        </div>
-
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="icon"><i class="fas fa-users"></i></div>
-            <h3 id="clients-count">0</h3>
-            <p>Clientes Activos</p>
-        </div>
-
-        <div class="stat-card">
-            <div class="icon"><i class="fas fa-dumbbell"></i></div>
-            <h3 id="exercises-count">0</h3>
-            <p>Ejercicios Disponibles</p>
-        </div>
-
-        <div class="stat-card">
-            <div class="icon"><i class="fas fa-clipboard-list"></i></div>
-            <h3 id="routines-count">0</h3>
-            <p>Rutinas Creadas</p>
-        </div>
+<div class="stats-container">
+    <div class="stat-card">
+        <div class="icon"><i class="fas fa-users"></i></div>
+        <h3 id="clients-count">0</h3>
+        <p>Clientes Activos</p>
     </div>
-</main>
 
-    <!-- SCRIPTS CON RUTAS DJANGO -->
-    <script src="{% static 'entrenador/js/utils/constants.js' %}"></script>
-    <script src="{% static 'entrenador/js/utils/helpers.js' %}"></script>
-    <script src="{% static 'entrenador/js/utils/storage.js' %}"></script>
-    <script src="{% static 'entrenador/js/components/header.js' %}"></script>
-    <script src="{% static 'entrenador/js/components/sidebar.js' %}"></script>
-    <script src="{% static 'entrenador/js/core/app.js' %}"></script>
-</body>
-</html>
+    <div class="stat-card">
+        <div class="icon"><i class="fas fa-dumbbell"></i></div>
+        <h3 id="exercises-count">0</h3>
+        <p>Ejercicios Disponibles</p>
+    </div>
+
+    <div class="stat-card">
+        <div class="icon"><i class="fas fa-clipboard-list"></i></div>
+        <h3 id="routines-count">0</h3>
+        <p>Rutinas Creadas</p>
+    </div>
+</div>
+
+<h3 class="section-title">Actividad Reciente</h3>
+<div class="recent-activities">
+    <div class="activity-card">
+        <h4><i class="fas fa-user-plus"></i> Nuevo Cliente</h4>
+        <p>María López se ha registrado en el sistema y ha completado su evaluación inicial.</p>
+        <div class="time">Hace 2 horas</div>
+    </div>
+
+    <div class="activity-card">
+        <h4><i class="fas fa-dumbbell"></i> Ejercicio Actualizado</h4>
+        <p>Se ha modificado la técnica del ejercicio "Press de Banca" para mejorar su ejecución.</p>
+        <div class="time">Hace 1 día</div>
+    </div>
+
+    <div class="activity-card">
+        <h4><i class="fas fa-clipboard-check"></i> Rutina Completada</h4>
+        <p>Carlos Rodríguez ha completado la rutina "Fuerza Maxima Nivel 3" con éxito.</p>
+        <div class="time">Hace 2 días</div>
+    </div>
+</div>
+{% endblock %}

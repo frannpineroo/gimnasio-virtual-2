@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'entidades',
+    'entidades',  # Tu app principal
 ]
 
 MIDDLEWARE = [
@@ -42,12 +42,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),
-            os.path.join(BASE_DIR, 'templates/entrenador'),
-            os.path.join(BASE_DIR, 'templates/cliente'),
-            os.path.join(BASE_DIR, 'templates/acceso'),
+            os.path.join(BASE_DIR, 'templates'),  # Para templates globales
         ],
-        'APP_DIRS': True,
+        'APP_DIRS': True,  # Esto permite que Django busque templates en app/templates/
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -102,13 +99,14 @@ TIME_ZONE = 'America/Argentina/Cordoba'
 USE_I18N = True
 USE_TZ = True
 
-# Static files configuration - CORREGIDO
+# Static files configuration - ACTUALIZADO
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Directorios donde buscar archivos estáticos
+# Directorios donde buscar archivos estáticos - ACTUALIZADO
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'gym_frontend', 'static'),
+    os.path.join(BASE_DIR, 'entidades', 'static'),  # Archivos estáticos de entidades
+    os.path.join(BASE_DIR, 'gym_frontend', 'static'),  # Archivos estáticos del frontend
 ]
 
 # Configuración de WhiteNoise

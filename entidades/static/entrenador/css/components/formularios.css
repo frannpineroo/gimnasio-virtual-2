@@ -169,38 +169,68 @@
     cursor: pointer;
 }
 
-/* Checkboxes y radios estilo moderna */
-.form-check {
+/* CORRECCIÓN PARA CHECKBOX "ACTIVO" - VERSIÓN COMPACTA */
+.form-check-compact {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-sm);
-    padding: 10px;
-    border-radius: var(--border-radius);
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    padding: 12px 16px;
     background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--border-radius);
     border: 1px solid var(--card-border);
     transition: var(--transition-fast);
-    cursor: pointer;
+    width: auto !important;
+    max-width: 300px;
 }
 
-.form-check:hover {
+.form-check-compact:hover {
     border-color: var(--primary-color);
     background: rgba(50, 205, 50, 0.05);
 }
 
-.form-check-input {
+.form-check-compact .form-check-label {
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    margin: 0;
+    flex: 1;
+}
+
+.form-check-compact .form-check-input {
     width: 20px;
     height: 20px;
     margin: 0;
     accent-color: var(--primary-color);
     cursor: pointer;
+    order: 2; /* Mover el checkbox a la derecha */
 }
 
-.form-check-label {
+/* Versión alternativa más simple */
+.form-check-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    padding: 0;
+    background: none;
+    border: none;
+    width: auto;
+}
+
+.form-check-inline .form-check-label {
     font-weight: 500;
     color: var(--text-primary);
+    margin: 0;
+}
+
+.form-check-inline .form-check-input {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--primary-color);
     cursor: pointer;
-    flex: 1;
 }
 
 /* Botones del formulario */
@@ -354,6 +384,10 @@
         flex-direction: column;
         gap: var(--spacing-md);
         align-items: flex-start;
+    }
+    
+    .form-check-compact {
+        max-width: 100%;
     }
 }
 

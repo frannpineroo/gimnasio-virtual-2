@@ -1,236 +1,31 @@
-// PÁGINA DE EJERCICIOS OPTIMIZADA
-const ejerciciosPage = {
-    tableManager: null,
-    modalManager: null,
-    exercises: [],
-    filteredExercises: [],
-    muscleGroups: [],
-    equipment: [],
-    initialized: false,
+// entidades/static/entrenador/js/pages/ejercicios.js
+class EjerciciosPage {
+    constructor() {
+        this.initialized = false;
+        this.exercises = [];
+        this.filteredExercises = [];
+    }
 
     initialize() {
-        if (this.initialized) {
-            console.log('Ejercicios page already initialized');
-            return;
-        }
+        if (this.initialized) return;
         
         this.initialized = true;
-        this.loadData();
-        this.loadMuscleGroupsAndEquipment();
-        this.initTable();
-        this.initModal();
+        console.log('Inicializando página de ejercicios');
+        
         this.initEventListeners();
-        console.log('Ejercicios page initialized');
-    },
-
-    loadData() {
-        this.exercises = Storage.get('ejercicios') || [
-            {
-                id: 1,
-                nombre: 'Press de Banca',
-                musculo: 'pecho',
-                equipamiento: 'Barra Olímpica, Banco de Press',
-                descripcion: 'Ejercicio compuesto para desarrollo del pectoral',
-                imagen: 'https://via.placeholder.com/60'
-            },
-            {
-                id: 2,
-                nombre: 'Sentadillas',
-                musculo: 'piernas',
-                equipamiento: 'Barra Olímpica, Rack de Sentadillas',
-                descripcion: 'Ejercicio fundamental para piernas y glúteos',
-                imagen: 'https://via.placeholder.com/60'
-            },
-            {
-                id: 3,
-                nombre: 'Dominadas',
-                musculo: 'espalda',
-                equipamiento: 'Barra de Dominadas',
-                descripcion: 'Ejercicio para espalda y brazos',
-                imagen: 'https://via.placeholder.com/60'
-            }
-        ];
-
-        this.filteredExercises = [...this.exercises];
-    },
-
-    loadMuscleGroupsAndEquipment() {
-        // Cargar equipamiento para extraer grupos musculares
-        this.equipment = Storage.get('equipamiento') || [
-            {
-                id: 1,
-                nombre: "Barra Olímpica",
-                tipo: "barra",
-                grupoMuscular: "fullbody",
-                estado: "disponible"
-            },
-            {
-                id: 2,
-                nombre: "Banco de Press",
-                tipo: "banco",
-                grupoMuscular: "pecho",
-                estado: "disponible"
-            },
-            {
-                id: 3,
-                nombre: "Mancuernas",
-                tipo: "mancuernas",
-                grupoMuscular: "brazos",
-                estado: "disponible"
-            },
-            {
-                id: 4,
-                nombre: "Rack de Sentadillas",
-                tipo: "rack",
-                grupoMuscular: "piernas",
-                estado: "disponible"
-            },
-            {
-                id: 5,
-                nombre: "Barra de Dominadas",
-                tipo: "barra",
-                grupoMuscular: "espalda",
-                estado: "disponible"
-            }
-        ];
-
-        // Extraer grupos musculares únicos del equipamiento
-        const groups = [...new Set(this.equipment.map(item => item.grupoMuscular))];
-        
-        // Agregar grupos comunes que puedan faltar
-        const commonGroups = ['pecho', 'espalda', 'piernas', 'hombros', 'brazos', 'abdomen', 'gluteos', 'fullbody'];
-        
-        this.muscleGroups = [...new Set([...groups, ...commonGroups])].sort();
-        
-        console.log('Muscle groups loaded:', this.muscleGroups);
-        console.log('Equipment loaded:', this.equipment);
-
-        // Actualizar selects en la interfaz
-        this.updateMuscleGroupSelects();
-    },
-
-    updateMuscleGroupSelects() {
-        // Actualizar select del filtro
-        const filterSelect = document.querySelector('#muscle-select .select-options');
-        if (filterSelect) {
-            filterSelect.innerHTML = `
-                <div class="select-option" data-value="">
-                    <i class="fas fa-list"></i>
-                    <span>Todos los músculos</span>
-                </div>
-                ${this.muscleGroups.map(group => `
-                    <div class="select-option" data-value="${group}">
-                        <i class="fas fa-dumbbell"></i>
-                        <span>${this.capitalizeFirstLetter(group)}</span>
-                    </div>
-                `).join('')}
-            `;
-        }
-
-        // Actualizar select del modal
-        const modalSelect = document.getElementById('exercise-muscle');
-        if (modalSelect) {
-            modalSelect.innerHTML = `
-                <option value="">Seleccionar músculo</option>
-                ${this.muscleGroups.map(group => `
-                    <option value="${group}">${this.capitalizeFirstLetter(group)}</option>
-                `).join('')}
-            `;
-        }
-
-        // Actualizar select de equipamiento en el modal
-        const equipmentSelect = document.getElementById('exercise-equipment');
-        if (equipmentSelect) {
-            equipmentSelect.innerHTML = `
-                <option value="">Seleccionar equipamiento</option>
-                ${this.equipment.map(item => `
-                    <option value="${item.nombre}">${item.nombre}</option>
-                `).join('')}
-            `;
-        }
-
-        // Re-inicializar custom selects - ESTO ES CLAVE
-        setTimeout(() => {
-            this.initCustomSelects();
-        }, 100);
-    },
-
-    capitalizeFirstLetter(string) {
-        if (!string) return '';
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    },
-
-    initTable() {
-        // Verificar que TableManager esté disponible
-        if (typeof TableManager === 'undefined') {
-            console.error('TableManager no está disponible');
-            setTimeout(() => this.initTable(), 100);
-            return;
-        }
-
-        this.tableManager = new TableManager({
-            tableId: 'exercises-table',
-            columns: [
-                { key: 'nombre', label: 'Nombre', type: 'text' },
-                { key: 'musculo', label: 'Músculo', type: 'text' },
-                { key: 'equipamiento', label: 'Equipamiento', type: 'text' },
-                { key: 'descripcion', label: 'Descripción', type: 'text' }
-            ],
-            actions: {
-                edit: (id) => this.editExercise(id),
-                delete: (id) => this.deleteExercise(id)
-            }
-        });
-
-        this.tableManager.render(this.filteredExercises);
-    },
-
-    initModal() {
-        // Verificar que ModalManager esté disponible
-        if (typeof ModalManager === 'undefined') {
-            console.error('ModalManager no está disponible');
-            setTimeout(() => this.initModal(), 100);
-            return;
-        }
-
-        this.modalManager = new ModalManager('exercise-modal');
-        
-        // Configurar formulario
-        const form = document.getElementById('exercise-form');
-        if (form) {
-            form.addEventListener('submit', (e) => this.saveExercise(e));
-        }
-        
-        const cancelForm = document.getElementById('cancel-form');
-        if (cancelForm) {
-            cancelForm.addEventListener('click', () => {
-                this.modalManager.hide();
-            });
-        }
-    },
+        this.loadExercises();
+    }
 
     initEventListeners() {
-        // Botón agregar ejercicio
-        const addExerciseBtn = document.getElementById('add-exercise-btn');
-        if (addExerciseBtn) {
-            addExerciseBtn.addEventListener('click', () => {
-                this.openModal();
-            });
-        }
-
-        // Filtros
-        this.initFilters();
-        
-        // Inicializar custom selects - AGREGAR ESTA LÍNEA
-        this.initCustomSelects();
-    },
-
-    initFilters() {
+        // Botones de filtros
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
-            searchInput.addEventListener('input', Helpers.debounce(() => {
-                this.filterExercises();
-            }, 300));
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => {
+                    this.filterExercises();
+                }, 300);
+            });
         }
 
         const resetButton = document.getElementById('reset-filters');
@@ -239,11 +34,52 @@ const ejerciciosPage = {
                 this.resetFilters();
             });
         }
-    },
+
+        // Modal de eliminación
+        const cancelDelete = document.getElementById('cancel-delete');
+        const confirmDelete = document.getElementById('confirm-delete');
+        
+        if (cancelDelete) {
+            cancelDelete.addEventListener('click', () => this.hideDeleteModal());
+        }
+        
+        if (confirmDelete) {
+            confirmDelete.addEventListener('click', () => this.deleteExercise());
+        }
+
+        // Modal de edición
+        const closeEditModal = document.getElementById('close-edit-modal');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        
+        if (closeEditModal) {
+            closeEditModal.addEventListener('click', () => this.hideEditModal());
+        }
+        
+        if (cancelEditBtn) {
+            cancelEditBtn.addEventListener('click', () => this.hideEditModal());
+        }
+
+        // Formulario de edición
+        const editForm = document.getElementById('edit-exercise-form');
+        if (editForm) {
+            editForm.addEventListener('submit', (e) => this.saveExercise(e));
+        }
+
+        // Cerrar modales al hacer click fuera
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // Inicializar selects personalizados
+        this.initCustomSelects();
+    }
 
     initCustomSelects() {
-        console.log('Initializing custom selects...');
-        
         const customSelects = document.querySelectorAll('.custom-select');
         
         customSelects.forEach(select => {
@@ -252,71 +88,42 @@ const ejerciciosPage = {
             const selectedValue = select.querySelector('.selected-value');
             const optionsList = select.querySelectorAll('.select-option');
             
-            if (!trigger || !options || !selectedValue) {
-                console.warn('Missing elements in custom select:', select);
-                return;
-            }
+            if (!trigger || !options || !selectedValue || optionsList.length === 0) return;
             
-            // Remover event listeners existentes para evitar duplicados
-            const newTrigger = trigger.cloneNode(true);
-            trigger.parentNode.replaceChild(newTrigger, trigger);
-            
-            const newOptions = options.cloneNode(true);
-            options.parentNode.replaceChild(newOptions, options);
-            
-            // Actualizar referencias
-            const currentTrigger = select.querySelector('.select-trigger');
-            const currentOptions = select.querySelector('.select-options');
-            const currentSelectedValue = select.querySelector('.selected-value');
-            const currentOptionsList = select.querySelectorAll('.select-option');
-            
-            currentTrigger.addEventListener('click', function(e) {
+            trigger.addEventListener('click', function(e) {
                 e.stopPropagation();
-                e.preventDefault();
                 
-                // Cerrar otros selects abiertos
                 document.querySelectorAll('.select-options.active').forEach(opt => {
-                    if (opt !== currentOptions) {
+                    if (opt !== options) {
                         opt.classList.remove('active');
                     }
                 });
-                document.querySelectorAll('.select-trigger.active').forEach(trig => {
-                    if (trig !== currentTrigger) {
-                        trig.classList.remove('active');
-                    }
-                });
                 
-                // Toggle current select
-                currentTrigger.classList.toggle('active');
-                currentOptions.classList.toggle('active');
+                options.classList.toggle('active');
+                trigger.classList.toggle('active');
             });
             
-            // Agregar event listeners a las opciones
-            currentOptionsList.forEach(option => {
+            optionsList.forEach(option => {
                 option.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    e.preventDefault();
-                    
                     const value = this.getAttribute('data-value');
                     const text = this.querySelector('span').textContent;
                     const icon = this.querySelector('i').cloneNode(true);
                     
-                    currentSelectedValue.innerHTML = '';
-                    currentSelectedValue.appendChild(icon);
-                    currentSelectedValue.innerHTML += `<span>${text}</span>`;
+                    selectedValue.innerHTML = '';
+                    selectedValue.appendChild(icon);
+                    selectedValue.innerHTML += `<span>${text}</span>`;
                     
-                    currentTrigger.classList.remove('active');
-                    currentOptions.classList.remove('active');
+                    trigger.classList.remove('active');
+                    options.classList.remove('active');
                     
-                    // Aplicar filtro después de seleccionar
                     setTimeout(() => {
-                        ejerciciosPage.filterExercises();
+                        window.ejerciciosPage.filterExercises();
                     }, 100);
                 });
             });
         });
         
-        // Cerrar dropdowns al hacer click fuera
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.custom-select')) {
                 document.querySelectorAll('.select-options.active').forEach(options => {
@@ -327,160 +134,200 @@ const ejerciciosPage = {
                 });
             }
         });
-    },
+    }
+
+    async loadExercises() {
+        try {
+            console.log('Cargando ejercicios desde el backend...');
+            
+            // TODO: Conectar con API real
+            // const response = await fetch('/entrenador/api/ejercicios/');
+            // this.exercises = await response.json();
+            
+            // Datos de ejemplo temporalmente
+            this.exercises = [
+                {
+                    id: 1,
+                    name: "Sentadilla con barra",
+                    muscle_group: "piernas",
+                    description: "Ejercicio compuesto para desarrollar fuerza en piernas y glúteos."
+                },
+                {
+                    id: 2,
+                    name: "Press de banca",
+                    muscle_group: "pectorales",
+                    description: "Ejercicio fundamental para desarrollar el pecho y tríceps."
+                }
+            ];
+            
+            this.filteredExercises = [...this.exercises];
+            this.renderTable();
+            
+        } catch (error) {
+            console.error('Error cargando ejercicios:', error);
+            this.showError('Error al cargar los ejercicios');
+        }
+    }
+
+    renderTable() {
+        const tbody = document.getElementById('exercises-table-body');
+        if (!tbody) return;
+
+        if (this.filteredExercises.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align:center; padding: 30px; color: var(--text-secondary);">
+                        No se encontraron ejercicios
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = this.filteredExercises.map(exercise => `
+            <tr>
+                <td>${exercise.name}</td>
+                <td>
+                    <span class="muscle-group-badge muscle-${exercise.muscle_group}">
+                        ${this.formatMuscleGroup(exercise.muscle_group)}
+                    </span>
+                </td>
+                <td class="exercise-description">${exercise.description}</td>
+                <td>
+                    <div class="actions-cell">
+                        <button class="action-btn edit-btn" onclick="ejerciciosPage.editExercise(${exercise.id})" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="ejerciciosPage.showDeleteModal(${exercise.id})" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    formatMuscleGroup(muscleGroup) {
+        const groups = {
+            'pectorales': 'Pectorales',
+            'espalda': 'Espalda',
+            'hombros': 'Hombros',
+            'biceps': 'Bíceps',
+            'triceps': 'Tríceps',
+            'piernas': 'Piernas',
+            'abdominales': 'Abdominales'
+        };
+        return groups[muscleGroup] || muscleGroup;
+    }
 
     filterExercises() {
         const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
-        const muscle = this.getSelectedMuscle();
-
-        console.log('Filtering with:', { searchTerm, muscle });
+        const muscleSelect = document.querySelector('#muscle-group-select .selected-value span');
+        const muscleFilter = muscleSelect?.textContent !== 'Todos los grupos musculares' ? 
+                             muscleSelect?.textContent.toLowerCase() : '';
 
         this.filteredExercises = this.exercises.filter(exercise => {
-            const matchesSearch = exercise.nombre.toLowerCase().includes(searchTerm) ||
-                                 exercise.musculo.toLowerCase().includes(searchTerm) ||
-                                 exercise.descripcion.toLowerCase().includes(searchTerm) ||
-                                 exercise.equipamiento.toLowerCase().includes(searchTerm);
-            const matchesMuscle = !muscle || exercise.musculo === muscle;
+            const matchesSearch = exercise.name.toLowerCase().includes(searchTerm) || 
+                                 exercise.description.toLowerCase().includes(searchTerm);
+            
+            const matchesMuscle = muscleFilter ? 
+                this.formatMuscleGroup(exercise.muscle_group).toLowerCase() === muscleFilter : 
+                true;
             
             return matchesSearch && matchesMuscle;
         });
 
-        console.log('Filtered results:', this.filteredExercises.length);
-
-        if (this.tableManager) {
-            this.tableManager.render(this.filteredExercises);
-        }
-    },
-
-    getSelectedMuscle() {
-        const selected = document.querySelector('#muscle-select .selected-value span');
-        if (!selected) return '';
-        
-        const selectedText = selected.textContent;
-        if (selectedText === 'Todos los músculos') return '';
-        
-        // Convertir texto formateado a key (ej: "Pecho" -> "pecho")
-        return selectedText.toLowerCase();
-    },
+        this.renderTable();
+    }
 
     resetFilters() {
-        // Resetear select de músculo
-        const muscleSelect = document.querySelector('#muscle-select .selected-value');
+        const muscleSelect = document.querySelector('#muscle-group-select .selected-value');
         if (muscleSelect) {
-            muscleSelect.innerHTML = '<i class="fas fa-list"></i><span>Todos los músculos</span>';
+            muscleSelect.innerHTML = '<i class="fas fa-list"></i><span>Todos los grupos musculares</span>';
         }
         
-        // Resetear búsqueda
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
             searchInput.value = '';
         }
         
         this.filteredExercises = [...this.exercises];
-        if (this.tableManager) {
-            this.tableManager.render(this.filteredExercises);
-        }
-    },
-
-    openModal(exerciseId = null) {
-        const isEdit = !!exerciseId;
-        this.modalManager.setTitle(isEdit ? 'Editar Ejercicio' : 'Nuevo Ejercicio');
-        
-        if (isEdit) {
-            this.loadExerciseData(exerciseId);
-        } else {
-            this.modalManager.clearForm();
-            document.getElementById('exercise-id').value = '';
-        }
-        
-        this.modalManager.show();
-    },
-
-    loadExerciseData(id) {
-        const exercise = this.exercises.find(e => e.id == id);
-        if (exercise) {
-            document.getElementById('exercise-id').value = exercise.id;
-            document.getElementById('exercise-name').value = exercise.nombre;
-            document.getElementById('exercise-muscle').value = exercise.musculo;
-            document.getElementById('exercise-equipment').value = exercise.equipamiento;
-            document.getElementById('exercise-description').value = exercise.descripcion;
-            document.getElementById('exercise-image').value = exercise.imagen || '';
-        }
-    },
-
-    saveExercise(e) {
-        e.preventDefault();
-        
-        const exerciseData = {
-            id: document.getElementById('exercise-id').value || Helpers.generateId(),
-            nombre: document.getElementById('exercise-name').value,
-            musculo: document.getElementById('exercise-muscle').value,
-            equipamiento: document.getElementById('exercise-equipment').value,
-            descripcion: document.getElementById('exercise-description').value,
-            imagen: document.getElementById('exercise-image').value || 'https://via.placeholder.com/60?text=Ejercicio'
-        };
-
-        // Validaciones básicas
-        if (!exerciseData.nombre || !exerciseData.musculo || !exerciseData.equipamiento) {
-            alert('Por favor, completa los campos obligatorios (Nombre, Músculo y Equipamiento).');
-            return;
-        }
-
-        const isEdit = !!document.getElementById('exercise-id').value;
-        
-        if (isEdit) {
-            const index = this.exercises.findIndex(e => e.id == exerciseData.id);
-            this.exercises[index] = exerciseData;
-        } else {
-            this.exercises.push(exerciseData);
-        }
-
-        Storage.set('ejercicios', this.exercises);
-        this.filteredExercises = [...this.exercises];
-        this.tableManager.render(this.filteredExercises);
-        this.modalManager.hide();
-        
-        alert(isEdit ? 'Ejercicio actualizado!' : 'Ejercicio creado!');
-    },
+        this.renderTable();
+    }
 
     editExercise(id) {
-        this.openModal(id);
-    },
-
-    deleteExercise(id) {
-        if (confirm('¿Estás seguro de eliminar este ejercicio?')) {
-            this.exercises = this.exercises.filter(e => e.id != id);
-            Storage.set('ejercicios', this.exercises);
-            this.filteredExercises = [...this.exercises];
-            this.tableManager.render(this.filteredExercises);
+        const exercise = this.exercises.find(e => e.id === id);
+        if (exercise) {
+            document.getElementById('edit-exercise-id').value = exercise.id;
+            document.getElementById('edit-exercise-name').value = exercise.name;
+            document.getElementById('edit-muscle-group').value = exercise.muscle_group;
+            document.getElementById('edit-exercise-description').value = exercise.description;
+            
+            this.showEditModal();
         }
     }
-};
 
-// Inicialización automática cuando el script se carga
-(function() {
-    // Esperar a que el DOM esté listo
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeEjerciciosPage();
-        });
-    } else {
-        initializeEjerciciosPage();
+    showEditModal() {
+        const modal = document.getElementById('edit-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
     }
 
-    function initializeEjerciciosPage() {
-        // Si app.js ya inicializó la página, no hacer nada
-        if (window.ejerciciosPage && window.ejerciciosPage.initialized) return;
-        
-        // Si no, inicializar después de un delay para que los componentes se carguen
-        setTimeout(() => {
-            if (window.ejerciciosPage) {
-                console.log('Auto-initializing ejercicios page');
-                window.ejerciciosPage.initialize();
-            }
-        }, 500);
+    hideEditModal() {
+        const modal = document.getElementById('edit-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
     }
-})();
 
-// Hacer disponible globalmente
-window.ejerciciosPage = ejerciciosPage;
+    showDeleteModal(id) {
+        this.currentExerciseId = id;
+        const modal = document.getElementById('delete-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    hideDeleteModal() {
+        const modal = document.getElementById('delete-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        this.currentExerciseId = null;
+    }
+
+    async saveExercise(e) {
+        e.preventDefault();
+        // TODO: Implementar guardado real
+        console.log('Guardando ejercicio...');
+        this.hideEditModal();
+        this.showSuccess('Ejercicio guardado correctamente');
+    }
+
+    async deleteExercise() {
+        if (this.currentExerciseId) {
+            // TODO: Implementar eliminación real
+            console.log('Eliminando ejercicio:', this.currentExerciseId);
+            this.hideDeleteModal();
+            this.showSuccess('Ejercicio eliminado correctamente');
+            await this.loadExercises();
+        }
+    }
+
+    showError(message) {
+        console.error('Error:', message);
+        alert('Error: ' + message);
+    }
+
+    showSuccess(message) {
+        console.log('Éxito:', message);
+        alert('Éxito: ' + message);
+    }
+}
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    window.ejerciciosPage = new EjerciciosPage();
+    window.ejerciciosPage.initialize();
+});

@@ -1,150 +1,33 @@
-// PÁGINA DE RUTINAS
-const rutinasPage = {
-    tableManager: null,
-    modalManager: null,
-    routines: [],
-    filteredRoutines: [],
-    routineToDelete: null,
-    initialized: false,
+// entidades/static/entrenador/js/pages/rutinas.js
+class RutinasPage {
+    constructor() {
+        this.initialized = false;
+        this.routines = [];
+        this.filteredRoutines = [];
+        this.clients = [];
+    }
 
     initialize() {
-        if (this.initialized) {
-            console.log('Rutinas page already initialized');
-            return;
-        }
+        if (this.initialized) return;
         
         this.initialized = true;
-        this.loadData();
-        this.initTable();
-        this.initModals();
-        this.initEventListeners();
-        console.log('Rutinas page initialized');
-    },
-
-    loadData() {
-        // Cargar rutinas usando el Storage unificado
-        let storedRoutines = Storage.get('rutinas');
+        console.log('Inicializando página de rutinas');
         
-        if (!storedRoutines) {
-            // Datos iniciales de ejemplo
-            this.routines = [
-                {
-                    id: 1,
-                    nombre: "Rutina Principiante Full Body",
-                    descripcion: "Rutina completa para quienes comienzan en el gimnasio",
-                    nivel: "beginner",
-                    duracion: "45-60 min",
-                    diasSemana: 3,
-                    ejercicios: 8,
-                    duracionSemanas: 4,
-                    objetivo: ["perdida_grasa", "ganancia_muscular", "mantenimiento"],
-                    tipo: "template",
-                    dias: [
-                        {
-                            dia: 1,
-                            nombre: "Día 1 - Full Body",
-                            ejercicios: [
-                                { ejercicioId: 1, series: 3, repeticiones: "10-12", descanso: "60s", notas: "Mantener forma correcta" }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    nombre: "Rutina Fuerza Avanzada",
-                    descripcion: "Enfocada en ganancia de fuerza con ejercicios compuestos",
-                    nivel: "advanced",
-                    duracion: "75-90 min",
-                    diasSemana: 4,
-                    ejercicios: 12,
-                    duracionSemanas: 6,
-                    objetivo: ["ganancia_muscular", "mejora_rendimiento"],
-                    tipo: "template",
-                    dias: [
-                        {
-                            dia: 1,
-                            nombre: "Día 1 - Pecho y Espalda",
-                            ejercicios: [
-                                { ejercicioId: 2, series: 4, repeticiones: "6-8", descanso: "90s", notas: "Peso progresivo" }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    id: 3,
-                    nombre: "Rutina Pérdida de Grasa",
-                    descripcion: "Enfocada en quema de grasa con circuitos",
-                    nivel: "intermediate",
-                    duracion: "50-65 min",
-                    diasSemana: 5,
-                    ejercicios: 15,
-                    duracionSemanas: 8,
-                    objetivo: ["perdida_grasa"],
-                    tipo: "assigned",
-                    clienteId: 1,
-                    dias: []
-                }
-            ];
-            // Guardar datos iniciales usando Storage
-            Storage.set('rutinas', this.routines);
-        } else {
-            this.routines = storedRoutines;
-        }
-
-        this.filteredRoutines = [...this.routines];
-        console.log('Routines loaded:', this.routines);
-    },
-
-    initTable() {
-        if (typeof TableManager === 'undefined') {
-            console.error('TableManager no está disponible');
-            setTimeout(() => this.initTable(), 100);
-            return;
-        }
-
-        this.tableManager = new TableManager({
-            tableId: 'routines-table',
-            columns: [
-                { key: 'nombre', label: 'Nombre', type: 'text' },
-                { key: 'descripcion', label: 'Descripción', type: 'text' },
-                { key: 'diasSemana', label: 'Días/Semana', type: 'text' },
-                { key: 'duracion', label: 'Duración', type: 'text' },
-                { key: 'nivel', label: 'Nivel', type: 'text' },
-                { key: 'ejercicios', label: 'Ejercicios', type: 'text' }
-            ],
-            actions: {
-                edit: (id) => this.editRoutine(id),
-                delete: (id) => this.confirmDeleteRoutine(id)
-            }
-        });
-
-        this.tableManager.render(this.filteredRoutines);
-    },
-
-    initModals() {
-        if (typeof ModalManager === 'undefined') {
-            console.error('ModalManager no está disponible');
-            setTimeout(() => this.initModals(), 100);
-            return;
-        }
-
-        this.modalManager = new ModalManager('delete-modal');
-    },
+        this.initEventListeners();
+        this.loadClients();
+        this.loadRoutines();
+    }
 
     initEventListeners() {
         // Filtros
-        this.initFilters();
-
-        // Eventos de modal de eliminación
-        this.initModalEvents();
-    },
-
-    initFilters() {
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
-            searchInput.addEventListener('input', Helpers.debounce(() => {
-                this.filterRoutines();
-            }, 300));
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => {
+                    this.filterRoutines();
+                }, 300);
+            });
         }
 
         const resetButton = document.getElementById('reset-filters');
@@ -154,8 +37,36 @@ const rutinasPage = {
             });
         }
 
+        // Modal de eliminación
+        const cancelDelete = document.getElementById('cancel-delete');
+        const confirmDelete = document.getElementById('confirm-delete');
+        
+        if (cancelDelete) {
+            cancelDelete.addEventListener('click', () => this.hideDeleteModal());
+        }
+        
+        if (confirmDelete) {
+            confirmDelete.addEventListener('click', () => this.deleteRoutine());
+        }
+
+        // Modal de visualización
+        const closeViewModal = document.getElementById('close-view-modal');
+        if (closeViewModal) {
+            closeViewModal.addEventListener('click', () => this.hideViewModal());
+        }
+
+        // Cerrar modales al hacer click fuera
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
         this.initCustomSelects();
-    },
+    }
 
     initCustomSelects() {
         const customSelects = document.querySelectorAll('.custom-select');
@@ -174,14 +85,11 @@ const rutinasPage = {
                 document.querySelectorAll('.select-options.active').forEach(opt => {
                     if (opt !== options) {
                         opt.classList.remove('active');
-                        if (opt.previousElementSibling) {
-                            opt.previousElementSibling.classList.remove('active');
-                        }
                     }
                 });
                 
-                trigger.classList.toggle('active');
                 options.classList.toggle('active');
+                trigger.classList.toggle('active');
             });
             
             optionsList.forEach(option => {
@@ -199,7 +107,7 @@ const rutinasPage = {
                     options.classList.remove('active');
                     
                     setTimeout(() => {
-                        rutinasPage.filterRoutines();
+                        window.rutinasPage.filterRoutines();
                     }, 100);
                 });
             });
@@ -215,57 +123,155 @@ const rutinasPage = {
                 });
             }
         });
-    },
+    }
 
-    initModalEvents() {
-        const closeModal = document.getElementById('close-delete-modal');
-        const cancelDelete = document.getElementById('cancel-delete');
-        const confirmDelete = document.getElementById('confirm-delete');
-        
-        if (closeModal) closeModal.addEventListener('click', () => this.closeDeleteModal());
-        if (cancelDelete) cancelDelete.addEventListener('click', () => this.closeDeleteModal());
-        if (confirmDelete) confirmDelete.addEventListener('click', () => this.deleteRoutine());
-    },
+    async loadClients() {
+        try {
+            // Cargar clientes desde la API
+            const response = await fetch('/entrenador/api/clientes/');
+            if (response.ok) {
+                const data = await response.json();
+                this.clients = data.results || data;
+                this.populateClientSelect();
+            }
+        } catch (error) {
+            console.error('Error cargando clientes:', error);
+        }
+    }
+
+    populateClientSelect() {
+        const clientSelect = document.getElementById('client-select');
+        if (!clientSelect) return;
+
+        const optionsContainer = clientSelect.querySelector('.select-options');
+        // Limpiar opciones existentes (excepto la primera)
+        const firstOption = optionsContainer.querySelector('.select-option:first-child');
+        optionsContainer.innerHTML = '';
+        optionsContainer.appendChild(firstOption);
+
+        // Agregar opciones de clientes
+        this.clients.forEach(client => {
+            const option = document.createElement('div');
+            option.className = 'select-option';
+            option.setAttribute('data-value', client.id);
+            option.innerHTML = `
+                <i class="fas fa-user"></i>
+                <span>${client.name} ${client.last_name}</span>
+            `;
+            optionsContainer.appendChild(option);
+        });
+
+        // Re-inicializar eventos del select
+        this.initCustomSelects();
+    }
+
+    async loadRoutines() {
+        try {
+            console.log('Cargando rutinas desde el backend...');
+            
+            // TODO: Conectar con API real
+            // const response = await fetch('/entrenador/api/rutinas/');
+            // this.routines = await response.json();
+            
+            // Datos de ejemplo temporalmente
+            this.routines = [
+                {
+                    id: 1,
+                    name: "Rutina fuerza inicial",
+                    description: "Rutina para principiantes enfocada en fuerza general",
+                    client: { id: 1, name: "Juan", last_name: "Pérez" },
+                    duration: "8 ejercicios",
+                    days: "3 días/semana",
+                    creation_date: "15/05/2023",
+                    teacher: "Profesor A"
+                },
+                {
+                    id: 2,
+                    name: "Rutina volumen",
+                    description: "Rutina para ganancia muscular con enfoque en hipertrofia",
+                    client: { id: 2, name: "María", last_name: "García" },
+                    duration: "10 ejercicios",
+                    days: "4 días/semana",
+                    creation_date: "22/06/2023",
+                    teacher: "Profesor B"
+                }
+            ];
+            
+            this.filteredRoutines = [...this.routines];
+            this.renderTable();
+            
+        } catch (error) {
+            console.error('Error cargando rutinas:', error);
+            this.showError('Error al cargar las rutinas');
+        }
+    }
+
+    renderTable() {
+        const tbody = document.getElementById('routines-table-body');
+        if (!tbody) return;
+
+        if (this.filteredRoutines.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align:center; padding: 30px; color: var(--text-secondary);">
+                        No se encontraron rutinas
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = this.filteredRoutines.map(routine => `
+            <tr>
+                <td>${routine.name}</td>
+                <td>${routine.description}</td>
+                <td>${routine.client.name} ${routine.client.last_name}</td>
+                <td>${routine.duration}</td>
+                <td>${routine.days}</td>
+                <td>${routine.creation_date}</td>
+                <td>${routine.teacher}</td>
+                <td>
+                    <div class="actions-cell">
+                        <button class="action-btn view-btn" onclick="rutinasPage.viewRoutine(${routine.id})" title="Ver">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn edit-btn" onclick="rutinasPage.editRoutine(${routine.id})" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="rutinasPage.showDeleteModal(${routine.id})" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
 
     filterRoutines() {
         const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
-        const typeSelect = document.querySelector('#type-select .selected-value span');
-        const levelSelect = document.querySelector('#level-select .selected-value span');
-        
-        const typeFilter = typeSelect.textContent !== 'Todos los tipos' ? 
-                          typeSelect.textContent === 'Plantilla' ? 'template' : 'assigned' : '';
-        const levelFilter = levelSelect.textContent !== 'Todos los niveles' ? 
-                           this.getLevelKey(levelSelect.textContent) : '';
+        const clientSelect = document.querySelector('#client-select .selected-value span');
+        const clientFilter = clientSelect?.textContent !== 'Todos los clientes' ? 
+                             clientSelect?.getAttribute('data-value') : '';
 
         this.filteredRoutines = this.routines.filter(routine => {
-            const matchesSearch = routine.nombre.toLowerCase().includes(searchTerm) || 
-                                 routine.descripcion.toLowerCase().includes(searchTerm);
-            const matchesType = typeFilter ? routine.tipo === typeFilter : true;
-            const matchesLevel = levelFilter ? routine.nivel === levelFilter : true;
+            const matchesSearch = routine.name.toLowerCase().includes(searchTerm) || 
+                                 routine.description.toLowerCase().includes(searchTerm);
             
-            return matchesSearch && matchesType && matchesLevel;
+            const matchesClient = clientFilter ? 
+                routine.client.id == clientFilter : 
+                true;
+            
+            return matchesSearch && matchesClient;
         });
 
-        if (this.tableManager) {
-            this.tableManager.render(this.filteredRoutines);
-        }
-    },
-
-    getLevelKey(levelText) {
-        const levels = {
-            'Principiante': 'beginner',
-            'Intermedio': 'intermediate',
-            'Avanzado': 'advanced'
-        };
-        return levels[levelText] || '';
-    },
+        this.renderTable();
+    }
 
     resetFilters() {
-        const typeSelect = document.querySelector('#type-select .selected-value');
-        const levelSelect = document.querySelector('#level-select .selected-value');
-        
-        typeSelect.innerHTML = '<i class="fas fa-list"></i><span>Todos los tipos</span>';
-        levelSelect.innerHTML = '<i class="fas fa-list"></i><span>Todos los niveles</span>';
+        const clientSelect = document.querySelector('#client-select .selected-value');
+        if (clientSelect) {
+            clientSelect.innerHTML = '<i class="fas fa-list"></i><span>Todos los clientes</span>';
+        }
         
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
@@ -273,103 +279,80 @@ const rutinasPage = {
         }
         
         this.filteredRoutines = [...this.routines];
-        if (this.tableManager) {
-            this.tableManager.render(this.filteredRoutines);
+        this.renderTable();
+    }
+
+    viewRoutine(id) {
+        const routine = this.routines.find(r => r.id === id);
+        if (routine) {
+            document.getElementById('view-modal-title').textContent = routine.name;
+            document.getElementById('view-client-name').textContent = `${routine.client.name} ${routine.client.last_name}`;
+            document.getElementById('view-description').textContent = routine.description;
+            document.getElementById('view-creation-date').textContent = routine.creation_date;
+            
+            // TODO: Cargar ejercicios de la rutina desde la API
+            this.showViewModal();
         }
-    },
+    }
+
+    showViewModal() {
+        const modal = document.getElementById('view-routine-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    hideViewModal() {
+        const modal = document.getElementById('view-routine-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
 
     editRoutine(id) {
-        // Redirigir a la página de edición de rutina
-        window.location.href = `nueva-rutina.html?id=${id}`;
-    },
-
-    confirmDeleteRoutine(id) {
-        const routine = this.routines.find(r => r.id == id);
-        if (!routine) return;
-
-        // Verificar si la rutina está asignada a algún cliente usando Storage
-        const clients = Storage.get('clientes') || [];
-        const isAssigned = clients.some(client => client.rutinaAsignada == id);
-
-        if (isAssigned) {
-            alert('No se puede eliminar esta rutina porque está asignada a uno o más clientes.');
-            return;
-        }
-
-        this.routineToDelete = id;
-        this.modalManager.show();
-    },
-
-    deleteRoutine() {
-        if (!this.routineToDelete) return;
-
-        this.routines = this.routines.filter(r => r.id != this.routineToDelete);
-        Storage.set('rutinas', this.routines);
-        
-        this.closeDeleteModal();
-        this.resetFilters();
-        
-        alert('Rutina eliminada correctamente!');
-    },
-
-    closeDeleteModal() {
-        this.modalManager.hide();
-        this.routineToDelete = null;
+        // TODO: Redirigir a la página de edición o abrir modal de edición
+        console.log('Editando rutina:', id);
     }
-};
 
-// Helper functions extension
-if (typeof Helpers === 'undefined') {
-    const Helpers = {
-        debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        },
-
-        formatLevel(level) {
-            const levels = {
-                'beginner': 'Principiante',
-                'intermediate': 'Intermedio',
-                'advanced': 'Avanzado'
-            };
-            return levels[level] || level;
-        },
-
-        generateId() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    showDeleteModal(id) {
+        this.currentRoutineId = id;
+        const modal = document.getElementById('delete-modal');
+        if (modal) {
+            modal.style.display = 'flex';
         }
-    };
-    window.Helpers = Helpers;
+    }
+
+    hideDeleteModal() {
+        const modal = document.getElementById('delete-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        this.currentRoutineId = null;
+    }
+
+    async deleteRoutine() {
+        if (this.currentRoutineId) {
+            // TODO: Implementar eliminación real
+            console.log('Eliminando rutina:', this.currentRoutineId);
+            this.hideDeleteModal();
+            this.showSuccess('Rutina eliminada correctamente');
+            await this.loadRoutines();
+        }
+    }
+
+    showError(message) {
+        console.error('Error:', message);
+        alert('Error: ' + message);
+    }
+
+    showSuccess(message) {
+        console.log('Éxito:', message);
+        alert('Éxito: ' + message);
+    }
 }
 
-// Inicialización automática cuando el script se carga
-(function() {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeRutinasPage();
-        });
-    } else {
-        initializeRutinasPage();
-    }
-
-    function initializeRutinasPage() {
-        if (window.rutinasPage && window.rutinasPage.initialized) return;
-        
-        setTimeout(() => {
-            if (window.rutinasPage) {
-                console.log('Auto-initializing rutinas page');
-                window.rutinasPage.initialize();
-            }
-        }, 200);
-    }
-})();
-
-// Hacer disponible globalmente
-window.rutinasPage = rutinasPage;
+// Inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    window.rutinasPage = new RutinasPage();
+    window.rutinasPage.initialize();
+});

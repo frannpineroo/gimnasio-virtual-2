@@ -1,19 +1,19 @@
-// entidades/static/entrenador/js/pages/entrenadores.js
-class EntrenadoresPage {
+// entidades/static/entrenador/js/pages/equipos.js
+class EquiposPage {
     constructor() {
         this.initialized = false;
-        this.coaches = [];
-        this.filteredCoaches = [];
+        this.equipment = [];
+        this.filteredEquipment = [];
     }
 
     initialize() {
         if (this.initialized) return;
         
         this.initialized = true;
-        console.log('Inicializando página de entrenadores');
+        console.log('Inicializando página de equipos');
         
         this.initEventListeners();
-        this.loadCoaches();
+        this.loadEquipment();
     }
 
     initEventListeners() {
@@ -23,7 +23,7 @@ class EntrenadoresPage {
             searchInput.addEventListener('input', (e) => {
                 clearTimeout(this.searchTimeout);
                 this.searchTimeout = setTimeout(() => {
-                    this.filterCoaches();
+                    this.filterEquipment();
                 }, 300);
             });
         }
@@ -44,7 +44,7 @@ class EntrenadoresPage {
         }
         
         if (confirmDelete) {
-            confirmDelete.addEventListener('click', () => this.deleteCoach());
+            confirmDelete.addEventListener('click', () => this.deleteEquipment());
         }
 
         // Cerrar modales al hacer click fuera
@@ -99,7 +99,7 @@ class EntrenadoresPage {
                     options.classList.remove('active');
                     
                     setTimeout(() => {
-                        window.entrenadoresPage.filterCoaches();
+                        window.equiposPage.filterEquipment();
                     }, 100);
                 });
             });
@@ -117,61 +117,76 @@ class EntrenadoresPage {
         });
     }
 
-    async loadCoaches() {
+    async loadEquipment() {
         try {
-            console.log('Cargando entrenadores desde el backend...');
+            console.log('Cargando equipos desde el backend...');
             
             // TODO: Conectar con API real
-            // const response = await fetch('/entrenador/api/entrenadores/');
-            // this.coaches = await response.json();
+            // const response = await fetch('/entrenador/api/equipos/');
+            // this.equipment = await response.json();
             
             // Datos de ejemplo temporalmente
-            this.coaches = [
+            this.equipment = [
                 {
                     id: 1,
-                    name: "Carlos",
-                    last_name: "Rodríguez",
-                    dni: "12345678A",
-                    email: "carlos@entrenador.com",
-                    phone: "+34 600 111 222",
-                    specialty: "Fuerza y acondicionamiento",
-                    status: "activo"
+                    name: "Cinta de Correr Pro",
+                    description: "Cinta de correr profesional con inclinación automática y programas predefinidos",
+                    category: "cardio",
+                    model: "TRX-5000",
+                    status: "disponible",
+                    condition: "excelente"
                 },
                 {
                     id: 2,
-                    name: "Ana",
-                    last_name: "Martínez",
-                    dni: "87654321B",
-                    email: "ana@entrenador.com",
-                    phone: "+34 600 333 444",
-                    specialty: "Rehabilitación deportiva",
-                    status: "activo"
+                    name: "Press de Banca",
+                    description: "Banco de press plano con soporte para barra y pesas",
+                    category: "peso_libre",
+                    model: "PB-200",
+                    status: "disponible",
+                    condition: "bueno"
                 },
                 {
                     id: 3,
-                    name: "David",
-                    last_name: "López",
-                    dni: "56781234C",
-                    email: "david@entrenador.com",
-                    phone: "+34 600 555 666",
-                    specialty: "Nutrición deportiva",
-                    status: "inactivo"
+                    name: "Máquina de Poleas",
+                    description: "Máquina multipoleas para entrenamiento de espalda y brazos",
+                    category: "maquinas",
+                    model: "MP-360",
+                    status: "mantenimiento",
+                    condition: "regular"
+                },
+                {
+                    id: 4,
+                    name: "Bicicleta Estática",
+                    description: "Bicicleta estática con monitor de ritmo cardíaco y resistencia ajustable",
+                    category: "cardio",
+                    model: "BE-800",
+                    status: "reparacion",
+                    condition: "malo"
+                },
+                {
+                    id: 5,
+                    name: "Kit Mancuernas",
+                    description: "Set de mancuernas ajustables de 5-25kg",
+                    category: "accesorios",
+                    model: "KM-25",
+                    status: "disponible",
+                    condition: "excelente"
                 }
             ];
             
-            this.filteredCoaches = [...this.coaches];
+            this.filteredEquipment = [...this.equipment];
             this.renderTable();
             
         } catch (error) {
-            console.error('Error cargando entrenadores:', error);
-            this.showError('Error al cargar los entrenadores');
+            console.error('Error cargando equipos:', error);
+            this.showError('Error al cargar los equipos');
             
-            const tbody = document.getElementById('coaches-table-body');
+            const tbody = document.getElementById('equipment-table-body');
             if (tbody) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="8" style="text-align:center; padding: 30px; color: #dc3545;">
-                            <i class="fas fa-exclamation-triangle"></i> Error al cargar entrenadores
+                        <td colspan="7" style="text-align:center; padding: 30px; color: #dc3545;">
+                            <i class="fas fa-exclamation-triangle"></i> Error al cargar equipos
                         </td>
                     </tr>
                 `;
@@ -180,39 +195,46 @@ class EntrenadoresPage {
     }
 
     renderTable() {
-        const tbody = document.getElementById('coaches-table-body');
+        const tbody = document.getElementById('equipment-table-body');
         if (!tbody) return;
 
-        if (this.filteredCoaches.length === 0) {
+        if (this.filteredEquipment.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="8" style="text-align:center; padding: 30px; color: var(--text-secondary);">
-                        No se encontraron entrenadores
+                    <td colspan="7" style="text-align:center; padding: 30px; color: var(--text-secondary);">
+                        No se encontraron equipos
                     </td>
                 </tr>
             `;
             return;
         }
 
-        tbody.innerHTML = this.filteredCoaches.map(coach => `
+        tbody.innerHTML = this.filteredEquipment.map(equipment => `
             <tr>
-                <td>${coach.name}</td>
-                <td>${coach.last_name}</td>
-                <td>${coach.dni}</td>
-                <td>${coach.email}</td>
-                <td>${coach.phone}</td>
-                <td>${coach.specialty}</td>
+                <td>${equipment.name}</td>
+                <td class="equipment-description">${equipment.description}</td>
                 <td>
-                    <span class="status-badge ${coach.status === 'activo' ? 'status-active' : 'status-inactive'}">
-                        ${coach.status === 'activo' ? 'Activo' : 'Inactivo'}
+                    <span class="category-badge category-${equipment.category}">
+                        ${this.formatCategory(equipment.category)}
+                    </span>
+                </td>
+                <td>${equipment.model}</td>
+                <td>
+                    <span class="status-badge status-${equipment.status}">
+                        ${this.formatStatus(equipment.status)}
+                    </span>
+                </td>
+                <td>
+                    <span class="condition-badge condition-${equipment.condition}">
+                        ${this.formatCondition(equipment.condition)}
                     </span>
                 </td>
                 <td>
                     <div class="actions-cell">
-                        <button class="action-btn edit-btn" onclick="entrenadoresPage.editCoach(${coach.id})" title="Editar">
+                        <button class="action-btn edit-btn" onclick="equiposPage.editEquipment(${equipment.id})" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="action-btn delete-btn" onclick="entrenadoresPage.showDeleteModal(${coach.id})" title="Eliminar">
+                        <button class="action-btn delete-btn" onclick="equiposPage.showDeleteModal(${equipment.id})" title="Eliminar">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -221,33 +243,73 @@ class EntrenadoresPage {
         `).join('');
     }
 
-    filterCoaches() {
-        const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
-        const statusSelect = document.querySelector('#status-select .selected-value span');
-        const statusFilter = statusSelect?.textContent !== 'Todos los estados' ? 
-                             statusSelect?.textContent.toLowerCase() : '';
+    formatCategory(category) {
+        const categories = {
+            'cardio': 'Cardio',
+            'fuerza': 'Fuerza',
+            'peso_libre': 'Peso Libre',
+            'maquinas': 'Máquinas',
+            'accesorios': 'Accesorios'
+        };
+        return categories[category] || category;
+    }
 
-        this.filteredCoaches = this.coaches.filter(coach => {
-            const fullName = `${coach.name || ''} ${coach.last_name || ''}`.toLowerCase();
+    formatStatus(status) {
+        const statuses = {
+            'disponible': 'Disponible',
+            'mantenimiento': 'Mantenimiento',
+            'reparacion': 'Reparación',
+            'baja': 'De Baja'
+        };
+        return statuses[status] || status;
+    }
+
+    formatCondition(condition) {
+        const conditions = {
+            'excelente': 'Excelente',
+            'bueno': 'Bueno',
+            'regular': 'Regular',
+            'malo': 'Malo'
+        };
+        return conditions[condition] || condition;
+    }
+
+    filterEquipment() {
+        const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
+        const categorySelect = document.querySelector('#category-select .selected-value span');
+        const statusSelect = document.querySelector('#status-select .selected-value span');
+        
+        const categoryFilter = categorySelect?.textContent !== 'Todas las categorías' ? 
+                              categorySelect?.getAttribute('data-value') : '';
+        const statusFilter = statusSelect?.textContent !== 'Todos los estados' ? 
+                            statusSelect?.getAttribute('data-value') : '';
+
+        this.filteredEquipment = this.equipment.filter(equipment => {
             const matchesSearch = 
-                fullName.includes(searchTerm) || 
-                (coach.dni && coach.dni.toLowerCase().includes(searchTerm)) ||
-                (coach.email && coach.email.toLowerCase().includes(searchTerm)) ||
-                (coach.phone && coach.phone.toLowerCase().includes(searchTerm)) ||
-                (coach.specialty && coach.specialty.toLowerCase().includes(searchTerm));
+                equipment.name.toLowerCase().includes(searchTerm) || 
+                equipment.description.toLowerCase().includes(searchTerm) ||
+                equipment.model.toLowerCase().includes(searchTerm);
+            
+            const matchesCategory = categoryFilter ? 
+                equipment.category === categoryFilter : true;
             
             const matchesStatus = statusFilter ? 
-                (statusFilter === 'activo' ? coach.status === 'activo' : coach.status === 'inactivo') : 
-                true;
+                equipment.status === statusFilter : true;
             
-            return matchesSearch && matchesStatus;
+            return matchesSearch && matchesCategory && matchesStatus;
         });
 
         this.renderTable();
     }
 
     resetFilters() {
+        const categorySelect = document.querySelector('#category-select .selected-value');
         const statusSelect = document.querySelector('#status-select .selected-value');
+        
+        if (categorySelect) {
+            categorySelect.innerHTML = '<i class="fas fa-list"></i><span>Todas las categorías</span>';
+        }
+        
         if (statusSelect) {
             statusSelect.innerHTML = '<i class="fas fa-list"></i><span>Todos los estados</span>';
         }
@@ -257,18 +319,18 @@ class EntrenadoresPage {
             searchInput.value = '';
         }
         
-        this.filteredCoaches = [...this.coaches];
+        this.filteredEquipment = [...this.equipment];
         this.renderTable();
     }
 
-    editCoach(id) {
+    editEquipment(id) {
         // TODO: Redirigir a la página de edición o abrir modal de edición
-        console.log('Editando entrenador:', id);
-        // window.location.href = `/entrenador/entrenadores/editar/${id}/`;
+        console.log('Editando equipo:', id);
+        // window.location.href = `/entrenador/equipos/editar/${id}/`;
     }
 
     showDeleteModal(id) {
-        this.currentCoachId = id;
+        this.currentEquipmentId = id;
         const modal = document.getElementById('delete-modal');
         if (modal) {
             modal.style.display = 'flex';
@@ -280,18 +342,18 @@ class EntrenadoresPage {
         if (modal) {
             modal.style.display = 'none';
         }
-        this.currentCoachId = null;
+        this.currentEquipmentId = null;
     }
 
-    async deleteCoach() {
-        if (this.currentCoachId) {
-            const coach = this.coaches.find(c => c.id === this.currentCoachId);
-            if (!coach) return;
+    async deleteEquipment() {
+        if (this.currentEquipmentId) {
+            const equipment = this.equipment.find(e => e.id === this.currentEquipmentId);
+            if (!equipment) return;
 
-            if (confirm(`¿Estás seguro de que deseas eliminar al entrenador ${coach.name} ${coach.last_name}? Esta acción no se puede deshacer.`)) {
+            if (confirm(`¿Estás seguro de que deseas eliminar el equipo "${equipment.name}"? Esta acción no se puede deshacer.`)) {
                 try {
                     // TODO: Implementar eliminación real
-                    // await fetch(`/entrenador/api/entrenadores/${this.currentCoachId}/`, {
+                    // await fetch(`/entrenador/api/equipos/${this.currentEquipmentId}/`, {
                     //     method: 'DELETE',
                     //     headers: {
                     //         'X-CSRFToken': this.getCSRFToken(),
@@ -299,14 +361,14 @@ class EntrenadoresPage {
                     //     }
                     // });
                     
-                    console.log('Eliminando entrenador:', this.currentCoachId);
+                    console.log('Eliminando equipo:', this.currentEquipmentId);
                     this.hideDeleteModal();
-                    this.showSuccess('Entrenador eliminado correctamente');
-                    await this.loadCoaches();
+                    this.showSuccess('Equipo eliminado correctamente');
+                    await this.loadEquipment();
                     
                 } catch (error) {
-                    console.error('Error eliminando entrenador:', error);
-                    this.showError('Error al eliminar el entrenador: ' + error.message);
+                    console.error('Error eliminando equipo:', error);
+                    this.showError('Error al eliminar el equipo: ' + error.message);
                 }
             }
         }
@@ -333,6 +395,6 @@ class EntrenadoresPage {
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
-    window.entrenadoresPage = new EntrenadoresPage();
-    window.entrenadoresPage.initialize();
+    window.equiposPage = new EquiposPage();
+    window.equiposPage.initialize();
 });

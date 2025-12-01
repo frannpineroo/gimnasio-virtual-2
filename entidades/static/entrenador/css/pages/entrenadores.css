@@ -1,0 +1,54 @@
+/* entidades/static/entrenador/css/pages/entrenadores.css */
+.coaches-section {
+    padding: var(--spacing-lg);
+    min-height: 100vh;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--card-border);
+}
+
+.section-title {
+    font-size: var(--font-size-title);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Ajustes específicos para la tabla de entrenadores */
+#coaches-table {
+    width: 100%;
+}
+
+#coaches-table th:nth-child(1) { width: 12%; } /* Nombre */
+#coaches-table th:nth-child(2) { width: 12%; } /* Apellido */
+#coaches-table th:nth-child(3) { width: 10%; } /* DNI */
+#coaches-table th:nth-child(4) { width: 18%; } /* Email */
+#coaches-table th:nth-child(5) { width: 12%; } /* Teléfono */
+#coaches-table th:nth-child(6) { width: 16%; } /* Especialidad */
+#coaches-table th:nth-child(7) { width: 10%; } /* Estado */
+#coaches-table th:nth-child(8) { width: 10%; } /* Acciones */
+
+/* Responsive */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: stretch;
+    }
+
+    /* Ocultar algunas columnas en móviles */
+    #coaches-table th:nth-child(4),
+    #coaches-table td:nth-child(4),
+    #coaches-table th:nth-child(5),
+    #coaches-table td:nth-child(5),
+    #coaches-table th:nth-child(6),
+    #coaches-table td:nth-child(6) {
+        display: none;
+    }
+}

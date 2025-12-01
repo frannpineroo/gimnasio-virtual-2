@@ -1,15 +1,16 @@
-/* ESTILOS ESPECÍFICOS PARA LA PÁGINA DE RUTINAS */
+/* entidades/static/entrenador/css/pages/rutinas.css */
 .routines-section {
-    padding: 20px;
+    padding: var(--spacing-lg);
+    min-height: 100vh;
 }
 
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--spacing-lg);
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--card-border);
 }
 
 .section-title {
@@ -20,61 +21,101 @@
 }
 
 /* Ajustes específicos para la tabla de rutinas */
-.data-table td:nth-child(2) { /* Descripción */
-    max-width: 300px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+#routines-table {
+    width: 100%;
 }
 
-/* Badges para niveles */
-.level-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
+#routines-table th:nth-child(1) { width: 15%; } /* Nombre */
+#routines-table th:nth-child(2) { width: 20%; } /* Descripción */
+#routines-table th:nth-child(3) { width: 15%; } /* Cliente */
+#routines-table th:nth-child(4) { width: 10%; } /* Duración */
+#routines-table th:nth-child(5) { width: 10%; } /* Días */
+#routines-table th:nth-child(6) { width: 10%; } /* Fecha creación */
+#routines-table th:nth-child(7) { width: 10%; } /* Profesor */
+#routines-table th:nth-child(8) { width: 10%; } /* Acciones */
+
+/* Estilos para el modal de visualización de rutina */
+.routine-details {
+    padding: 20px;
+}
+
+.routine-info {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    border: 1px solid var(--card-border);
+}
+
+.routine-info h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: var(--spacing-sm);
+}
+
+.exercise-item {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border: 1px solid var(--card-border);
+}
+
+.exercise-name {
+    margin-top: 0;
+    color: var(--text-primary);
+    font-size: var(--font-size-normal);
+}
+
+.exercise-meta {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.exercise-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: var(--font-size-small);
-    font-weight: 500;
+    color: var(--text-secondary);
 }
 
-.level-beginner {
-    background-color: rgba(76, 175, 80, 0.2);
-    color: #4CAF50;
+.exercise-meta i {
+    color: var(--primary-color);
 }
 
-.level-intermediate {
-    background-color: rgba(255, 152, 0, 0.2);
-    color: #FF9800;
-}
-
-.level-advanced {
-    background-color: rgba(244, 67, 54, 0.2);
-    color: #F44336;
-}
-
-/* Botón de peligro */
-.btn-danger {
-    background-color: rgba(220, 53, 69, 0.9);
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: rgba(220, 53, 69, 1);
-    transform: translateY(-1px);
+.exercise-description {
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+    line-height: 1.4;
+    margin: 0;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .section-header {
         flex-direction: column;
-        align-items: flex-start;
+        gap: var(--spacing-md);
+        align-items: stretch;
     }
-    
-    .section-header .btn {
-        width: 100%;
-        justify-content: center;
+
+    .exercise-meta {
+        flex-direction: column;
+        gap: var(--spacing-sm);
     }
-    
-    .filters {
-        grid-template-columns: 1fr;
+
+    /* Ocultar algunas columnas en móviles */
+    #routines-table th:nth-child(4),
+    #routines-table td:nth-child(4),
+    #routines-table th:nth-child(5),
+    #routines-table td:nth-child(5),
+    #routines-table th:nth-child(6),
+    #routines-table td:nth-child(6),
+    #routines-table th:nth-child(7),
+    #routines-table td:nth-child(7) {
+        display: none;
     }
 }

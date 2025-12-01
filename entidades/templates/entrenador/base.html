@@ -33,15 +33,13 @@
         <!-- Main Area -->
         <div class="main-area">
             <!-- Header -->
-            <header class="header-container">
+            <div class="header-container">
                 {% include 'entrenador/components/header.html' %}
-            </header>
+            </div>
 
-            <!-- Main Content -->
-            <main class="main-content">
-                {% block content %}
-                {% endblock %}
-            </main>
+            <!-- CONTENIDO DE LA PÁGINA (sin wrapper main) -->
+            {% block content %}
+            {% endblock %}
         </div>
     </div>
 

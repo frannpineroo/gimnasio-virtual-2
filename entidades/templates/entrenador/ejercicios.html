@@ -12,6 +12,7 @@
 {% endblock %}
 
 {% block content %}
+<!-- Main Content único para esta página -->
 <main class="main-content">
     <!-- Sección de Ejercicios -->
     <div class="exercises-section">
@@ -109,7 +110,7 @@
     </div>
 </main>
 
-<!-- Modal de Confirmación de Eliminación -->
+<!-- Modales (deben estar fuera del main-content pero dentro del body) -->
 <div class="modal" id="delete-modal">
     <div class="modal-content">
         <div class="modal-icon">
@@ -130,7 +131,6 @@
     </div>
 </div>
 
-<!-- Modal para Editar Ejercicio -->
 <div class="modal" id="edit-modal">
     <div class="modal-content">
         <div class="modal-header">

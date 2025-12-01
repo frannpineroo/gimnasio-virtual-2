@@ -1,4 +1,15 @@
 // PÁGINA DE NUEVA RUTINA
+
+// Añade al principio del archivo
+const API_URLS = {
+    ejercicios: '{% url "entrenador:api_ejercicios" %}',
+    rutinas: '{% url "entrenador:api_rutinas" %}',
+    clientes: '{% url "entrenador:api_clientes" %}',
+    profesores: '{% url "entrenador:api_profesores" %}',
+    // ... añade otras URLs que necesites
+};
+
+// Luego modifica las funciones de carga para usar estas URLs
 const nuevaRutinaPage = {
     // Estados
     currentRoutine: null,

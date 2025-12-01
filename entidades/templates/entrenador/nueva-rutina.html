@@ -1,192 +1,188 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TRAINING! - Nueva Rutina</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/variables-entrenador.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/style.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/nueva-rutina.css" />
-</head>
-<body>
+{% extends 'entrenador/base.html' %}
+{% load static %}
 
-    <!-- Contenido Principal -->
-    <main class="main-content">
+{% block title %}Nueva Rutina{% endblock %}
 
-        <!-- Sección de Nueva Rutina -->
-        <div class="new-routine-section">
-            <div class="section-header">
-                <h2 class="section-title">Crear Nueva Rutina</h2>
-                <button class="btn btn-back" onclick="window.history.back()">
-                    <i class="fas fa-arrow-left"></i> Volver
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'entrenador/css/components/filters.css' %}">
+<link rel="stylesheet" href="{% static 'entrenador/css/components/buttons.css' %}">
+<link rel="stylesheet" href="{% static 'entrenador/css/components/modal.css' %}">
+<link rel="stylesheet" href="{% static 'entrenador/css/pages/nueva-rutina.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <!-- Sección de Nueva Rutina -->
+    <div class="new-routine-section">
+        <div class="section-header">
+            <h2 class="section-title">Crear Nueva Rutina</h2>
+            <button class="btn btn-back" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+        </div>
+
+        <form id="routine-form" class="routine-form">
+            <!-- Información básica de la rutina -->
+            <div class="form-section">
+                <h3 class="section-subtitle">Información Básica</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="routine-name">Nombre de la Rutina *</label>
+                        <input type="text" id="routine-name" placeholder="Ej: Rutina Fuerza Inicial" required />
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label"><i class="fas fa-search"></i> Buscar cliente</label>
+                        <div class="search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Nombre, Apellido, DNI" id="search-input" />
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label"><i class="fas fa-search"></i> Buscar profesor</label>
+                        <div class="search search-profesor">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Nombre, Apellido, DNI" id="search-profesor-input" />
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="routine-days">Días por semana *</label>
+                        <select id="routine-days" required>
+                            <option value="">Seleccionar días</option>
+                            <option value="1">1 día</option>
+                            <option value="2">2 días</option>
+                            <option value="3">3 días</option>
+                            <option value="4">4 días</option>
+                            <option value="5">5 días</option>
+                            <option value="6">6 días</option>
+                            <option value="7">7 días</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="routine-weeks">Duración (semanas) *</label>
+                        <input type="number" id="routine-weeks" min="1" max="20" placeholder="1-20 semanas" required />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="routine-description">Descripción</label>
+                    <textarea id="routine-description" rows="3" placeholder="Describe el objetivo de esta rutina..."></textarea>
+                </div>
+            </div>
+
+            <!-- Selección de ejercicios -->
+            <div class="form-section">
+                <h3 class="section-subtitle">Agregar Ejercicios</h3>
+                
+                <!-- Filtros para ejercicios -->
+                <div class="exercise-filters">
+                    <div class="filter-group">
+                        <label class="filter-label"><i class="fas fa-filter"></i> Grupo Muscular</label>
+                        <select id="muscle-filter" class="filter-select">
+                            <option value="">Todos los grupos</option>
+                            <option value="pectorales">Pectorales</option>
+                            <option value="espalda">Espalda</option>
+                            <option value="hombros">Hombros</option>
+                            <option value="biceps">Bíceps</option>
+                            <option value="triceps">Tríceps</option>
+                            <option value="piernas">Piernas</option>
+                            <option value="abdominales">Abdominales</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label"><i class="fas fa-dumbbell"></i> Elemento</label>
+                        <select id="equipment-filter" class="filter-select">
+                            <option value="">Todos los elementos</option>
+                            <option value="mancuerna">Mancuerna</option>
+                            <option value="barra">Barra</option>
+                            <option value="polea">Polea</option>
+                            <option value="maquina">Máquina</option>
+                            <option value="peso corporal">Peso Corporal</option>
+                            <option value="banda">Banda Elástica</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Lista de ejercicios disponibles -->
+                <div class="exercises-grid" id="exercises-grid">
+                    <!-- Los ejercicios se cargarán dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Ejercicios agregados -->
+            <div class="form-section">
+                <h3 class="section-subtitle">Ejercicios de la Rutina</h3>
+                <p class="section-description">Arrastra y suelta para reordenar los ejercicios</p>
+                
+                <div class="added-exercises" id="added-exercises">
+                    <div class="empty-state" id="empty-state">
+                        <i class="fas fa-dumbbell"></i>
+                        <p>No hay ejercicios agregados</p>
+                        <span>Selecciona ejercicios de la lista superior</span>
+                    </div>
+                    <!-- Los ejercicios agregados se insertarán aquí -->
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-white" id="cancel-btn">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-save">
+                    <i class="fas fa-save"></i> Guardar Rutina
                 </button>
             </div>
+        </form>
+    </div>
+</main>
 
-            <form id="routine-form" class="routine-form">
-                <!-- Información básica de la rutina -->
-                <div class="form-section">
-                    <h3 class="section-subtitle">Información Básica</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="routine-name">Nombre de la Rutina *</label>
-                            <input type="text" id="routine-name" placeholder="Ej: Rutina Fuerza Inicial" required />
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label class="filter-label"><i class="fas fa-search"></i> Buscar cliente</label>
-                            <div class="search">
-                                <i class="fas fa-search"></i>
-                                <input type="text" placeholder="Nombre, Apellido, DNI" id="search-input" />
-                            </div>
-                        </div>
-
-                        <div class="filter-group">
-                            <label class="filter-label"><i class="fas fa-search"></i> Buscar profesor</label>
-                            <!-- He añadido la clase search-profesor y el id search-profesor-input -->
-                            <div class="search search-profesor">
-                                <i class="fas fa-search"></i>
-                                <input type="text" placeholder="Nombre, Apellido, DNI" id="search-profesor-input" />
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="routine-days">Días por semana *</label>
-                            <select id="routine-days" required>
-                                <option value="">Seleccionar días</option>
-                                <option value="1">1 día</option>
-                                <option value="2">2 días</option>
-                                <option value="3">3 días</option>
-                                <option value="4">4 días</option>
-                                <option value="5">5 días</option>
-                                <option value="6">6 días</option>
-                                <option value="7">7 días</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="routine-weeks">Duración (semanas) *</label>
-                            <input type="number" id="routine-weeks" min="1" max="20" placeholder="1-20 semanas" required />
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="routine-description">Descripción</label>
-                        <textarea id="routine-description" rows="3" placeholder="Describe el objetivo de esta rutina..."></textarea>
-                    </div>
-                </div>
-
-                <!-- Selección de ejercicios -->
-                <div class="form-section">
-                    <h3 class="section-subtitle">Agregar Ejercicios</h3>
-                    
-                    <!-- Filtros para ejercicios -->
-                    <div class="exercise-filters">
-                        <div class="filter-group">
-                            <label class="filter-label"><i class="fas fa-filter"></i> Grupo Muscular</label>
-                            <select id="muscle-filter" class="filter-select">
-                                <option value="">Todos los grupos</option>
-                                <option value="pectorales">Pectorales</option>
-                                <option value="espalda">Espalda</option>
-                                <option value="hombros">Hombros</option>
-                                <option value="biceps">Bíceps</option>
-                                <option value="triceps">Tríceps</option>
-                                <option value="piernas">Piernas</option>
-                                <option value="abdominales">Abdominales</option>
-                            </select>
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label class="filter-label"><i class="fas fa-dumbbell"></i> Elemento</label>
-                            <select id="equipment-filter" class="filter-select">
-                                <option value="">Todos los elementos</option>
-                                <option value="mancuerna">Mancuerna</option>
-                                <option value="barra">Barra</option>
-                                <option value="polea">Polea</option>
-                                <option value="maquina">Máquina</option>
-                                <option value="peso corporal">Peso Corporal</option>
-                                <option value="banda">Banda Elástica</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Lista de ejercicios disponibles -->
-                    <div class="exercises-grid" id="exercises-grid">
-                        <!-- Los ejercicios se cargarán dinámicamente -->
-                    </div>
-                </div>
-
-                <!-- Ejercicios agregados -->
-                <div class="form-section">
-                    <h3 class="section-subtitle">Ejercicios de la Rutina</h3>
-                    <p class="section-description">Arrastra y suelta para reordenar los ejercicios</p>
-                    
-                    <div class="added-exercises" id="added-exercises">
-                        <div class="empty-state" id="empty-state">
-                            <i class="fas fa-dumbbell"></i>
-                            <p>No hay ejercicios agregados</p>
-                            <span>Selecciona ejercicios de la lista superior</span>
-                        </div>
-                        <!-- Los ejercicios agregados se insertarán aquí -->
-                    </div>
-                </div>
-
-                <!-- Botones de acción -->
-                <div class="form-actions">
-                    <button type="button" class="btn btn-white" id="cancel-btn">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-save">
-                        <i class="fas fa-save"></i> Guardar Rutina
-                    </button>
-                </div>
-            </form>
+<!-- Modal para configurar ejercicio -->
+<div class="modal" id="exercise-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title">Configurar Ejercicio</h2>
+            <button class="close-modal" id="close-modal">&times;</button>
         </div>
-    </main>
-
-    <!-- Modal para configurar ejercicio -->
-    <div class="modal" id="exercise-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modal-title">Configurar Ejercicio</h2>
-                <button class="close-modal" id="close-modal">&times;</button>
+        <div class="modal-body">
+            <div class="exercise-preview" id="exercise-preview">
+                <!-- Vista previa del ejercicio -->
             </div>
-            <div class="modal-body">
-                <div class="exercise-preview" id="exercise-preview">
-                    <!-- Vista previa del ejercicio -->
-                </div>
-                <div class="exercise-config">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="exercise-sets">Series *</label>
-                            <input type="number" id="exercise-sets" min="1" max="10" value="3" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="exercise-reps">Repeticiones *</label>
-                            <input type="text" id="exercise-reps" placeholder="Ej: 8-12" required />
-                        </div>
+            <div class="exercise-config">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="exercise-sets">Series *</label>
+                        <input type="number" id="exercise-sets" min="1" max="10" value="3" required />
                     </div>
                     <div class="form-group">
-                        <label for="exercise-rest">Descanso (segundos)</label>
-                        <input type="number" id="exercise-rest" min="0" max="300" value="90" />
-                    </div>
-                    <div class="form-group">
-                        <label for="exercise-notes">Notas adicionales</label>
-                        <textarea id="exercise-notes" rows="2" placeholder="Observaciones para este ejercicio..."></textarea>
+                        <label for="exercise-reps">Repeticiones *</label>
+                        <input type="text" id="exercise-reps" placeholder="Ej: 8-12" required />
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="exercise-rest">Descanso (segundos)</label>
+                    <input type="number" id="exercise-rest" min="0" max="300" value="90" />
+                </div>
+                <div class="form-group">
+                    <label for="exercise-notes">Notas adicionales</label>
+                    <textarea id="exercise-notes" rows="2" placeholder="Observaciones para este ejercicio..."></textarea>
+                </div>
             </div>
-            <div class="modal-actions">
-                <button type="button" class="btn btn-white" id="cancel-exercise">Cancelar</button>
-                <button type="button" class="btn btn-save" id="add-exercise">Agregar a Rutina</button>
-            </div>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-white" id="cancel-exercise">Cancelar</button>
+            <button type="button" class="btn btn-save" id="add-exercise">Agregar a Rutina</button>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <script src="/gym_frontend/static/js/nueva-rutina.js"></script>
-</body>
-</html>
+{% block extra_js %}
+<script src="{% static 'entrenador/js/pages/nueva-rutina.js' %}"></script>
+{% endblock %}

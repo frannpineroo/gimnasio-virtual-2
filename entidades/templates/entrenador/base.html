@@ -28,6 +28,12 @@
             <li>
                 <a href="{% url 'entrenador:entrenadores' %}">Entrenadores</a>
             </li>
+            {% if user.is_authenticated %}
+            {% else %}
+            <li>
+                <a href="{% url 'acceso:signup' %}">Registrarse</a>
+            </li> 
+            {% endif %}  
         </ul>
     </nav>
 

@@ -1,15 +1,16 @@
-/* ESTILOS ESPECÍFICOS PARA LA PÁGINA DE MÚSCULOS */
+/* entidades/static/entrenador/css/pages/musculos.css */
 .muscles-section {
-    padding: 20px;
+    padding: var(--spacing-lg);
+    min-height: 100vh;
 }
 
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--spacing-lg);
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--card-border);
 }
 
 .section-title {
@@ -21,15 +22,25 @@
 
 .header-actions {
     display: flex;
-    gap: var(--spacing-sm);
-    flex-wrap: wrap;
+    gap: var(--spacing-md);
 }
 
-/* Badges para tipos */
+/* Ajustes específicos para la tabla de músculos */
+#muscles-table {
+    width: 100%;
+}
+
+#muscles-table th:nth-child(1) { width: 25%; } /* Nombre */
+#muscles-table th:nth-child(2) { width: 15%; } /* Tipo */
+#muscles-table th:nth-child(3) { width: 20%; } /* Grupo Padre */
+#muscles-table th:nth-child(4) { width: 20%; } /* Ejercicios Asociados */
+#muscles-table th:nth-child(5) { width: 20%; } /* Acciones */
+
+/* Badges para tipos de músculos */
 .type-badge {
     display: inline-block;
     padding: 6px 12px;
-    border-radius: 50px;
+    border-radius: 20px;
     font-size: var(--font-size-small);
     font-weight: 500;
     text-transform: uppercase;
@@ -37,60 +48,62 @@
 }
 
 .type-group {
-    background-color: rgba(50, 205, 50, 0.2);
+    background: rgba(50, 205, 50, 0.2);
     color: var(--primary-color);
+    border: 1px solid rgba(50, 205, 50, 0.3);
 }
 
 .type-subgroup {
-    background-color: rgba(255, 193, 7, 0.2);
-    color: #ffc107;
+    background: rgba(13, 110, 253, 0.2);
+    color: #0d6efd;
+    border: 1px solid rgba(13, 110, 253, 0.3);
 }
 
-/* Badge para contador de ejercicios */
-.exercise-count {
-    background-color: rgba(108, 117, 125, 0.2);
-    color: #6c757d;
+/* Badge para ejercicios asociados */
+.exercises-count {
+    display: inline-block;
     padding: 4px 8px;
+    background: rgba(50, 205, 50, 0.1);
+    color: var(--primary-color);
     border-radius: 12px;
     font-size: var(--font-size-small);
     font-weight: 500;
 }
 
-/* SE ELIMINÓ EL ESTILO PARA LA COLUMNA DESCRIPCIÓN */
+/* Formularios específicos */
+.form-row {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.form-row .form-group {
+    flex: 1;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
     .section-header {
         flex-direction: column;
-        align-items: flex-start;
+        gap: var(--spacing-md);
+        align-items: stretch;
     }
-   
-    .header-actions {
-        width: 100%;
-        justify-content: space-between;
-    }
-   
-    .header-actions .btn {
-        flex: 1;
-        min-width: 140px;
-        justify-content: center;
-    }
-   
-    .filters {
-        grid-template-columns: 1fr;
-    }
-   
-    .data-table {
-        min-width: 600px; /* Reducido porque eliminamos una columna */
-    }
-}
-
-@media (max-width: 480px) {
+    
     .header-actions {
         flex-direction: column;
-    }
-   
-    .header-actions .btn {
         width: 100%;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    /* Ocultar algunas columnas en móviles */
+    #muscles-table th:nth-child(3),
+    #muscles-table td:nth-child(3),
+    #muscles-table th:nth-child(4),
+    #muscles-table td:nth-child(4) {
+        display: none;
     }
 }

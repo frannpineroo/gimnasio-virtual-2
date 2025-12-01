@@ -39,6 +39,9 @@ urlpatterns = [
     path('equipos/', views.equipment_page, name='equipos'),
     path('equipos/nuevo/', views.new_equipment, name='nuevo_equipo'),
 
+    # Nueva ruta para la página de músculos
+    path('musculos/', views.muscles_page, name='musculos'),
+
     # Endpoint(s) API adicionales (si los querés disponibles desde la misma urls.py)
     path('api/', include((router.urls, 'api'))),  # quedará /entrenador/api/ejercicios/ etc.
     path('api/clientes/active/', api_views.active_clients, name='active_clients'),

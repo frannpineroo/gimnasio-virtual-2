@@ -1,0 +1,121 @@
+/* entidades/static/entrenador/css/pages/rutinas.css */
+.routines-section {
+    padding: var(--spacing-lg);
+    min-height: 100vh;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--card-border);
+}
+
+.section-title {
+    font-size: var(--font-size-title);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* Ajustes específicos para la tabla de rutinas */
+#routines-table {
+    width: 100%;
+}
+
+#routines-table th:nth-child(1) { width: 15%; } /* Nombre */
+#routines-table th:nth-child(2) { width: 20%; } /* Descripción */
+#routines-table th:nth-child(3) { width: 15%; } /* Cliente */
+#routines-table th:nth-child(4) { width: 10%; } /* Duración */
+#routines-table th:nth-child(5) { width: 10%; } /* Días */
+#routines-table th:nth-child(6) { width: 10%; } /* Fecha creación */
+#routines-table th:nth-child(7) { width: 10%; } /* Profesor */
+#routines-table th:nth-child(8) { width: 10%; } /* Acciones */
+
+/* Estilos para el modal de visualización de rutina */
+.routine-details {
+    padding: 20px;
+}
+
+.routine-info {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    border: 1px solid var(--card-border);
+}
+
+.routine-info h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: var(--spacing-sm);
+}
+
+.exercise-item {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border: 1px solid var(--card-border);
+}
+
+.exercise-name {
+    margin-top: 0;
+    color: var(--text-primary);
+    font-size: var(--font-size-normal);
+}
+
+.exercise-meta {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.exercise-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--font-size-small);
+    color: var(--text-secondary);
+}
+
+.exercise-meta i {
+    color: var(--primary-color);
+}
+
+.exercise-description {
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: stretch;
+    }
+
+    .exercise-meta {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    /* Ocultar algunas columnas en móviles */
+    #routines-table th:nth-child(4),
+    #routines-table td:nth-child(4),
+    #routines-table th:nth-child(5),
+    #routines-table td:nth-child(5),
+    #routines-table th:nth-child(6),
+    #routines-table td:nth-child(6),
+    #routines-table th:nth-child(7),
+    #routines-table td:nth-child(7) {
+        display: none;
+    }
+}

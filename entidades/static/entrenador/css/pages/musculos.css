@@ -1,0 +1,109 @@
+/* entidades/static/entrenador/css/pages/musculos.css */
+.muscles-section {
+    padding: var(--spacing-lg);
+    min-height: 100vh;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--card-border);
+}
+
+.section-title {
+    font-size: var(--font-size-title);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+/* Ajustes específicos para la tabla de músculos */
+#muscles-table {
+    width: 100%;
+}
+
+#muscles-table th:nth-child(1) { width: 25%; } /* Nombre */
+#muscles-table th:nth-child(2) { width: 15%; } /* Tipo */
+#muscles-table th:nth-child(3) { width: 20%; } /* Grupo Padre */
+#muscles-table th:nth-child(4) { width: 20%; } /* Ejercicios Asociados */
+#muscles-table th:nth-child(5) { width: 20%; } /* Acciones */
+
+/* Badges para tipos de músculos */
+.type-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: var(--font-size-small);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.type-group {
+    background: rgba(50, 205, 50, 0.2);
+    color: var(--primary-color);
+    border: 1px solid rgba(50, 205, 50, 0.3);
+}
+
+.type-subgroup {
+    background: rgba(13, 110, 253, 0.2);
+    color: #0d6efd;
+    border: 1px solid rgba(13, 110, 253, 0.3);
+}
+
+/* Badge para ejercicios asociados */
+.exercises-count {
+    display: inline-block;
+    padding: 4px 8px;
+    background: rgba(50, 205, 50, 0.1);
+    color: var(--primary-color);
+    border-radius: 12px;
+    font-size: var(--font-size-small);
+    font-weight: 500;
+}
+
+/* Formularios específicos */
+.form-row {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: stretch;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    /* Ocultar algunas columnas en móviles */
+    #muscles-table th:nth-child(3),
+    #muscles-table td:nth-child(3),
+    #muscles-table th:nth-child(4),
+    #muscles-table td:nth-child(4) {
+        display: none;
+    }
+}

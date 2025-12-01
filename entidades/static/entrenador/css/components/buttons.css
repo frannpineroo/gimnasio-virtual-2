@@ -1,0 +1,73 @@
+/* entidades/static/entrenador/css/components/buttons.css */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-family: var(--font-family);
+    font-size: var(--font-size-normal);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: #000;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: var(--text-secondary);
+    color: white;
+}
+
+.btn-secondary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}
+
+.btn-white {
+    background-color: white;
+    color: #000;
+    border: 1px solid var(--card-border);
+}
+
+.btn-white:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+}
+
+/* Botones pequeños */
+.btn-sm {
+    padding: 6px 12px;
+    font-size: var(--font-size-small);
+}
+
+/* Botones de icono solamente */
+.btn-icon {
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.btn-icon.btn-sm {
+    padding: 4px;
+}

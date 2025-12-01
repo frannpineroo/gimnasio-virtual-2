@@ -1,95 +1,165 @@
 {% extends 'entrenador/base.html' %}
-{% block content %}
-    <!-- Contenido Principal -->
-    <main class="main-content">
+{% load static %}
 
-        <!-- Sección de Equipos -->
-        <div class="equipment-section">
-            <div class="section-header">
-                <h2 class="section-title">Gestión de Equipos</h2>
-                <a href="/entrenador/nuevo-equipo/" class="btn btn-white">
-                    <i class="fas fa-plus"></i> Agregar Equipo
-                </a>
+{% block title %}Equipos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'entrenador/css/components/filters.css' %}">
+<link rel="stylesheet" href="{% static 'entrenador/css/components/table.css' %}">
+<link rel="stylesheet" href="{% static 'entrenador/css/components/buttons.css' %}">
+<link rel="stylesheet" href="{% static 'entrenador/css/components/modal.css' %}">
+<link rel="stylesheet" href="{% static 'entrenador/css/pages/equipos.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <!-- Sección de Equipos -->
+    <div class="equipment-section">
+        <div class="section-header">
+            <h2 class="section-title">Gestión de Equipos</h2>
+            <a href="{% url 'entrenador:nuevo_equipo' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Agregar Equipo
+            </a>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters">
+            <div class="filter-group">
+                <label class="filter-label"><i class="fas fa-search"></i> Buscar</label>
+                <div class="search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar equipo..." id="search-input" />
+                </div>
             </div>
 
-            <!-- Tabla de Equipos -->
-            <div class="equipment-table-container">
-                <table class="equipment-table">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th>Categoría</th>
-                            <th>Modelo</th>
-                            <th>Estado</th>
-                            <th>Condición</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="equipment-table-body">
-                        <tr id="loading-row">
-                            <td colspan="7" style="text-align:center; padding: 30px;">
-                                <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #32CD32;"></i> Cargando equipos...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="filter-group">
+                <label class="filter-label"><i class="fas fa-filter"></i> Categoría</label>
+                <div class="custom-select" id="category-select">
+                    <div class="select-trigger">
+                        <div class="selected-value">
+                            <i class="fas fa-list"></i>
+                            <span>Todas las categorías</span>
+                        </div>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option" data-value="">
+                            <i class="fas fa-list"></i>
+                            <span>Todas las categorías</span>
+                        </div>
+                        <div class="select-option" data-value="cardio">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Cardio</span>
+                        </div>
+                        <div class="select-option" data-value="fuerza">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Fuerza</span>
+                        </div>
+                        <div class="select-option" data-value="peso_libre">
+                            <i class="fas fa-weight-hanging"></i>
+                            <span>Peso Libre</span>
+                        </div>
+                        <div class="select-option" data-value="maquinas">
+                            <i class="fas fa-cogs"></i>
+                            <span>Máquinas</span>
+                        </div>
+                        <div class="select-option" data-value="accesorios">
+                            <i class="fas fa-tools"></i>
+                            <span>Accesorios</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label"><i class="fas fa-filter"></i> Estado</label>
+                <div class="custom-select" id="status-select">
+                    <div class="select-trigger">
+                        <div class="selected-value">
+                            <i class="fas fa-list"></i>
+                            <span>Todos los estados</span>
+                        </div>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option" data-value="">
+                            <i class="fas fa-list"></i>
+                            <span>Todos los estados</span>
+                        </div>
+                        <div class="select-option" data-value="disponible">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Disponible</span>
+                        </div>
+                        <div class="select-option" data-value="mantenimiento">
+                            <i class="fas fa-tools"></i>
+                            <span>En Mantenimiento</span>
+                        </div>
+                        <div class="select-option" data-value="reparacion">
+                            <i class="fas fa-wrench"></i>
+                            <span>En Reparación</span>
+                        </div>
+                        <div class="select-option" data-value="baja">
+                            <i class="fas fa-times-circle"></i>
+                            <span>De Baja</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label" style="opacity: 0;">Acciones</label>
+                <button id="reset-filters" class="btn btn-secondary">
+                    <i class="fas fa-sync-alt"></i> Resetear Filtros
+                </button>
             </div>
         </div>
-    </main>
 
-    <!-- Modal de Confirmación de Eliminación -->
-    <div class="modal-overlay" id="delete-modal">
-        <div class="modal-content">
-            <div class="modal-icon">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <h3 class="modal-title">¿Estás seguro?</h3>
-            <p class="modal-message">
-                ¿Estás seguro que quieres eliminar este equipo? Esta acción no se puede deshacer.
-            </p>
-            <div class="modal-actions">
-                <button id="cancel-delete" class="modal-btn modal-btn-cancel">
-                    <i class="fas fa-times"></i> Cancelar
-                </button>
-                <button id="confirm-delete" class="modal-btn modal-btn-delete">
-                    <i class="fas fa-trash"></i> Eliminar
-                </button>
-            </div>
+        <!-- Tabla de Equipos -->
+        <div class="table-container">
+            <table class="data-table" id="equipment-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Categoría</th>
+                        <th>Modelo</th>
+                        <th>Estado</th>
+                        <th>Condición</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="equipment-table-body">
+                    <tr id="loading-row">
+                        <td colspan="7" style="text-align:center; padding: 30px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #32CD32;"></i> Cargando equipos...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+</main>
 
-    <!-- <script>
-        // Función para cargar componentes y luego inicializar scripts
-        async function loadComponents() {
-            try {
-                // Cargar header
-                const headerResponse = await fetch('/entrenador/components/header.html');
-                const headerData = await headerResponse.text();
-                const headerContainer = document.getElementById('header-container');
-                if (headerContainer) {
-                    headerContainer.innerHTML = headerData;
-                }
+<!-- Modal de Confirmación de Eliminación -->
+<div class="modal" id="delete-modal">
+    <div class="modal-content">
+        <div class="modal-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 class="modal-title">¿Estás seguro?</h3>
+        <p class="modal-message">
+            ¿Estás seguro que quieres eliminar este equipo? Esta acción no se puede deshacer.
+        </p>
+        <div class="modal-actions">
+            <button id="cancel-delete" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button id="confirm-delete" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-                // Cargar sidebar
-                const sidebarResponse = await fetch('/entrenador/components/sidebar.html');
-                const sidebarData = await sidebarResponse.text();
-                const sidebarContainer = document.getElementById('sidebar-container');
-                if (sidebarContainer) {
-                    sidebarContainer.innerHTML = sidebarData;
-                }
-
-                // Esperar un momento para que el DOM se actualice
-                await new Promise(resolve => setTimeout(resolve, 100));
-
-                // Inicializar scripts de los componentes
-                if (typeof initSidebar === 'function') initSidebar();
-                if (typeof initHeader === 'function') initHeader();
-
-            } catch (error) {
-                console.error('Error cargando componentes:', error);
-            }
-        }
-        loadComponents();
-    </script> -->
+{% block extra_js %}
+<script src="{% static 'entrenador/js/pages/equipos.js' %}"></script>
 {% endblock %}

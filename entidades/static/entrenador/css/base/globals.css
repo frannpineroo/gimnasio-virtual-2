@@ -1,0 +1,101 @@
+/* RESET Y ESTILOS BASE UNIFICADOS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+}
+
+/* LAYOUT CONTAINER */
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* MAIN AREA */
+.main-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 280px; /* Ancho del sidebar */
+    min-height: 100vh;
+}
+
+/* HEADER CONTAINER - AHORA CON ESPACIO DEFINIDO */
+.header-container {
+    background: transparent;
+    padding: var(--spacing-md) var(--spacing-xl) var(--spacing-sm); /* Más padding arriba, menos abajo */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0); /* Fondo semitransparente */
+    margin-bottom: 0; /* Reset */
+}
+
+/* CONTENIDO PRINCIPAL - ESPACIO CLARO DESPUÉS DEL HEADER */
+.main-content {
+    flex: 1;
+    padding: var(--spacing-xl);
+    overflow-y: auto;
+}
+
+/* SECCIONES COMUNES */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.section-title {
+    font-size: var(--font-size-subtitle);
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .main-area {
+        margin-left: 80px;
+    }
+    
+    .header-container {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    .main-content {
+        padding: var(--spacing-md);
+    }
+}
+
+@media (max-width: 768px) {
+    .main-area {
+        margin-left: 0;
+    }
+    
+    .header-container {
+        padding: var(--spacing-sm);
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .section-header .btn {
+        align-self: flex-start;
+        margin-top: var(--spacing-sm);
+    }
+}

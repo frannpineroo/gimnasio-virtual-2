@@ -1,112 +1,186 @@
 {% extends 'entrenador/base.html' %}
-{% block content %}
-    <!-- Contenido Principal -->
-    <main class="main-content">
+{% load static %}
 
-        <!-- Sección de Clientes -->
-        <div class="clients-section">
-            <div class="section-header">
-                <h2 class="section-title">Gestión de Clientes</h2>
-                    <i class="fas fa-plus"></i> Nuevo Cliente
-                </a>
+{% block title %}Clientes{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'entrenador/css/components/filters.css' %}">
+<link rel="stylesheet" href="{% static 'entrenador/css/components/table.css' %}">
+<link rel="stylesheet" href="{% static 'entrenador/css/components/buttons.css' %}">
+<link rel="stylesheet" href="{% static 'entrenador/css/components/modal.css' %}">
+<link rel="stylesheet" href="{% static 'entrenador/css/pages/clientes.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <!-- Sección de Clientes -->
+    <div class="clients-section">
+        <div class="section-header">
+            <h2 class="section-title">Gestión de Clientes</h2>
+            <a href="{% url 'entrenador:nuevo_cliente' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nuevo Cliente
+            </a>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters">
+            <div class="filter-group">
+                <label class="filter-label"><i class="fas fa-search"></i> Buscar</label>
+                <div class="search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar cliente..." id="search-input" />
+                </div>
             </div>
 
-            <!-- Filtros -->
-            <div class="filters">
-                <div class="filter-group">
-                    <label class="filter-label"><i class="fas fa-search"></i> Buscar</label>
-                    <div class="search">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Buscar cliente..." id="search-input" />
+            <div class="filter-group">
+                <label class="filter-label"><i class="fas fa-filter"></i> Estado</label>
+                <div class="custom-select" id="status-select">
+                    <div class="select-trigger">
+                        <div class="selected-value">
+                            <i class="fas fa-list"></i>
+                            <span>Todos los estados</span>
+                        </div>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option" data-value="">
+                            <i class="fas fa-list"></i>
+                            <span>Todos los estados</span>
+                        </div>
+                        <div class="select-option" data-value="activo">
+                            <i class="fas fa-user-check"></i>
+                            <span>Activo</span>
+                        </div>
+                        <div class="select-option" data-value="inactivo">
+                            <i class="fas fa-user-clock"></i>
+                            <span>Inactivo</span>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Botón para resetear filtros -->
-                <div class="filter-group">
-                    <label class="filter-label" style="opacity: 0;">Acciones</label>
-                </div>
             </div>
 
-            <!-- Tabla de Clientes -->
-            <div class="clients-table-container">
-                <table class="clients-table">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>DNI</th>
-                            <th>Teléfono</th>
-                            <th>Experiencia</th>
-                            <th>Objetivo</th>
-                            <th>Lesiones</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="clients-table-body">
-                        <tr id="loading-row">
-                            <td colspan="9" style="text-align:center; padding: 30px;">
-                                <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #32CD32;"></i> Cargando clientes...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="filter-group">
+                <label class="filter-label" style="opacity: 0;">Acciones</label>
+                <button id="reset-filters" class="btn btn-secondary">
+                    <i class="fas fa-sync-alt"></i> Resetear Filtros
+                </button>
             </div>
         </div>
-    </main>
 
-    <!-- Modal de Confirmación de Eliminación -->
-    <div class="modal-overlay" id="delete-modal">
-        <div class="modal-content">
-            <div class="modal-icon">
-                <i class="fas fa-exclamation-triangle"></i>
+        <!-- Tabla de Clientes -->
+        <div class="table-container">
+            <table class="data-table" id="clients-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>DNI</th>
+                        <th>Experiencia</th>
+                        <th>Objetivo</th>
+                        <th>Lesiones</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="clients-table-body">
+                    <tr id="loading-row">
+                        <td colspan="7" style="text-align:center; padding: 30px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #32CD32;"></i> Cargando clientes...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Modal para agregar/editar cliente -->
+<div class="modal" id="client-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title">Nuevo Cliente</h2>
+            <button class="close-modal" id="close-modal">&times;</button>
+        </div>
+        <form id="client-form" class="modal-form">
+            <input type="hidden" id="client-id" value="">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="client-name">Nombre completo *</label>
+                    <input type="text" id="client-name" placeholder="Ej: Juan Pérez" required />
+                </div>
+                
+                <div class="form-group">
+                    <label for="client-dni">DNI *</label>
+                    <input type="text" id="client-dni" placeholder="Ej: 12345678A" required />
+                </div>
             </div>
-            <h3 class="modal-title">¿Estás seguro?</h3>
-            <p class="modal-message">
-                ¿Estás seguro que quieres eliminar este cliente? Esta acción no se puede deshacer.
-            </p>
-            <div class="modal-actions">
-                <button id="cancel-delete" class="modal-btn modal-btn-cancel">
-                    <i class="fas fa-times"></i> Cancelar
+            
+            <div class="form-group">
+                <label for="client-experience">Experiencia previa</label>
+                <textarea id="client-experience" rows="2" placeholder="Describa la experiencia previa del cliente en entrenamiento..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="client-goal">Objetivo *</label>
+                <select id="client-goal" required>
+                    <option value="">Selecciona un objetivo</option>
+                    <option value="perdida_grasa">Pérdida de grasa</option>
+                    <option value="ganancia_muscular">Ganancia muscular</option>
+                    <option value="mejora_rendimiento">Mejora de rendimiento</option>
+                    <option value="rehabilitacion">Rehabilitación</option>
+                    <option value="mantenimiento">Mantenimiento</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="client-injuries">Lesiones o condiciones médicas</label>
+                <textarea id="client-injuries" rows="2" placeholder="Describa lesiones o condiciones médicas relevantes..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="client-status">Estado *</label>
+                <select id="client-status" required>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                </select>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-form">
+                    Cancelar
                 </button>
-                <button id="confirm-delete" class="modal-btn modal-btn-delete">
-                    <i class="fas fa-trash"></i> Eliminar
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> <span id="submit-text">Guardar Cliente</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para asignar rutina -->
+<div class="modal" id="routine-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="routine-modal-title">Asignar Rutina</h2>
+            <button class="close-modal" id="close-routine-modal">&times;</button>
+        </div>
+        <div class="routine-selection">
+            <div class="routine-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="routine-search-input" placeholder="Buscar rutina..." />
+            </div>
+            <div class="routine-list" id="routine-list">
+                <!-- Las rutinas se cargarán aquí dinámicamente -->
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-routine-assign">
+                    Cancelar
                 </button>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
-    <!-- <script>
-        // Función para cargar componentes y luego inicializar scripts
-        async function loadComponents() {
-            try {
-                // Cargar header
-                const headerResponse = await fetch('/entrenador/components/header.html');
-                const headerData = await headerResponse.text();
-                const headerContainer = document.getElementById('header-container');
-                if (headerContainer) {
-                    headerContainer.innerHTML = headerData;
-                }
 
-                // Cargar sidebar
-                const sidebarResponse = await fetch('/entrenador/components/sidebar.html');
-                const sidebarData = await sidebarResponse.text();
-                const sidebarContainer = document.getElementById('sidebar-container');
-                if (sidebarContainer) {
-                    sidebarContainer.innerHTML = sidebarData;
-                }
-
-                // Esperar un momento para que el DOM se actualice
-                await new Promise(resolve => setTimeout(resolve, 100));
-
-                // Inicializar scripts de los componentes
-                if (typeof initSidebar === 'function') initSidebar();
-                if (typeof initHeader === 'function') initHeader();
-
-            } catch (error) {
-                console.error('Error cargando componentes:', error);
-            }
-        } 
-
-        loadComponents();
-    </script> -->
+{% block extra_js %}
+<script src="{% static 'entrenador/js/pages/clientes.js' %}"></script>
+{% endblock %}

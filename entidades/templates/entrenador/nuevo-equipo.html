@@ -1,87 +1,135 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TRAINING! - Gestión de Equipo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/variables-entrenador.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/style.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/equipos.css" />
-    <link rel="stylesheet" href="/gym_frontend/static/css/nuevo-equipo.css" />
-</head>
-<body>
-    <!-- Contenido Principal -->
-    <main class="main-content">
+{% extends 'entrenador/base.html' %}
+{% load static %}
 
-        <!-- Formulario de Ejercicio -->
-        <div class="form-section">
-            <div class="section-header">
-                <h2 class="section-title" id="form-title">Crear Nuevo Equipo</h2>
-                <a href="equipos.html" class="btn btn-white">
+{% block title %}Nuevo Equipo{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'entrenador/css/components/formularios.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="form-page-section">
+        <div class="form-container">
+            <div class="form-header">
+                <h1 class="form-title">Nuevo Equipo</h1>
+                <a href="{% url 'entrenador:equipos' %}" class="form-back-btn">
                     <i class="fas fa-arrow-left"></i> Volver a Equipos
                 </a>
             </div>
 
-            <form id="equipment-form" class="equipment-form" enctype="multipart/form-data">
-                <input type="hidden" id="equipment-id" value="">
-                
+            <form id="equipo-form" class="form-content">
                 <div class="form-group">
-                    <label for="equipment-name">Nombre del Equipo *</label>
-                    <input type="text" id="equipment-name" placeholder="Ej: Press de Banca" required />
+                    <label for="nombre" class="required">Nombre del Equipo</label>
+                    <input type="text" id="nombre" class="form-control" 
+                           placeholder="Ej: Cinta de correr profesional" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="categoria" class="required">Categoría</label>
+                        <select id="categoria" class="form-control form-select" required>
+                            <option value="">Seleccionar categoría</option>
+                            <option value="cardio">Cardio</option>
+                            <option value="fuerza">Fuerza</option>
+                            <option value="peso_libre">Peso Libre</option>
+                            <option value="maquinas">Máquinas</option>
+                            <option value="accesorios">Accesorios</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modelo" class="required">Modelo</label>
+                        <input type="text" id="modelo" class="form-control" 
+                               placeholder="Ej: TRX-5000" required>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="equipment-description">Descripción</label>
-                    <textarea id="equipment-description" rows="4" placeholder="Describe el equipo..."></textarea>
+                    <label for="marca">Marca</label>
+                    <input type="text" id="marca" class="form-control" 
+                           placeholder="Ingrese la marca">
                 </div>
 
                 <div class="form-group">
-                    <label for="category">Categoría *</label>
-                    <input type="text" id="category" placeholder="Ej: Polea" required />
+                    <label for="descripcion" class="required">Descripción</label>
+                    <textarea id="descripcion" class="form-control form-textarea" 
+                              placeholder="Describe el equipo, características, especificaciones..." 
+                              rows="4" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="numero_serie">Número de Serie</label>
+                        <input type="text" id="numero_serie" class="form-control" 
+                               placeholder="Ingrese el número de serie">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fecha_adquisicion" class="required">Fecha de Adquisición</label>
+                        <input type="date" id="fecha_adquisicion" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="estado" class="required">Estado</label>
+                        <select id="estado" class="form-control form-select" required>
+                            <option value="">Seleccionar estado</option>
+                            <option value="disponible">Disponible</option>
+                            <option value="mantenimiento">En Mantenimiento</option>
+                            <option value="reparacion">En Reparación</option>
+                            <option value="baja">De Baja</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="condicion" class="required">Condición</label>
+                        <select id="condicion" class="form-control form-select" required>
+                            <option value="">Seleccionar condición</option>
+                            <option value="excelente">Excelente</option>
+                            <option value="bueno">Bueno</option>
+                            <option value="regular">Regular</option>
+                            <option value="malo">Malo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ubicacion">Ubicación en el Gimnasio</label>
+                        <input type="text" id="ubicacion" class="form-control" 
+                               placeholder="Ej: Zona de cardio, área A">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="valor">Valor (€)</label>
+                        <input type="number" id="valor" class="form-control" 
+                               placeholder="Valor del equipo" step="0.01" min="0">
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="category">Modelo *</label>
-                    <input type="text" id="model" placeholder="Ej: Para piernas" required />
+                    <label for="notas">Notas Adicionales</label>
+                    <textarea id="notas" class="form-control form-textarea" 
+                              placeholder="Notas sobre mantenimiento, reparaciones, etc..." 
+                              rows="3"></textarea>
                 </div>
-
-                <div class="form-group">
-                    <label for="status">Estado *</label>
-                    <select id="status" required>
-                        <option value="">Selecciona un estado</option>
-                        <option value="available">Disponible</option>
-                        <option value="in_maintenance">En mantenimiento</option>
-                        <option value="out_of_order">Fuera de servicio</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="condition">Condición *</label>
-                    <select id="condition" required>
-                        <option value="">Selecciona un elemento</option>
-                        <option value="new">Nuevo</option>
-                        <option value="good">Excelente Estado</option>
-                        <option value="fair">Buen Estado</option>
-                        <option value="poor">Pobre Estado</option>
-                    </select>
-                </div>
-
 
                 <div class="form-actions">
-                    <button type="button" class="btn btn-white" id="cancel-btn">
+                    <a href="{% url 'entrenador:equipos' %}" class="btn btn-secondary">
                         <i class="fas fa-times"></i> Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-save">
-                        <i class="fas fa-save"></i> <span id="submit-text">Guardar Equipo</span>
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar Equipo
                     </button>
                 </div>
             </form>
         </div>
-    </main>
+    </div>
+</main>
+{% endblock %}
 
-    <script src="/gym_frontend/static/js/nuevo-equipo.js"></script>
-</body>
-</html>
+{% block extra_js %}
+<script src="{% static 'entrenador/js/pages/formulario_equipo.js' %}"></script>
+{% endblock %}

@@ -97,3 +97,10 @@ def new_equipment(request):
         return render(request, 'entrenador/nuevo-equipo.html')
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/nuevo-equipo.html no encontrado.")
+
+# Nueva vista para la página de músculos
+def muscles_page(request):
+    try:
+        return render(request, 'entrenador/musculos.html')
+    except TemplateDoesNotExist:
+        return HttpResponseServerError("Template entrenador/musculos.html no encontrado.")

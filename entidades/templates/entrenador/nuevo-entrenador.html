@@ -21,14 +21,14 @@
             <form id="entrenador-form" class="form-content">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="nombre" class="required">Nombre</label>
-                        <input type="text" id="nombre" class="form-control" 
+                        <label for="name" class="required">Nombre</label>
+                        <input type="text" id="name" name="name" class="form-control" 
                                placeholder="Ingrese el nombre" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="apellido" class="required">Apellido</label>
-                        <input type="text" id="apellido" class="form-control" 
+                        <label for="last_name" class="required">Apellido</label>
+                        <input type="text" id="last_name" name="last_name" class="form-control" 
                                placeholder="Ingrese el apellido" required>
                     </div>
                 </div>
@@ -36,66 +36,43 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="dni" class="required">DNI</label>
-                        <input type="text" id="dni" class="form-control" 
+                        <input type="text" id="dni" name="dni" class="form-control" 
                                placeholder="Ingrese el DNI" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="telefono" class="required">Teléfono</label>
-                        <input type="tel" id="telefono" class="form-control" 
-                               placeholder="Ingrese el teléfono" required>
+                        <label for="phone">Teléfono</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" 
+                               placeholder="Ingrese el teléfono">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="email" class="required">Email</label>
-                    <input type="email" id="email" class="form-control" 
+                    <input type="email" id="email" name="email" class="form-control" 
                            placeholder="Ingrese el email" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="especialidad" class="required">Especialidad</label>
-                    <input type="text" id="especialidad" class="form-control" 
-                           placeholder="Ej: Fuerza y acondicionamiento" required>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="fecha_contratacion" class="required">Fecha de Contratación</label>
-                        <input type="date" id="fecha_contratacion" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="sueldo">Sueldo</label>
-                        <input type="number" id="sueldo" class="form-control" 
-                               placeholder="Ingrese el sueldo" step="0.01">
-                    </div>
+                    <label for="specialty">Especialidad</label>
+                    <input type="text" id="specialty" name="specialty" class="form-control" 
+                           placeholder="Ej: Fuerza y acondicionamiento">
                 </div>
 
                 <div class="form-group">
-                    <label for="certificaciones">Certificaciones</label>
-                    <textarea id="certificaciones" class="form-control form-textarea" 
-                              placeholder="Lista de certificaciones..." rows="3"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="experiencia">Experiencia (años)</label>
-                    <input type="number" id="experiencia" class="form-control" 
-                           placeholder="Años de experiencia" min="0" max="50">
-                </div>
-
-                <div class="form-group">
-                    <div class="form-check-inline">
-                        <input type="checkbox" id="activo" class="form-check-input" checked>
-                        <label for="activo" class="form-check-label">Entrenador activo</label>
-                    </div>
+                    <label for="status">Estado</label>
+                    <select id="status" name="status" class="form-select">
+                        <option value="active">Activo</option>
+                        <option value="inactive">Inactivo</option>
+                    </select>
                 </div>
 
                 <div class="form-actions">
-                    <a href="{% url 'entrenador:entrenadores' %}" class="btn btn-secondary">
+                    <!-- Enlace simple para cancelar, sin JS inline -->
+                    <a href="{% url 'entrenador:entrenadores' %}" class="btn-form-cancel">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn-form-submit">
                         <i class="fas fa-save"></i> Guardar Entrenador
                     </button>
                 </div>
@@ -103,8 +80,4 @@
         </div>
     </div>
 </main>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'entrenador/js/pages/formulario_entrenador.js' %}"></script>
 {% endblock %}

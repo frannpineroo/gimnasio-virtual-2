@@ -1,9 +1,11 @@
-/* CORRECCIÓN DEL ESPACIO IZQUIERDO */
+/* nueva-rutina.css - VERSIÓN COMPLETA DEL REPOSITORIO VIEJO ADAPTADA */
+
+/* Reset para esta página específica */
 body .main-content {
     margin-left: 0 !important;
     width: 100% !important;
-    max-width: 100% !important;
     padding: 0 !important;
+    box-sizing: border-box !important;
 }
 
 /* ESTILOS ESPECÍFICOS PARA LA PÁGINA DE NUEVA RUTINA */
@@ -113,6 +115,33 @@ body .main-content {
     color: #fff;
     box-shadow: 0 8px 15px rgba(50, 205, 50, 0.3);
     transform: translateY(-3px);
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: #000;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border: 1px solid var(--card-border);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: var(--font-size-small);
 }
 
 /* Formulario */
@@ -432,10 +461,98 @@ body .main-content {
 }
 
 /* Modal de Ejercicios - MEJORADO */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+}
+
+.modal.show {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
 .large-modal {
     width: 90%;
     max-width: 1200px;
     max-height: 90vh;
+}
+
+.config-modal {
+    width: 90%;
+    max-width: 600px;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    width: 100%;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.large-modal .modal-content,
+.config-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.modal-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    font-size: var(--font-size-large);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 24px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-modal:hover {
+    color: var(--text-primary);
+}
+
+.large-modal .modal-body,
+.config-modal .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+}
+
+.config-modal-body {
+    padding: var(--spacing-lg);
 }
 
 .exercise-filters {
@@ -563,15 +680,6 @@ body .main-content {
 }
 
 /* Modal de Configuración - MEJORADO */
-.config-modal {
-    width: 90%;
-    max-width: 600px;
-}
-
-.config-modal-body {
-    padding: var(--spacing-lg);
-}
-
 .exercise-config {
     padding: var(--spacing-lg);
     background: rgba(255, 255, 255, 0.02);
@@ -605,6 +713,23 @@ body .main-content {
     box-shadow: 0 0 0 2px rgba(50, 205, 50, 0.2);
 }
 
+/* ESTILOS PARA MODAL-ACTIONS EN NUEVA RUTINA */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--card-border);
+    background: rgba(255, 255, 255, 0.02);
+    margin-top: auto;
+}
+
+/* Asegurar que los botones en modal-actions tengan un margen adecuado */
+.modal-actions .btn {
+    min-width: 120px;
+    justify-content: center;
+}
+
 /* Estados vacíos */
 .empty-state {
     text-align: center;
@@ -616,6 +741,12 @@ body .main-content {
     font-size: 48px;
     margin-bottom: var(--spacing-md);
     color: var(--card-border);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Responsive */
@@ -708,6 +839,16 @@ body .main-content {
     .btn-save {
         max-width: none;
     }
+    
+    .modal-actions {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .modal-actions .btn {
+        min-width: auto;
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -727,61 +868,4 @@ body .main-content {
         padding: 10px 16px;
         font-size: var(--font-size-small);
     }
-}
-
-
-/* ESTILOS PARA MODAL-ACTIONS EN NUEVA RUTINA */
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    border-top: 1px solid var(--card-border);
-    background: rgba(255, 255, 255, 0.02);
-    margin-top: auto;
-}
-
-/* Asegurar que los botones en modal-actions tengan un margen adecuado */
-.modal-actions .btn {
-    min-width: 120px;
-    justify-content: center;
-}
-
-/* Estilos específicos para los botones secundarios en modales */
-.modal-actions .btn-secondary {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
-    border: 1px solid var(--card-border);
-}
-
-.modal-actions .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--primary-color);
-}
-
-/* Responsive para modal-actions */
-@media (max-width: 768px) {
-    .modal-actions {
-        flex-direction: column;
-        gap: var(--spacing-sm);
-    }
-    
-    .modal-actions .btn {
-        min-width: auto;
-        width: 100%;
-    }
-}
-
-/* Asegurar que el contenido del modal tenga la altura correcta */
-.large-modal .modal-content,
-.config-modal .modal-content {
-    display: flex;
-    flex-direction: column;
-    max-height: 90vh;
-}
-
-.large-modal .modal-body,
-.config-modal .modal-body {
-    flex: 1;
-    overflow-y: auto;
 }

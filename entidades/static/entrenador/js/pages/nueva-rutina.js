@@ -1,3 +1,5 @@
+// nueva-rutina.js - VERSIÓN COMPLETA DEL REPOSITORIO VIEJO ADAPTADA
+
 // PÁGINA DE NUEVA RUTINA
 const nuevaRutinaPage = {
     // Estados
@@ -7,7 +9,6 @@ const nuevaRutinaPage = {
     currentExercise: null,
     editingExercise: null,
     exercises: [],
-    modalManager: null,
     exercisesModalManager: null,
     configModalManager: null,
     initialized: false,
@@ -33,7 +34,7 @@ const nuevaRutinaPage = {
                 grupoMuscular: "pecho",
                 tipo: "fuerza",
                 equipamiento: "barra, banco",
-                imagen: "https://via.placeholder.com/60",
+                imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=60&h=60&fit=crop",
                 dificultad: "intermedia"
             },
             {
@@ -43,7 +44,7 @@ const nuevaRutinaPage = {
                 grupoMuscular: "piernas",
                 tipo: "fuerza",
                 equipamiento: "barra, rack",
-                imagen: "https://via.placeholder.com/60",
+                imagen: "https://images.unsplash.com/photo-1549060279-7e168fce7090?w=60&h=60&fit=crop",
                 dificultad: "intermedia"
             },
             {
@@ -53,7 +54,7 @@ const nuevaRutinaPage = {
                 grupoMuscular: "espalda",
                 tipo: "fuerza",
                 equipamiento: "barra de dominadas",
-                imagen: "https://via.placeholder.com/60",
+                imagen: "https://images.unsplash.com/photo-1598974357801-cbca100e5d10?w=60&h=60&fit=crop",
                 dificultad: "avanzada"
             },
             {
@@ -63,7 +64,7 @@ const nuevaRutinaPage = {
                 grupoMuscular: "hombros",
                 tipo: "fuerza",
                 equipamiento: "barra, rack",
-                imagen: "https://via.placeholder.com/60",
+                imagen: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=60&h=60&fit=crop",
                 dificultad: "intermedia"
             },
             {
@@ -73,7 +74,7 @@ const nuevaRutinaPage = {
                 grupoMuscular: "espalda",
                 tipo: "fuerza",
                 equipamiento: "barra, discos",
-                imagen: "https://via.placeholder.com/60",
+                imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=60&h=60&fit=crop",
                 dificultad: "avanzada"
             },
             {
@@ -83,7 +84,27 @@ const nuevaRutinaPage = {
                 grupoMuscular: "brazos",
                 tipo: "fuerza",
                 equipamiento: "mancuernas",
-                imagen: "https://via.placeholder.com/60",
+                imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=60&h=60&fit=crop",
+                dificultad: "principiante"
+            },
+            {
+                id: 7,
+                nombre: "Fondos en Paralelas",
+                descripcion: "Ejercicio para pecho y tríceps",
+                grupoMuscular: "pecho",
+                tipo: "fuerza",
+                equipamiento: "paralelas",
+                imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=60&h=60&fit=crop",
+                dificultad: "intermedia"
+            },
+            {
+                id: 8,
+                nombre: "Plancha",
+                descripcion: "Ejercicio isométrico para abdomen",
+                grupoMuscular: "abdomen",
+                tipo: "isometria",
+                equipamiento: "ninguno",
+                imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=60&h=60&fit=crop",
                 dificultad: "principiante"
             }
         ];
@@ -95,26 +116,65 @@ const nuevaRutinaPage = {
     },
 
     initModals() {
-        if (typeof ModalManager === 'undefined') {
-            console.error('ModalManager no está disponible');
-            setTimeout(() => this.initModals(), 100);
-            return;
+        // Inicializar modal manager si existe
+        if (typeof ModalManager !== 'undefined') {
+            this.exercisesModalManager = new ModalManager('exercises-modal');
+            this.configModalManager = new ModalManager('exercise-config-modal');
+        } else {
+            // Fallback manual para modales
+            this.initModalFallback();
         }
-
-        this.exercisesModalManager = new ModalManager('exercises-modal');
-        this.configModalManager = new ModalManager('exercise-config-modal');
         
-        console.log('Modals initialized:', this.exercisesModalManager, this.configModalManager);
+        console.log('Modals initialized');
+    },
+
+    initModalFallback() {
+        // Manejo manual de modales
+        const exercisesModal = document.getElementById('exercises-modal');
+        const configModal = document.getElementById('exercise-config-modal');
+        
+        if (exercisesModal) {
+            this.exercisesModalManager = {
+                show: () => {
+                    exercisesModal.style.display = 'flex';
+                    setTimeout(() => exercisesModal.classList.add('show'), 10);
+                },
+                hide: () => {
+                    exercisesModal.classList.remove('show');
+                    setTimeout(() => {
+                        exercisesModal.style.display = 'none';
+                    }, 300);
+                }
+            };
+        }
+        
+        if (configModal) {
+            this.configModalManager = {
+                show: () => {
+                    configModal.style.display = 'flex';
+                    setTimeout(() => configModal.classList.add('show'), 10);
+                },
+                hide: () => {
+                    configModal.classList.remove('show');
+                    setTimeout(() => {
+                        configModal.style.display = 'none';
+                    }, 300);
+                }
+            };
+        }
     },
 
     initEventListeners() {
         // Guardar rutina
         const saveBtn = document.getElementById('save-routine-btn');
         if (saveBtn) {
-            saveBtn.addEventListener('click', () => this.saveRoutine());
+            saveBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.saveRoutine();
+            });
         }
 
-        // Cambio de días por semana - CORREGIDO
+        // Cambio de días por semana
         const daysSelect = document.getElementById('routine-days');
         if (daysSelect) {
             daysSelect.addEventListener('change', (e) => {
@@ -211,7 +271,7 @@ const nuevaRutinaPage = {
         const routine = routines.find(r => r.id == routineId);
 
         if (routine) {
-            this.currentRoutine = { ...routine };
+            this.currentRoutine = JSON.parse(JSON.stringify(routine));
             this.populateForm();
             this.generateDays(routine.diasSemana);
             this.loadDaysData();
@@ -390,6 +450,7 @@ const nuevaRutinaPage = {
 
     renderExercisesGrid(exercises) {
         const grid = document.getElementById('exercises-grid');
+        if (!grid) return;
         
         if (exercises.length === 0) {
             grid.innerHTML = `
@@ -625,7 +686,8 @@ const nuevaRutinaPage = {
         this.saveToStorage();
 
         alert('Rutina guardada correctamente!');
-        window.location.href = 'rutinas.html';
+        // Redireccionar usando Django
+        window.location.href = '/entrenador/rutinas/'; // Ajusta esta URL según tu configuración
     },
 
     validateForm() {
@@ -692,7 +754,7 @@ const nuevaRutinaPage = {
     }
 };
 
-// Helper functions
+// Helper functions - Si no existen, las creamos
 if (typeof Helpers === 'undefined') {
     const Helpers = {
         debounce(func, wait) {
@@ -712,6 +774,47 @@ if (typeof Helpers === 'undefined') {
         }
     };
     window.Helpers = Helpers;
+}
+
+// Storage utility - Si no existe, la creamos
+if (typeof Storage === 'undefined') {
+    const Storage = {
+        get(key) {
+            const item = localStorage.getItem(key);
+            return item ? JSON.parse(item) : null;
+        },
+        
+        set(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+    };
+    window.Storage = Storage;
+}
+
+// ModalManager - Si no existe, lo creamos
+if (typeof ModalManager === 'undefined') {
+    class ModalManager {
+        constructor(modalId) {
+            this.modal = document.getElementById(modalId);
+        }
+        
+        show() {
+            if (this.modal) {
+                this.modal.style.display = 'flex';
+                setTimeout(() => this.modal.classList.add('show'), 10);
+            }
+        }
+        
+        hide() {
+            if (this.modal) {
+                this.modal.classList.remove('show');
+                setTimeout(() => {
+                    this.modal.style.display = 'none';
+                }, 300);
+            }
+        }
+    }
+    window.ModalManager = ModalManager;
 }
 
 // Inicialización automática

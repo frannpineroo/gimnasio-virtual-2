@@ -1,7 +1,7 @@
 /* FILTROS REUTILIZABLES */
 .filters {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: 1fr 1fr auto; /* auto para el botón redondo */
     gap: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
     align-items: end;
@@ -179,10 +179,110 @@
     color: var(--primary-color);
 }
 
+/* CONTENEDOR ESPECIAL PARA BOTÓN DE RESET */
+.filter-reset-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    height: 56px; /* Misma altura que los otros filtros */
+    margin-bottom: var(--spacing-sm);
+}
+
+/* BOTÓN DE RESET REDONDO */
+.btn-reset-round {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 1.5px solid var(--card-border);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-normal);
+    padding: 0;
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-reset-round::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(50, 205, 50, 0.1) 0%, transparent 100%);
+    opacity: 0;
+    transition: var(--transition-normal);
+}
+
+.btn-reset-round:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(50, 205, 50, 0.2);
+}
+
+.btn-reset-round:hover::before {
+    opacity: 1;
+}
+
+.btn-reset-round:hover i {
+    color: var(--primary-color);
+    transform: rotate(180deg);
+}
+
+.btn-reset-round i {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    transition: all var(--transition-normal);
+    z-index: 1;
+}
+
+.btn-reset-round:active i {
+    transform: rotate(360deg);
+}
+
+/* Tooltip para el botón */
+.btn-reset-round::after {
+    content: "Resetear filtros";
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    padding: 6px 12px;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-small);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition-fast);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-sm);
+    z-index: 10;
+}
+
+.btn-reset-round:hover::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: -45px;
+}
+
 /* RESPONSIVE FILTROS */
 @media (max-width: 1200px) {
     .filters {
         grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .filter-reset-container {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+        margin-top: var(--spacing-sm);
+        height: auto;
     }
 }
 
@@ -190,5 +290,16 @@
     .filters {
         grid-template-columns: 1fr;
         gap: var(--spacing-md);
+    }
+    
+    .filter-reset-container {
+        grid-column: 1;
+        justify-content: center;
+        margin-top: 0;
+    }
+    
+    .btn-reset-round {
+        width: 48px;
+        height: 48px;
     }
 }

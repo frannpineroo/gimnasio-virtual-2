@@ -3,7 +3,7 @@ from django.http import HttpResponseServerError
 from django.template import TemplateDoesNotExist
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.db import IntegrityError
 
 def sign_up(request):
@@ -31,6 +31,12 @@ def sign_up(request):
                     'error': 'Las contraseñas no coinciden.'
                 })
     
+def signout(request):
+    logout(request)
+    return(redirect('acceso/signin.html'))
+
+def signin(request):
+    return render(request, 'acceso/signin.html')
 
 def home_view(request):
     try:

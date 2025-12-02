@@ -54,7 +54,7 @@
                     
                     <div class="form-group">
                         <label for="status" class="required">Estado</label>
-                        <select id="status" name="status" class="form-control form-select" required>
+                        <select id="status" name="status" class="form-select" required>
                             <option value="">Seleccionar estado</option>
                             <option value="available">Disponible</option>
                             <option value="in_maintenance">En Mantenimiento</option>
@@ -65,7 +65,7 @@
 
                 <div class="form-group">
                     <label for="condition" class="required">Condición</label>
-                    <select id="condition" name="condition" class="form-control form-select" required>
+                    <select id="condition" name="condition" class="form-select" required>
                         <option value="">Seleccionar condición</option>
                         <option value="new">Nuevo</option>
                         <option value="good">Bueno</option>
@@ -75,10 +75,11 @@
                 </div>
 
                 <div class="form-actions">
-                    <a href="{% url 'entrenador:equipos' %}" class="btn btn-secondary">
+                    <!-- Enlace simple para cancelar, sin JS inline -->
+                    <a href="{% url 'entrenador:equipos' %}" class="btn-form-cancel">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn-form-submit">
                         <i class="fas fa-save"></i> Guardar Equipo
                     </button>
                 </div>

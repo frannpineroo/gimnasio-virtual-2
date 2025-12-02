@@ -11,6 +11,7 @@
 <main class="main-content">
     <div class="form-page-section">
         <div class="form-container">
+
             <div class="form-header">
                 <h1 class="form-title">Nuevo Cliente</h1>
                 <a href="{% url 'entrenador:clientes' %}" class="form-back-btn">
@@ -19,78 +20,59 @@
             </div>
 
             <form id="cliente-form" class="form-content">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="name" class="required">Nombre</label>
-                        <input type="text" id="name" name="name" class="form-control" 
-                               placeholder="Ingrese el nombre" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="last_name" class="required">Apellido</label>
-                        <input type="text" id="last_name" name="last_name" class="form-control" 
-                               placeholder="Ingrese el apellido" required>
-                    </div>
-                </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="dni">DNI</label>
-                        <input type="text" id="dni" name="dni" class="form-control" 
-                               placeholder="Ingrese el DNI">
+                        <label class="required">Nombre</label>
+                        <input type="text" class="form-control" placeholder="Ingrese el nombre" required>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="phone">Teléfono</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" 
-                               placeholder="Ingrese el teléfono">
+                        <label class="required">Apellido</label>
+                        <input type="text" class="form-control" placeholder="Ingrese el apellido" required>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" 
-                           placeholder="Ingrese el email">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>DNI</label>
+                        <input type="text" class="form-control" placeholder="Ingrese el DNI">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" class="form-control" placeholder="Ingrese el teléfono">
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="experience_level" class="required">Nivel de Experiencia</label>
-                    <select id="experience_level" name="experience_level" class="form-control form-select" required>
-                        <option value="">Seleccionar nivel</option>
-                        <option value="beginner">Principiante</option>
-                        <option value="intermediate">Intermedio</option>
-                        <option value="advanced">Avanzado</option>
-                    </select>
-                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select class="form-select">
+                            <option value="" selected>Seleccione estado</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label for="goal">Objetivos</label>
-                    <input type="text" id="goal" name="goal" class="form-control" 
-                           placeholder="Describe los objetivos del cliente">
-                </div>
-
-                <div class="form-group">
-                    <label for="injuries">Lesiones o Observaciones</label>
-                    <textarea id="injuries" name="injuries" class="form-control form-textarea" 
-                              placeholder="Describa lesiones o condiciones médicas importantes..." rows="4"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="status">Estado</label>
-                    <select id="status" name="status" class="form-control form-select">
-                        <option value="active">Activo</option>
-                        <option value="inactive">Inactivo</option>
-                    </select>
+                    <div class="form-group">
+                        <label>Grupo Muscular</label>
+                        <select class="form-select">
+                            <option value="" selected>Seleccione grupo</option>
+                            <option value="pecho">Pecho</option>
+                            <option value="espalda">Espalda</option>
+                            <option value="piernas">Piernas</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-actions">
-                    <a href="{% url 'entrenador:clientes' %}" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Cancelar
-                    </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="button" class="btn-form-cancel">Cancelar</button>
+                    <button type="submit" class="btn-form-submit">
                         <i class="fas fa-save"></i> Guardar Cliente
                     </button>
                 </div>
+
             </form>
         </div>
     </div>

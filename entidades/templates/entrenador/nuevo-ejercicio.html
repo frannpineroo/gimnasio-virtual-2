@@ -35,7 +35,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="muscle_group">Grupo Muscular</label>
-                        <select id="muscle_group" name="muscle_group" class="form-control form-select">
+                        <select id="muscle_group" name="muscle_group" class="form-select">
                             <option value="">Seleccionar grupo muscular</option>
                             {% for grupo in grupos_musculares %}
                             <option value="{{ grupo.id }}">{{ grupo.name }}</option>
@@ -45,7 +45,7 @@
                     
                     <div class="form-group">
                         <label for="muscle_subgroup">Subgrupo Muscular</label>
-                        <select id="muscle_subgroup" name="muscle_subgroup" class="form-control form-select">
+                        <select id="muscle_subgroup" name="muscle_subgroup" class="form-select">
                             <option value="">Seleccionar subgrupo muscular</option>
                             {% for subgrupo in subgrupos_musculares %}
                             <option value="{{ subgrupo.id }}">{{ subgrupo.name }}</option>
@@ -55,10 +55,11 @@
                 </div>
 
                 <div class="form-actions">
-                    <a href="{% url 'entrenador:ejercicios' %}" class="btn btn-secondary">
+                    <!-- Enlace simple para cancelar, sin JS inline -->
+                    <a href="{% url 'entrenador:ejercicios' %}" class="btn-form-cancel">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn-form-submit">
                         <i class="fas fa-save"></i> Guardar Ejercicio
                     </button>
                 </div>

@@ -20,81 +20,37 @@
 
             <form id="ejercicio-form" class="form-content">
                 <div class="form-group">
-                    <label for="nombre" class="required">Nombre del Ejercicio</label>
-                    <input type="text" id="nombre" class="form-control" 
+                    <label for="name" class="required">Nombre del Ejercicio</label>
+                    <input type="text" id="name" name="name" class="form-control" 
                            placeholder="Ej: Sentadilla con barra" required>
                 </div>
 
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" name="description" class="form-control form-textarea" 
+                              placeholder="Describe el ejercicio, técnica, precauciones..." 
+                              rows="5"></textarea>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="grupo_muscular" class="required">Grupo Muscular Principal</label>
-                        <select id="grupo_muscular" class="form-control form-select" required>
+                        <label for="muscle_group">Grupo Muscular</label>
+                        <select id="muscle_group" name="muscle_group" class="form-control form-select">
                             <option value="">Seleccionar grupo muscular</option>
-                            <option value="pectorales">Pectorales</option>
-                            <option value="espalda">Espalda</option>
-                            <option value="hombros">Hombros</option>
-                            <option value="biceps">Bíceps</option>
-                            <option value="triceps">Tríceps</option>
-                            <option value="piernas">Piernas</option>
-                            <option value="abdominales">Abdominales</option>
+                            {% for grupo in grupos_musculares %}
+                            <option value="{{ grupo.id }}">{{ grupo.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     
                     <div class="form-group">
-                        <label for="dificultad" class="required">Nivel de Dificultad</label>
-                        <select id="dificultad" class="form-control form-select" required>
-                            <option value="">Seleccionar dificultad</option>
-                            <option value="principiante">Principiante</option>
-                            <option value="intermedio">Intermedio</option>
-                            <option value="avanzado">Avanzado</option>
+                        <label for="muscle_subgroup">Subgrupo Muscular</label>
+                        <select id="muscle_subgroup" name="muscle_subgroup" class="form-control form-select">
+                            <option value="">Seleccionar subgrupo muscular</option>
+                            {% for subgrupo in subgrupos_musculares %}
+                            <option value="{{ subgrupo.id }}">{{ subgrupo.name }}</option>
+                            {% endfor %}
                         </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="equipo_requerido">Equipo Requerido</label>
-                    <select id="equipo_requerido" class="form-control form-select">
-                        <option value="">Sin equipo específico</option>
-                        <option value="barra">Barra</option>
-                        <option value="mancuernas">Mancuernas</option>
-                        <option value="maquina">Máquina</option>
-                        <option value="bandas">Bandas de resistencia</option>
-                        <option value="peso_corporal">Peso corporal</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="descripcion" class="required">Descripción del Ejercicio</label>
-                    <textarea id="descripcion" class="form-control form-textarea" 
-                              placeholder="Describe la técnica correcta, puntos clave, precauciones..." 
-                              rows="5" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="instrucciones">Instrucciones Paso a Paso</label>
-                    <textarea id="instrucciones" class="form-control form-textarea" 
-                              placeholder="Instrucciones detalladas para realizar el ejercicio correctamente..." 
-                              rows="4"></textarea>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="imagen_url">URL de Imagen (opcional)</label>
-                        <input type="url" id="imagen_url" class="form-control" 
-                               placeholder="https://ejemplo.com/imagen.jpg">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="video_url">URL de Video (opcional)</label>
-                        <input type="url" id="video_url" class="form-control" 
-                               placeholder="https://youtube.com/ejemplo">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-check-inline">
-                        <input type="checkbox" id="activo" class="form-check-input" checked>
-                        <label for="activo" class="form-check-label">Ejercicio activo</label>
                     </div>
                 </div>
 
@@ -110,8 +66,4 @@
         </div>
     </div>
 </main>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'entrenador/js/pages/formulario_ejercicio.js' %}"></script>
 {% endblock %}

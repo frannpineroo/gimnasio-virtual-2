@@ -1,0 +1,81 @@
+<!-- entidades/templates/cliente/progreso.html -->
+{% extends 'cliente/base.html' %}
+{% load static %}
+
+{% block title %}Mi Progreso{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'cliente/css/pages/progreso.css' %}" />
+{% endblock %}
+
+{% block content %}
+<header class="cabecera-cliente">
+    <div class="contenido-cabecera">
+        <div class="detalles-cliente">
+            <h1>Mi Progreso</h1>
+            <p>Evolución de tus ejercicios y cálculo de 10RM</p>
+        </div>
+        <div class="acciones-cabecera">
+            <button class="btn btn-outline" id="btn-volver">
+                <i class="fas fa-arrow-left"></i> Volver
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="principal-cliente">
+    <div class="contenedor-progreso">
+        <!-- Selector de Ejercicio -->
+        <div class="tarjeta-selector tarjeta">
+            <label for="select-ejercicio" class="etiqueta-selector">Selecciona un Ejercicio:</label>
+            <select id="select-ejercicio" class="select-ejercicio">
+                <option value="">-- Elegir ejercicio --</option>
+            </select>
+        </div>
+
+        <!-- Resumen de Progreso -->
+        <div class="tarjeta-resumen tarjeta">
+            <h3>Resumen del Progreso</h3>
+            <div class="estadisticas-progreso">
+                <div class="estadistica">
+                    <span class="valor-estadistica" id="mejor-peso">-</span>
+                    <span class="etiqueta-estadistica">Mejor Peso</span>
+                </div>
+                <div class="estadistica">
+                    <span class="valor-estadistica" id="mejor-10rm">-</span>
+                    <span class="etiqueta-estadistica">Mejor 10RM</span>
+                </div>
+                <div class="estadistica">
+                    <span class="valor-estadistica" id="total-sesiones">0</span>
+                    <span class="etiqueta-estadistica">Sesiones</span>
+                </div>
+                <div class="estadistica">
+                    <span class="valor-estadistica" id="progreso-peso">0%</span>
+                    <span class="etiqueta-estadistica">Progreso</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Progreso -->
+        <div class="tarjeta-grafico tarjeta">
+            <h3>Evolución del Peso (10RM)</h3>
+            <div class="contenedor-grafico" id="contenedor-grafico">
+                <canvas id="grafico-progreso"></canvas>
+            </div>
+        </div>
+
+        <!-- Historial Detallado -->
+        <div class="tarjeta-historial tarjeta">
+            <h3>Historial por Semana</h3>
+            <div class="contenedor-historial" id="contenedor-historial">
+                <!-- Los datos se llenarán con JavaScript -->
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'cliente/js/pages/progreso.js' %}"></script>
+{% endblock %}

@@ -7,4 +7,12 @@
 
 <h1>Loguear</h1>
 
+<form action="../entrenador/home.html" method="post">
+    {% csrf_token %}
+    {{form}}
+    <button>
+        Iniciar Sesión
+    </button>
+</form>
+
 {% endblock %}

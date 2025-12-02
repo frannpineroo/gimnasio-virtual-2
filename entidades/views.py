@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseServerError
 from django.template import TemplateDoesNotExist
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout
 from django.db import IntegrityError
@@ -36,7 +36,9 @@ def signout(request):
     return(redirect('acceso/signin.html'))
 
 def signin(request):
-    return render(request, 'acceso/signin.html')
+    return render(request, 'acceso/signin.html', {
+        'form': AuthenticationForm()
+    })
 
 def home_view(request):
     try:

@@ -54,6 +54,11 @@ class Exercise(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        db_table = 'exercises'
+        verbose_name = 'Ejercicio'
+        verbose_name_plural = 'Ejercicios'
+
 class User(models.Model):
     username = models.CharField(max_length=150, unique=True)
     password = models.CharField(max_length=128)

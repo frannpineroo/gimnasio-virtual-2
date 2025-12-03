@@ -1,0 +1,26 @@
+<!-- entidades/templates/cliente/base.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRAINING! - {% block title %}Cliente{% endblock %}</title>
+    
+    <!-- CSS externos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
+    
+    <!-- CSS base común -->
+    <link rel="stylesheet" href="{% static 'cliente/css/base/variables.css' %}" />
+    <link rel="stylesheet" href="{% static 'cliente/css/base/base.css' %}" />
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+    
+    <!-- Scripts base si los necesitas -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

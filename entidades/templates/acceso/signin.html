@@ -7,9 +7,11 @@
 
 <h1>Loguear</h1>
 
-<form action="../entrenador/home.html" method="post">
+{{ error }}
+
+<form action="/signin/" method="post">
     {% csrf_token %}
-    {{form}}
+    {{form.as_p}}
     <button>
         Iniciar Sesión
     </button>

@@ -270,12 +270,14 @@ if (!document.querySelector('style[data-notification-styles]')) {
         right: 20px;
         padding: 16px 20px;
         border-radius: 8px;
-        background: white;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        background: #000000;  /* Fondo negro */
+        color: #ffffff;       /* Texto blanco */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         transform: translateX(150%);
         transition: transform 0.3s ease;
         z-index: 10000;
         max-width: 350px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .notification.show {
@@ -306,6 +308,11 @@ if (!document.querySelector('style[data-notification-styles]')) {
     
     .notification-error .notification-content i {
         color: #dc3545;
+    }
+    
+    .notification-content span {
+        color: #ffffff;  /* Texto blanco */
+        font-weight: 500;
     }
     `;
     document.head.appendChild(notificationStyles);

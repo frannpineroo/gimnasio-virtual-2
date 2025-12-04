@@ -122,23 +122,29 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="client-phone">Teléfono</label>
-                    <input type="tel" id="client-phone" placeholder="Ej: +34 600 123 456" />
+                    <label for="client-email">Email</label>
+                    <input type="email" id="client-email" placeholder="Ej: cliente@email.com" />
                 </div>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
+                    <label for="client-phone">Teléfono</label>
+                    <input type="tel" id="client-phone" placeholder="Ej: +34 600 123 456" />
+                </div>
+                
+                <div class="form-group">
                     <label for="client-experience-level">Nivel de Experiencia *</label>
                     <select id="client-experience-level" required>
                         <option value="">Selecciona nivel</option>
-                        <option value="principiante">Principiante</option>
-                        <option value="intermedio">Intermedio</option>
-                        <option value="avanzado">Avanzado</option>
-                        <option value="experto">Experto</option>
+                        <option value="beginner">Principiante</option>
+                        <option value="intermediate">Intermedio</option>
+                        <option value="advanced">Avanzado</option>
                     </select>
                 </div>
-                
+            </div>
+            
+            <div class="form-row">
                 <div class="form-group">
                     <label for="client-goal">Objetivo *</label>
                     <select id="client-goal" required>
@@ -150,19 +156,19 @@
                         <option value="mantenimiento">Mantenimiento</option>
                     </select>
                 </div>
+                
+                <div class="form-group">
+                    <label for="client-status">Estado *</label>
+                    <select id="client-status" required>
+                        <option value="active">Activo</option>
+                        <option value="inactive">Inactivo</option>
+                    </select>
+                </div>
             </div>
             
             <div class="form-group">
                 <label for="client-injuries">Lesiones o condiciones médicas</label>
                 <textarea id="client-injuries" rows="2" placeholder="Describa lesiones o condiciones médicas relevantes..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="client-status">Estado *</label>
-                <select id="client-status" required>
-                    <option value="activo">Activo</option>
-                    <option value="inactivo">Inactivo</option>
-                </select>
             </div>
             
             <div class="form-actions">

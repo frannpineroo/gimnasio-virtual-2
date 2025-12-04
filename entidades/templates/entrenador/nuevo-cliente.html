@@ -21,47 +21,85 @@
 
             <form id="cliente-form" class="form-content">
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="required">Nombre</label>
-                        <input type="text" class="form-control" placeholder="Ingrese el nombre" required>
+                <!-- Sección 1: Información personal -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Información Personal</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">Nombre</label>
+                            <input type="text" class="form-control" placeholder="Ingrese el nombre" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required">Apellido</label>
+                            <input type="text" class="form-control" placeholder="Ingrese el apellido" required>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="required">Apellido</label>
-                        <input type="text" class="form-control" placeholder="Ingrese el apellido" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">DNI</label>
+                            <input type="text" class="form-control" placeholder="Ingrese el DNI" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" placeholder="Ingrese el email">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="tel" class="form-control" placeholder="Ingrese el teléfono">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required">Nivel de Experiencia</label>
+                            <select class="form-select" required>
+                                <option value="" selected>Seleccione nivel</option>
+                                <option value="principiante">Principiante</option>
+                                <option value="intermedio">Intermedio</option>
+                                <option value="avanzado">Avanzado</option>
+                                <option value="experto">Experto</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>DNI</label>
-                        <input type="text" class="form-control" placeholder="Ingrese el DNI">
-                    </div>
+                <!-- Separador visual -->
+                <hr class="form-separator">
 
+                <!-- Sección 2: Información de entrenamiento -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Información de Entrenamiento</h3>
+                    
                     <div class="form-group">
-                        <label>Teléfono</label>
-                        <input type="tel" class="form-control" placeholder="Ingrese el teléfono">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Estado</label>
-                        <select class="form-select">
-                            <option value="" selected>Seleccione estado</option>
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
+                        <label class="required">Objetivo</label>
+                        <select class="form-select" required>
+                            <option value="" selected>Seleccione objetivo</option>
+                            <option value="perdida_grasa">Pérdida de grasa</option>
+                            <option value="ganancia_muscular">Ganancia muscular</option>
+                            <option value="mejora_rendimiento">Mejora de rendimiento</option>
+                            <option value="rehabilitacion">Rehabilitación</option>
+                            <option value="mantenimiento">Mantenimiento</option>
+                            <option value="tonificacion">Tonificación</option>
+                            <option value="fuerza">Aumento de fuerza</option>
+                            <option value="resistencia">Mejora de resistencia</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Grupo Muscular</label>
-                        <select class="form-select">
-                            <option value="" selected>Seleccione grupo</option>
-                            <option value="pecho">Pecho</option>
-                            <option value="espalda">Espalda</option>
-                            <option value="piernas">Piernas</option>
+                        <label>Lesiones o condiciones médicas</label>
+                        <textarea class="form-control" rows="3" placeholder="Describa lesiones o condiciones médicas relevantes..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required">Estado</label>
+                        <select class="form-select" required>
+                            <option value="activo" selected>Activo</option>
+                            <option value="inactivo">Inactivo</option>
                         </select>
                     </div>
                 </div>

@@ -71,8 +71,10 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
+                        <th>Apellido</th>
                         <th>DNI</th>
-                        <th>Experiencia</th>
+                        <th>Teléfono</th>
+                        <th>Nivel de Experiencia</th>
                         <th>Objetivo</th>
                         <th>Lesiones</th>
                         <th>Estado</th>
@@ -81,7 +83,7 @@
                 </thead>
                 <tbody id="clients-table-body">
                     <tr id="loading-row">
-                        <td colspan="7" style="text-align:center; padding: 30px;">
+                        <td colspan="9" style="text-align:center; padding: 30px;">
                             <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #32CD32;"></i> Cargando clientes...
                         </td>
                     </tr>
@@ -91,7 +93,7 @@
     </div>
 </main>
 
-<!-- Modal para agregar/editar cliente -->
+<!--- Modal para editar cliente --->
 <div class="modal" id="client-modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -103,31 +105,51 @@
             
             <div class="form-row">
                 <div class="form-group">
-                    <label for="client-name">Nombre completo *</label>
-                    <input type="text" id="client-name" placeholder="Ej: Juan Pérez" required />
+                    <label for="client-name">Nombre *</label>
+                    <input type="text" id="client-name" placeholder="Ej: Juan" required />
                 </div>
                 
+                <div class="form-group">
+                    <label for="client-lastname">Apellido *</label>
+                    <input type="text" id="client-lastname" placeholder="Ej: Pérez" required />
+                </div>
+            </div>
+            
+            <div class="form-row">
                 <div class="form-group">
                     <label for="client-dni">DNI *</label>
                     <input type="text" id="client-dni" placeholder="Ej: 12345678A" required />
                 </div>
+                
+                <div class="form-group">
+                    <label for="client-phone">Teléfono</label>
+                    <input type="tel" id="client-phone" placeholder="Ej: +34 600 123 456" />
+                </div>
             </div>
             
-            <div class="form-group">
-                <label for="client-experience">Experiencia previa</label>
-                <textarea id="client-experience" rows="2" placeholder="Describa la experiencia previa del cliente en entrenamiento..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="client-goal">Objetivo *</label>
-                <select id="client-goal" required>
-                    <option value="">Selecciona un objetivo</option>
-                    <option value="perdida_grasa">Pérdida de grasa</option>
-                    <option value="ganancia_muscular">Ganancia muscular</option>
-                    <option value="mejora_rendimiento">Mejora de rendimiento</option>
-                    <option value="rehabilitacion">Rehabilitación</option>
-                    <option value="mantenimiento">Mantenimiento</option>
-                </select>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="client-experience-level">Nivel de Experiencia *</label>
+                    <select id="client-experience-level" required>
+                        <option value="">Selecciona nivel</option>
+                        <option value="principiante">Principiante</option>
+                        <option value="intermedio">Intermedio</option>
+                        <option value="avanzado">Avanzado</option>
+                        <option value="experto">Experto</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="client-goal">Objetivo *</label>
+                    <select id="client-goal" required>
+                        <option value="">Selecciona un objetivo</option>
+                        <option value="perdida_grasa">Pérdida de grasa</option>
+                        <option value="ganancia_muscular">Ganancia muscular</option>
+                        <option value="mejora_rendimiento">Mejora de rendimiento</option>
+                        <option value="rehabilitacion">Rehabilitación</option>
+                        <option value="mantenimiento">Mantenimiento</option>
+                    </select>
+                </div>
             </div>
             
             <div class="form-group">

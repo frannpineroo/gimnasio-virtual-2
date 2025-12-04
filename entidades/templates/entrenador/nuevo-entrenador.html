@@ -18,7 +18,15 @@
                 </a>
             </div>
 
+            <!-- Añade un div oculto con las URLs necesarias -->
+            <div id="urls-data" 
+                 data-list-url="{% url 'entrenador:entrenadores' %}"
+                 style="display: none;">
+            </div>
+
             <form id="entrenador-form" class="form-content">
+                {% csrf_token %}
+                
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name" class="required">Nombre</label>
@@ -62,13 +70,12 @@
                 <div class="form-group">
                     <label for="status">Estado</label>
                     <select id="status" name="status" class="form-select">
-                        <option value="active">Activo</option>
+                        <option value="active" selected>Activo</option>
                         <option value="inactive">Inactivo</option>
                     </select>
                 </div>
 
                 <div class="form-actions">
-                    <!-- Enlace simple para cancelar, sin JS inline -->
                     <a href="{% url 'entrenador:entrenadores' %}" class="btn-form-cancel">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
@@ -80,4 +87,8 @@
         </div>
     </div>
 </main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'entrenador/js/pages/formulario_entrenador.js' %}"></script>
 {% endblock %}

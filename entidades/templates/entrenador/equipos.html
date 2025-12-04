@@ -46,21 +46,17 @@
                             <i class="fas fa-list"></i>
                             <span>Todos los estados</span>
                         </div>
-                        <div class="select-option" data-value="disponible">
+                        <div class="select-option" data-value="available">
                             <i class="fas fa-check-circle"></i>
                             <span>Disponible</span>
                         </div>
-                        <div class="select-option" data-value="mantenimiento">
+                        <div class="select-option" data-value="in_maintenance">
                             <i class="fas fa-tools"></i>
                             <span>En Mantenimiento</span>
                         </div>
-                        <div class="select-option" data-value="reparacion">
+                        <div class="select-option" data-value="out_of_order">
                             <i class="fas fa-wrench"></i>
-                            <span>En Reparación</span>
-                        </div>
-                        <div class="select-option" data-value="baja">
-                            <i class="fas fa-times-circle"></i>
-                            <span>De Baja</span>
+                            <span>Fuera de Servicio</span>
                         </div>
                     </div>
                 </div>
@@ -98,6 +94,79 @@
         </div>
     </div>
 </main>
+
+<!-- Modal para editar/crear equipo -->
+<div class="modal" id="equipment-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title">Nuevo Equipo</h2>
+            <button class="close-modal" id="close-modal">&times;</button>
+        </div>
+        <form id="equipment-form" class="modal-form">
+            {% csrf_token %}
+            <input type="hidden" id="equipment-id" value="">
+            
+            <div class="form-group">
+                <label for="equipment-name">Nombre del Equipo *</label>
+                <input type="text" id="equipment-name" placeholder="Ej: Cinta de correr profesional" required />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="equipment-category">Categoría *</label>
+                    <input type="text" id="equipment-category" placeholder="Ej: Cardio, Fuerza, Peso Libre" required />
+                </div>
+                
+                <div class="form-group">
+                    <label for="equipment-model">Modelo</label>
+                    <input type="text" id="equipment-model" placeholder="Ej: TRX-5000" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="equipment-description">Descripción</label>
+                <textarea id="equipment-description" rows="3" placeholder="Describe el equipo, características..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="equipment-purchase-date">Fecha de Compra</label>
+                    <input type="date" id="equipment-purchase-date" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="equipment-status">Estado *</label>
+                    <select id="equipment-status" required>
+                        <option value="">Seleccionar estado</option>
+                        <option value="available">Disponible</option>
+                        <option value="in_maintenance">En Mantenimiento</option>
+                        <option value="out_of_order">Fuera de Servicio</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="equipment-condition">Condición *</label>
+                <select id="equipment-condition" required>
+                    <option value="">Seleccionar condición</option>
+                    <option value="new">Nuevo</option>
+                    <option value="good">Bueno</option>
+                    <option value="fair">Regular</option>
+                    <option value="poor">Malo</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="cancel-form">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> <span id="submit-text">Guardar Equipo</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- Modal de Confirmación de Eliminación -->
 <div class="modal" id="delete-modal">

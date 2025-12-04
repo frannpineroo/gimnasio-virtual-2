@@ -9,6 +9,7 @@ const clientesPage = {
     currentClient: null,
     selectedRoutine: null,
     initialized: false,
+    searchTimeout: null,
 
     initialize() {
         if (this.initialized) {
@@ -136,7 +137,7 @@ const clientesPage = {
         }
 
         tbody.innerHTML = this.filteredClients.map(client => `
-            <tr>
+            <tr data-client-id="${client.id}">
                 <td>${client.name || 'N/A'}</td>
                 <td>${client.last_name || 'N/A'}</td>
                 <td>${client.dni || 'N/A'}</td>
@@ -151,19 +152,58 @@ const clientesPage = {
                 </td>
                 <td>
                     <div class="actions-cell">
-                        <button class="action-btn edit-btn" onclick="clientesPage.editClient(${client.id})" title="Editar">
+                        <button class="action-btn edit-btn" data-id="${client.id}" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="action-btn delete-btn" onclick="clientesPage.deleteClient(${client.id})" title="Eliminar">
+                        <button class="action-btn delete-btn" data-id="${client.id}" title="Eliminar">
                             <i class="fas fa-trash"></i>
                         </button>
-                        <button class="action-btn assign-btn" onclick="clientesPage.openRoutineModal(${client.id})" title="Asignar Rutina">
+                        <button class="action-btn assign-btn" data-id="${client.id}" title="Asignar Rutina">
                             <i class="fas fa-dumbbell"></i>
                         </button>
                     </div>
                 </td>
             </tr>
         `).join('');
+        
+        // Añadir event listeners a los botones después de renderizar
+        this.initTableButtons();
+    },
+    
+    initTableButtons() {
+        // Botones de editar
+        const editButtons = document.querySelectorAll('.edit-btn');
+        editButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const clientId = button.getAttribute('data-id');
+                console.log('Editando cliente (event listener):', clientId);
+                this.editClient(clientId);
+            });
+        });
+        
+        // Botones de eliminar
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const clientId = button.getAttribute('data-id');
+                this.deleteClient(clientId);
+            });
+        });
+        
+        // Botones de asignar rutina
+        const assignButtons = document.querySelectorAll('.assign-btn');
+        assignButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const clientId = button.getAttribute('data-id');
+                this.openRoutineModal(clientId);
+            });
+        });
     },
 
     formatExperienceLevel(level) {
@@ -188,10 +228,12 @@ const clientesPage = {
                 show: () => {
                     console.log('Mostrando modal de cliente');
                     clientModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
                 },
                 hide: () => {
                     console.log('Ocultando modal de cliente');
                     clientModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
                 },
                 setTitle: (title) => {
                     const titleEl = document.getElementById('modal-title');
@@ -201,6 +243,13 @@ const clientesPage = {
                     const form = document.getElementById('client-form');
                     if (form) form.reset();
                     document.getElementById('client-id').value = '';
+                    
+                    // Limpiar errores de validación
+                    const errorMessages = form.querySelectorAll('.error-message');
+                    errorMessages.forEach(error => error.remove());
+                    
+                    const invalidFields = form.querySelectorAll('.is-invalid');
+                    invalidFields.forEach(field => field.classList.remove('is-invalid'));
                 }
             };
         }
@@ -211,10 +260,12 @@ const clientesPage = {
                 show: () => {
                     console.log('Mostrando modal de rutinas');
                     routineModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
                 },
                 hide: () => {
                     console.log('Ocultando modal de rutinas');
                     routineModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
                 }
             };
         }
@@ -223,19 +274,15 @@ const clientesPage = {
     initEventListeners() {
         console.log('Inicializando event listeners...');
         
-        const addClientBtn = document.getElementById('add-client-btn');
-        if (addClientBtn) {
-            addClientBtn.addEventListener('click', () => {
+        // Añadir botón para nuevo cliente
+        const newClientBtn = document.querySelector('a.btn.btn-primary[href*="nuevo_cliente"]');
+        if (newClientBtn) {
+            // Cambiar el comportamiento del botón para abrir modal en lugar de navegar
+            newClientBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 this.openClientModal();
             });
         }
-
-        this.initFilters();
-        this.initModalEvents();
-    },
-
-    initModalEvents() {
-        console.log('Inicializando eventos de modales...');
         
         // Modal de cliente
         const closeModal = document.getElementById('close-modal');
@@ -273,9 +320,13 @@ const clientesPage = {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
                 }
             });
         });
+
+        this.initFilters();
+        this.initCustomSelects();
     },
 
     initFilters() {
@@ -295,8 +346,6 @@ const clientesPage = {
                 this.resetFilters();
             });
         }
-
-        this.initCustomSelects();
     },
 
     initCustomSelects() {
@@ -334,6 +383,9 @@ const clientesPage = {
                     selectedValue.appendChild(icon);
                     selectedValue.innerHTML += `<span>${text}</span>`;
                     
+                    // Guardar el valor seleccionado en un data attribute
+                    select.setAttribute('data-selected-value', value);
+                    
                     trigger.classList.remove('active');
                     options.classList.remove('active');
                     
@@ -358,19 +410,19 @@ const clientesPage = {
 
     filterClients() {
         const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
-        const statusSelect = document.querySelector('#status-select .selected-value span');
-        const statusFilter = statusSelect?.textContent !== 'Todos los estados' ? 
-                             statusSelect?.textContent.toLowerCase() : '';
-
+        const statusSelect = document.querySelector('#status-select');
+        const statusValue = statusSelect?.getAttribute('data-selected-value') || '';
+        
         this.filteredClients = this.clients.filter(client => {
             const fullName = `${client.name || ''} ${client.last_name || ''}`.toLowerCase();
             const matchesSearch = 
                 fullName.includes(searchTerm) || 
                 (client.dni && client.dni.toLowerCase().includes(searchTerm)) ||
-                (client.phone && client.phone.toLowerCase().includes(searchTerm));
+                (client.phone && client.phone.toLowerCase().includes(searchTerm)) ||
+                (client.email && client.email.toLowerCase().includes(searchTerm));
             
-            const matchesStatus = statusFilter ? 
-                (statusFilter === 'activo' ? client.status === 'active' : client.status === 'inactive') : 
+            const matchesStatus = statusValue ? 
+                (statusValue === 'activo' ? client.status === 'active' : client.status === 'inactive') : 
                 true;
             
             return matchesSearch && matchesStatus;
@@ -384,9 +436,11 @@ const clientesPage = {
     },
 
     resetFilters() {
-        const statusSelect = document.querySelector('#status-select .selected-value');
-        if (statusSelect) {
-            statusSelect.innerHTML = '<i class="fas fa-list"></i><span>Todos los estados</span>';
+        const statusSelect = document.querySelector('#status-select');
+        const selectedValue = statusSelect?.querySelector('.selected-value');
+        if (selectedValue) {
+            selectedValue.innerHTML = '<i class="fas fa-list"></i><span>Todos los estados</span>';
+            statusSelect.removeAttribute('data-selected-value');
         }
         
         const searchInput = document.getElementById('search-input');
@@ -404,7 +458,9 @@ const clientesPage = {
     },
 
     openClientModal(clientId = null) {
+        console.log('Abriendo modal para cliente ID:', clientId);
         const isEdit = !!clientId;
+        
         if (this.modalManager) {
             this.modalManager.setTitle(isEdit ? 'Editar Cliente' : 'Nuevo Cliente');
             
@@ -420,45 +476,87 @@ const clientesPage = {
             }
             
             this.modalManager.show();
+        } else {
+            console.error('modalManager no está disponible');
+            // Fallback: mostrar el modal directamente
+            const modal = document.getElementById('client-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                
+                if (isEdit) {
+                    document.getElementById('modal-title').textContent = 'Editar Cliente';
+                    document.getElementById('submit-text').textContent = 'Actualizar Cliente';
+                    this.loadClientData(clientId);
+                }
+            }
         }
     },
 
     loadClientData(id) {
+        console.log('Cargando datos del cliente ID:', id);
         const client = this.clients.find(c => c.id == id);
         if (client) {
+            console.log('Cliente encontrado:', client);
             document.getElementById('client-id').value = client.id;
             document.getElementById('client-name').value = client.name || '';
-            document.getElementById('client-last-name').value = client.last_name || '';
+            document.getElementById('client-lastname').value = client.last_name || '';
             document.getElementById('client-dni').value = client.dni || '';
             document.getElementById('client-phone').value = client.phone || '';
             document.getElementById('client-email').value = client.email || '';
-            document.getElementById('client-experience').value = client.experience_level || '';
+            document.getElementById('client-experience-level').value = client.experience_level || '';
             document.getElementById('client-goal').value = client.goal || '';
             document.getElementById('client-injuries').value = client.injuries || '';
             document.getElementById('client-status').value = client.status || 'active';
+        } else {
+            console.error('Cliente no encontrado con ID:', id);
+            this.showError('Cliente no encontrado');
         }
     },
 
     async saveClient(e) {
         e.preventDefault();
+        console.log('Guardando cliente...');
+        
+        // Validación básica
+        const requiredFields = [
+            'client-name',
+            'client-lastname', 
+            'client-dni',
+            'client-experience-level',
+            'client-goal',
+            'client-status'
+        ];
+        
+        let isValid = true;
+        requiredFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field && !field.value.trim()) {
+                isValid = false;
+                this.showFieldError(field, 'Este campo es obligatorio');
+            }
+        });
+        
+        if (!isValid) {
+            this.showError('Por favor, completa todos los campos obligatorios.');
+            return;
+        }
         
         const id = document.getElementById('client-id').value;
         const clientData = {
             name: document.getElementById('client-name').value,
-            last_name: document.getElementById('client-last-name').value,
+            last_name: document.getElementById('client-lastname').value,
             dni: document.getElementById('client-dni').value || null,
             email: document.getElementById('client-email').value || null,
             phone: document.getElementById('client-phone').value || null,
-            experience_level: document.getElementById('client-experience').value,
+            experience_level: document.getElementById('client-experience-level').value,
             goal: document.getElementById('client-goal').value || null,
             injuries: document.getElementById('client-injuries').value || null,
             status: document.getElementById('client-status').value
         };
         
-        if (!clientData.name || !clientData.last_name || !clientData.experience_level || !clientData.status) {
-            this.showError('Por favor, completa todos los campos obligatorios.');
-            return;
-        }
+        console.log('Datos a guardar:', clientData);
+        console.log('ID del cliente:', id);
         
         try {
             let response;
@@ -472,20 +570,38 @@ const clientesPage = {
                 body: JSON.stringify(clientData)
             };
 
-            // URL CORREGIDA - usando tu API de DRF
             const url = id ? `/entrenador/api/clientes/${id}/` : '/entrenador/api/clientes/';
+            console.log('Enviando a:', url, 'con método:', options.method);
+            
             response = await fetch(url, options);
             
             if (!response.ok) {
                 const errorData = await response.json();
+                console.error('Error del servidor:', errorData);
+                
+                // Mostrar errores de validación del servidor
+                if (errorData) {
+                    let errorMessages = [];
+                    for (const [field, errors] of Object.entries(errorData)) {
+                        if (Array.isArray(errors)) {
+                            errorMessages.push(`${field}: ${errors.join(', ')}`);
+                        } else {
+                            errorMessages.push(`${field}: ${errors}`);
+                        }
+                    }
+                    throw new Error(errorMessages.join('; '));
+                }
+                
                 throw new Error(errorData.detail || errorData.message || `Error ${response.status}`);
             }
             
             const savedClient = await response.json();
+            console.log('Cliente guardado:', savedClient);
             
             this.showSuccess(id ? 'Cliente actualizado correctamente!' : 'Cliente creado correctamente!');
             
             this.closeClientModal();
+            // Recargar la lista de clientes
             await this.loadClients();
             
         } catch (error) {
@@ -494,7 +610,34 @@ const clientesPage = {
         }
     },
 
+    showFieldError(field, message) {
+        field.classList.add('is-invalid');
+        
+        // Remover mensaje de error anterior
+        const existingError = field.parentNode.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        // Añadir nuevo mensaje de error
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.textContent = message;
+        errorDiv.style.color = '#dc3545';
+        errorDiv.style.fontSize = '12px';
+        errorDiv.style.marginTop = '5px';
+        
+        field.parentNode.appendChild(errorDiv);
+    },
+
     getCSRFToken() {
+        // Primero buscar en un input hidden
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+            return csrfToken.value;
+        }
+        
+        // Fallback: buscar en cookies
         const cookieValue = document.cookie
             .split('; ')
             .find(row => row.startsWith('csrftoken='))
@@ -505,20 +648,29 @@ const clientesPage = {
     closeClientModal() {
         if (this.modalManager) {
             this.modalManager.hide();
+        } else {
+            const modal = document.getElementById('client-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
         }
     },
 
     editClient(id) {
+        console.log('Editando cliente ID:', id);
         this.openClientModal(id);
     },
 
     async deleteClient(id) {
         const client = this.clients.find(c => c.id == id);
-        if (!client) return;
+        if (!client) {
+            this.showError('Cliente no encontrado');
+            return;
+        }
 
         if (confirm(`¿Estás seguro de que deseas eliminar al cliente ${client.name} ${client.last_name}? Esta acción no se puede deshacer.`)) {
             try {
-                // URL CORREGIDA - usando tu API de DRF
                 const response = await fetch(`/entrenador/api/clientes/${id}/`, {
                     method: 'DELETE',
                     headers: {
@@ -558,6 +710,12 @@ const clientesPage = {
         this.loadRoutines();
         if (this.routineModalManager) {
             this.routineModalManager.show();
+        } else {
+            const modal = document.getElementById('routine-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
         }
     },
 
@@ -572,7 +730,6 @@ const clientesPage = {
             </div>
         `;
 
-        // URL CORREGIDA - usando tu API de DRF para rutinas
         try {
             const response = await fetch('/entrenador/api/rutinas/');
             if (response.ok) {
@@ -588,7 +745,6 @@ const clientesPage = {
                         </div>
                     `;
                 } else {
-                    // Renderizar rutinas aquí
                     routineList.innerHTML = this.routines.map(rutina => `
                         <div class="routine-card" onclick="clientesPage.selectRoutine(${rutina.id})">
                             <div class="routine-card-header">
@@ -615,13 +771,29 @@ const clientesPage = {
 
     selectRoutine(rutinaId) {
         this.selectedRoutine = rutinaId;
-        // Aquí puedes agregar lógica para resaltar la rutina seleccionada
+        
+        // Remover selección previa
+        const routineCards = document.querySelectorAll('.routine-card');
+        routineCards.forEach(card => card.classList.remove('selected'));
+        
+        // Marcar como seleccionada
+        const selectedCard = document.querySelector(`.routine-card[onclick*="${rutinaId}"]`);
+        if (selectedCard) {
+            selectedCard.classList.add('selected');
+        }
+        
         console.log('Rutina seleccionada:', rutinaId);
     },
 
     closeRoutineModal() {
         if (this.routineModalManager) {
             this.routineModalManager.hide();
+        } else {
+            const modal = document.getElementById('routine-modal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
         }
         this.currentClient = null;
         this.selectedRoutine = null;
@@ -639,21 +811,17 @@ const clientesPage = {
     }
 };
 
-// Inicialización
+// Inicialización mejorada
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded - initializing clientes page');
     
-    setTimeout(() => {
-        try {
-            if (window.clientesPage && typeof window.clientesPage.initialize === 'function') {
-                window.clientesPage.initialize();
-            } else {
-                console.error('clientesPage no está disponible correctamente');
-            }
-        } catch (error) {
-            console.error('Error inicializando clientes page:', error);
-        }
-    }, 100);
+    // Inicializar inmediatamente
+    try {
+        window.clientesPage = clientesPage;
+        window.clientesPage.initialize();
+    } catch (error) {
+        console.error('Error inicializando clientes page:', error);
+    }
 });
 
 // Hacer disponible globalmente

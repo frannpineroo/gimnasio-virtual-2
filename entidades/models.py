@@ -165,6 +165,7 @@ class Rutine(models.Model):
     goal = models.CharField(max_length=100, blank=True, null=True)
     coach = models.ForeignKey(Coach, on_delete=models.SET_NULL, null=True, related_name='routines')
     client = models.ForeignKey('Client', on_delete=models.CASCADE, null=True, blank=True, related_name='routines')
+    exercises = models.ManyToManyField('Exercise', blank=True, related_name='routines')
     is_template = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

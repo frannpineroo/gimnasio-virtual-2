@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
+from .forms import ExerciseForm, RutineForm
 
 def sign_up(request):
     if request.method == 'GET':
@@ -76,10 +77,25 @@ def exercise_page(request):
         return HttpResponseServerError("Template entrenador/ejercicios.html no encontrado.")
 
 def new_exercise(request):
-    try:
-        return render(request, 'entrenador/nuevo-ejercicio.html')
-    except TemplateDoesNotExist:
-        return HttpResponseServerError("Template entrenador/nuevo-ejercicio.html no encontrado.")
+    if request.method == 'POST':
+        form = ExerciseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            form = ExerciseForm()
+            mensaje = "Ejercicio guardado correctamente."
+            return render(request, 'entrenador/nuevo-ejercicio.html', {
+                'form': form,
+                'mensaje': mensaje
+            })
+        else:
+            return render(request, 'entrenador/nuevo-ejercicio.html', {
+                'form': form
+            })
+
+    form = ExerciseForm()
+    return render(request, 'entrenador/nuevo-ejercicio.html', {
+        'form': form
+    })
 
 def trainers_page(request):
     try:
@@ -100,10 +116,25 @@ def routine_page(request):
         return HttpResponseServerError("Template entrenador/rutina.html no encontrado.")
 
 def new_routine(request):
-    try:
-        return render(request, 'entrenador/nueva-rutina.html')
-    except TemplateDoesNotExist:
-        return HttpResponseServerError("Template entrenador/nueva-rutina.html no encontrado.")
+    if request.method == 'POST':
+        form = RutineForm(request.POST)
+        if form.is_valid():
+            form.save()
+            form = RutineForm()
+            mensaje = "Rutina guardada correctamente."
+            return render(request, 'entrenador/nueva-rutina.html', {
+                'form': form,
+                'mensaje': mensaje
+            })
+        else:
+            return render(request, 'entrenador/nueva-rutina.html', {
+                'form': form
+            })
+
+    form = RutineForm()
+    return render(request, 'entrenador/nueva-rutina.html', {
+        'form': form
+    })
 
 def equipment_page(request):
     try:

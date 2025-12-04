@@ -4,7 +4,6 @@ class HeaderComponent {
         try {
             const existingHeader = document.querySelector('.header');
             if (existingHeader) {
-                console.log('Header encontrado - inicializando funcionalidad Django');
                 this.initializeHeaderFunctionality(existingHeader);
                 return true;
             } else {

@@ -16,7 +16,6 @@ class App {
     }
 
     async initializeCommonComponents() {
-        console.log('Initializing common components (Django version - NO AJAX)');
         
         // En Django, los componentes YA están en el DOM
         // Solo inicializamos su funcionalidad JS
@@ -28,8 +27,6 @@ class App {
             this.components.sidebar.initialize(),  // Cambiado a initialize()
             this.components.header.initialize()    // Cambiado a initialize()
         ]);
-
-        console.log('Common components initialized (Django)');
     }
 
     initializePageSpecific() {
@@ -104,6 +101,5 @@ class App {
 
 // Inicializar app cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded - initializing Django App (NO AJAX)');
     new App().initialize();
 });

@@ -4,7 +4,6 @@ class SidebarComponent {
         try {
             const existingSidebar = document.querySelector('.sidebar');
             if (existingSidebar) {
-                console.log('Sidebar encontrado - inicializando funcionalidad Django');
                 this.initializeSidebarFunctionality(existingSidebar);
                 return true;
             } else {

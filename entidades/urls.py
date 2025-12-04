@@ -3,6 +3,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
 from . import api_views
+from entidades.api_views import MuscleViewSet
 
 app_name = "entrenador"   
 
@@ -19,9 +20,13 @@ router.register(r'dias-rutina', api_views.DayRutineViewSet)
 router.register(r'ejercicios-rutina', api_views.ExerciseRutineViewSet)
 router.register(r'registros-progreso', api_views.ProgressRegisterViewSet)
 router.register(r'equipos', api_views.EquipmentViewSet)
+router.register(r'muscles', MuscleViewSet, basename='muscles')
 
 urlpatterns = [
-    # Vistas HTML
+    # IMPORTANTE: Primero las rutas de API
+    path('api/', include((router.urls, 'api'))),  # Esto debe ir PRIMERO
+    
+    # Luego las vistas HTML
     path('', views.home_view, name='home'),    
     path('clientes/', views.clients_page, name='clientes'),
     path('clientes/nuevo/', views.new_client, name='nuevo_cliente'),
@@ -41,7 +46,6 @@ urlpatterns = [
     # Nueva ruta para la página de músculos
     path('musculos/', views.muscles_page, name='musculos'),
 
-    # Endpoint(s) API adicionales (si los querés disponibles desde la misma urls.py)
-    path('api/', include((router.urls, 'api'))),  # quedará /entrenador/api/ejercicios/ etc.
+    # Endpoint(s) API adicionales
     path('api/clientes/active/', api_views.active_clients, name='active_clients'),
 ]

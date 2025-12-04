@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import ExerciseSerializer, UserSerializer, CoachSerializer, ClientSerializer, AsignatureSerializer, ReminderSerializer, TrainingSessionSerializer, RutineSerializer, DayRutineSerializer, ExerciseRutineSerializer, ProgressRegisterSerializer, EquipmentSerializer
-from .models import Exercise, User, Coach, Client, Asignature, Reminder, TrainingSession, Rutine, DayRutine, ExerciseRutine, ProgressRegister, Equipment
+from .serializers import ExerciseSerializer, UserSerializer, CoachSerializer, ClientSerializer, AsignatureSerializer, ReminderSerializer, TrainingSessionSerializer, RutineSerializer, DayRutineSerializer, ExerciseRutineSerializer, ProgressRegisterSerializer, EquipmentSerializer, MuscleSerializer 
+from .models import Exercise, User, Coach, Client, Asignature, Reminder, TrainingSession, Rutine, DayRutine, ExerciseRutine, ProgressRegister, Equipment, Muscle 
 
 class ExerciseViewSet(viewsets.ModelViewSet):
     queryset = Exercise.objects.all()
@@ -51,6 +51,26 @@ class ProgressRegisterViewSet(viewsets.ModelViewSet):
 class EquipmentViewSet(viewsets.ModelViewSet):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
+
+# ViewSet para músculos - AL FINAL
+class MuscleViewSet(viewsets.ModelViewSet):
+    queryset = Muscle.objects.all()
+    serializer_class = MuscleSerializer
+
+    def get_queryset(self):
+        queryset = Muscle.objects.all()
+        
+        # Filtro por tipo
+        muscle_type = self.request.query_params.get('type', None)
+        if muscle_type:
+            queryset = queryset.filter(muscle_type=muscle_type)
+            
+        # Filtro solo grupos (para el select de subgrupos)
+        only_groups = self.request.query_params.get('only_groups', None)
+        if only_groups:
+            queryset = queryset.filter(muscle_type='group')
+            
+        return queryset
 
 @api_view(['GET'])
 def active_clients(request):

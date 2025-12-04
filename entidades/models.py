@@ -236,3 +236,44 @@ class Equipment(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+    # Métodos adicionales para el manejo de musculos
+
+class Muscle(models.Model):
+    TYPE_CHOICES = [
+        ('group', 'Grupo Muscular'),
+        ('subgroup', 'Subgrupo Muscular'),
+    ]
+    
+    name = models.CharField(max_length=100, verbose_name="Nombre")
+    muscle_type = models.CharField(
+        max_length=10, 
+        choices=TYPE_CHOICES, 
+        default='subgroup',
+        verbose_name="Tipo"
+    )
+    parent = models.ForeignKey(
+        'self', 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        related_name='subgroups',
+        verbose_name="Grupo Padre",
+        limit_choices_to={'muscle_type': 'group'}
+    )
+    description = models.TextField(blank=True, null=True, verbose_name="Descripción")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['muscle_type', 'name']
+        verbose_name = "Músculo"
+        verbose_name_plural = "Músculos"
+
+    def __str__(self):
+        return self.name
+
+    def get_exercises_count(self):
+        # TODO: Implementar relación con ejercicios cuando esté disponible
+        return 0

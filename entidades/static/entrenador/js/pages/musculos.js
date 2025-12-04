@@ -5,6 +5,9 @@ class MusculosPage {
         this.muscles = [];
         this.filteredMuscles = [];
         this.muscleGroups = [];
+        this.currentMuscleId = null;
+        this.searchTimeout = null;
+        this.baseApiUrl = '/entrenador/api/muscles/';
     }
 
     initialize() {
@@ -18,7 +21,228 @@ class MusculosPage {
         this.loadMuscleGroups();
     }
 
+    async loadMuscles() {
+        try {
+            console.log('Cargando músculos desde:', this.baseApiUrl);
+            
+            // Mostrar loading
+            const tbody = document.getElementById('muscles-table-body');
+            if (tbody) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding: 30px;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #32CD32;"></i> Cargando músculos...
+                        </td>
+                    </tr>
+                `;
+            }
+
+            // Conectar con API real
+            const response = await fetch(this.baseApiUrl);
+            
+            console.log('Respuesta HTTP:', response.status, response.statusText);
+            
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('Datos recibidos de API:', data);
+            
+            // Manejar diferentes formatos de respuesta
+            let musclesData = data;
+            
+            if (data && typeof data === 'object' && data.results && Array.isArray(data.results)) {
+                musclesData = data.results;
+                console.log('Usando datos paginados, total:', musclesData.length);
+            } else if (Array.isArray(data)) {
+                console.log('Usando array directo, total:', musclesData.length);
+            } else if (data && typeof data === 'object' && !Array.isArray(data)) {
+                musclesData = [data];
+                console.log('Convertido objeto único a array');
+            } else {
+                console.warn('Formato de datos inesperado:', data);
+                musclesData = [];
+            }
+            
+            this.muscles = musclesData;
+            this.filteredMuscles = [...this.muscles];
+            console.log('Músculos cargados:', this.muscles.length);
+            
+            this.renderTable();
+            
+        } catch (error) {
+            console.error('Error cargando músculos:', error);
+            this.showError('Error al cargar los músculos. Verifica la conexión con el servidor.');
+            
+            const tbody = document.getElementById('muscles-table-body');
+            if (tbody) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding: 30px; color: #dc3545;">
+                            <i class="fas fa-exclamation-triangle"></i> Error al cargar músculos
+                            <br><small>${error.message}</small>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+    }
+
+    async loadMuscleGroups() {
+        try {
+            console.log('Cargando grupos musculares para select...');
+            
+            // Usar el parámetro muscle_type=group según tu ViewSet
+            const response = await fetch(this.baseApiUrl + '?muscle_type=group');
+            
+            console.log('Respuesta HTTP grupos:', response.status, response.statusText);
+            
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('Datos de grupos recibidos:', data);
+            
+            // Manejar diferentes formatos de respuesta
+            let groupsData = data;
+            
+            if (data && typeof data === 'object' && data.results && Array.isArray(data.results)) {
+                groupsData = data.results;
+            } else if (Array.isArray(data)) {
+                groupsData = data;
+            } else if (data && typeof data === 'object' && !Array.isArray(data)) {
+                groupsData = [data];
+            } else {
+                console.warn('Formato de datos de grupos inesperado:', data);
+                groupsData = [];
+            }
+            
+            this.muscleGroups = groupsData;
+            console.log('Grupos musculares cargados:', this.muscleGroups.length);
+            
+            this.populateGroupSelect();
+            
+        } catch (error) {
+            console.error('Error cargando grupos musculares:', error);
+            this.muscleGroups = [];
+            this.populateGroupSelect();
+        }
+    }
+
+    populateGroupSelect() {
+        const parentSelect = document.getElementById('subgroup-parent');
+        if (!parentSelect) return;
+
+        // Limpiar opciones (manteniendo la primera opción vacía)
+        parentSelect.innerHTML = '<option value="">Seleccionar grupo</option>';
+        
+        // Agregar grupos
+        this.muscleGroups.forEach(group => {
+            const option = document.createElement('option');
+            option.value = group.id;
+            option.textContent = group.name;
+            parentSelect.appendChild(option);
+        });
+        
+        console.log('Select de grupos actualizado con', this.muscleGroups.length, 'grupos');
+    }
+
+    renderTable() {
+        const tbody = document.getElementById('muscles-table-body');
+        if (!tbody) {
+            console.error('No se encontró el tbody con id muscles-table-body');
+            return;
+        }
+
+        console.log('Renderizando tabla con', this.filteredMuscles.length, 'músculos');
+        
+        if (this.filteredMuscles.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align:center; padding: 30px; color: var(--text-secondary);">
+                        <i class="fas fa-info-circle"></i> No se encontraron músculos
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = this.filteredMuscles.map(muscle => {
+            const name = muscle.name || 'N/A';
+            const muscleType = muscle.muscle_type || muscle.type_display || 'subgroup';
+            const parentName = muscle.parent_name || '-';
+            const exercisesCount = muscle.exercises_count || 0;
+            const id = muscle.id || muscle.pk || 0;
+            
+            return `
+            <tr data-muscle-id="${id}">
+                <td>${this.escapeHtml(name)}</td>
+                <td>
+                    <span class="type-badge type-${muscleType === 'group' || muscle.muscle_type === 'group' ? 'group' : 'subgroup'}">
+                        ${muscleType === 'group' || muscle.muscle_type === 'group' ? 'Grupo' : 'Subgrupo'}
+                    </span>
+                </td>
+                <td>${this.escapeHtml(parentName)}</td>
+                <td>
+                    <span class="exercises-count">
+                        ${exercisesCount} ejercicios
+                    </span>
+                </td>
+                <td>
+                    <div class="actions-cell">
+                        <button class="action-btn edit-btn" data-id="${id}" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="${id}" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            `;
+        }).join('');
+        
+        this.initTableButtons();
+    }
+    
+    escapeHtml(text) {
+        if (!text) return '-';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    initTableButtons() {
+        // Botones de editar
+        const editButtons = document.querySelectorAll('.edit-btn');
+        editButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const muscleId = button.getAttribute('data-id');
+                console.log('Editando músculo:', muscleId);
+                this.editMuscle(muscleId);
+            });
+        });
+        
+        // Botones de eliminar
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const muscleId = button.getAttribute('data-id');
+                console.log('Eliminando músculo:', muscleId);
+                this.deleteMuscle(muscleId);
+            });
+        });
+    }
+
     initEventListeners() {
+        console.log('Inicializando event listeners...');
+        
         // Botones de acción
         const addGroupBtn = document.getElementById('add-group-btn');
         if (addGroupBtn) {
@@ -89,11 +313,32 @@ class MusculosPage {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
                 }
             });
         });
 
+        this.initFilters();
         this.initCustomSelects();
+    }
+
+    initFilters() {
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => {
+                    this.filterMuscles();
+                }, 300);
+            });
+        }
+
+        const resetButton = document.getElementById('reset-filters');
+        if (resetButton) {
+            resetButton.addEventListener('click', () => {
+                this.resetFilters();
+            });
+        }
     }
 
     initCustomSelects() {
@@ -131,10 +376,13 @@ class MusculosPage {
                     selectedValue.appendChild(icon);
                     selectedValue.innerHTML += `<span>${text}</span>`;
                     
+                    select.setAttribute('data-selected-value', value);
+                    
                     trigger.classList.remove('active');
                     options.classList.remove('active');
                     
                     setTimeout(() => {
+                        console.log('Filtrando por:', value);
                         window.musculosPage.filterMuscles();
                     }, 100);
                 });
@@ -153,172 +401,35 @@ class MusculosPage {
         });
     }
 
-    async loadMuscles() {
-        try {
-            console.log('Cargando músculos desde el backend...');
-            
-            // TODO: Conectar con API real
-            // const response = await fetch('/entrenador/api/musculos/');
-            // this.muscles = await response.json();
-            
-            // Datos de ejemplo temporalmente
-            this.muscles = [
-                {
-                    id: 1,
-                    name: "Pectorales",
-                    type: "group",
-                    parent: null,
-                    exercises_count: 15,
-                    parent_name: null
-                },
-                {
-                    id: 2,
-                    name: "Pectoral Mayor",
-                    type: "subgroup",
-                    parent: 1,
-                    exercises_count: 8,
-                    parent_name: "Pectorales"
-                },
-                {
-                    id: 3,
-                    name: "Pectoral Menor",
-                    type: "subgroup",
-                    parent: 1,
-                    exercises_count: 5,
-                    parent_name: "Pectorales"
-                },
-                {
-                    id: 4,
-                    name: "Espalda",
-                    type: "group",
-                    parent: null,
-                    exercises_count: 20,
-                    parent_name: null
-                },
-                {
-                    id: 5,
-                    name: "Dorsal Ancho",
-                    type: "subgroup",
-                    parent: 4,
-                    exercises_count: 12,
-                    parent_name: "Espalda"
-                }
-            ];
-            
-            this.filteredMuscles = [...this.muscles];
-            this.renderTable();
-            
-        } catch (error) {
-            console.error('Error cargando músculos:', error);
-            this.showError('Error al cargar los músculos');
-            
-            const tbody = document.getElementById('muscles-table-body');
-            if (tbody) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align:center; padding: 30px; color: #dc3545;">
-                            <i class="fas fa-exclamation-triangle"></i> Error al cargar músculos
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-    }
-
-    async loadMuscleGroups() {
-        try {
-            // Cargar grupos musculares para el select
-            // const response = await fetch('/entrenador/api/musculos/?type=group');
-            // this.muscleGroups = await response.json();
-            
-            // Datos de ejemplo
-            this.muscleGroups = this.muscles.filter(m => m.type === 'group');
-            this.populateGroupSelect();
-            
-        } catch (error) {
-            console.error('Error cargando grupos musculares:', error);
-        }
-    }
-
-    populateGroupSelect() {
-        const parentSelect = document.getElementById('subgroup-parent');
-        if (!parentSelect) return;
-
-        // Limpiar opciones (manteniendo la primera opción vacía)
-        parentSelect.innerHTML = '<option value="">Seleccionar grupo</option>';
-        
-        // Agregar grupos
-        this.muscleGroups.forEach(group => {
-            const option = document.createElement('option');
-            option.value = group.id;
-            option.textContent = group.name;
-            parentSelect.appendChild(option);
-        });
-    }
-
-    renderTable() {
-        const tbody = document.getElementById('muscles-table-body');
-        if (!tbody) return;
-
-        if (this.filteredMuscles.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align:center; padding: 30px; color: var(--text-secondary);">
-                        No se encontraron músculos
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        tbody.innerHTML = this.filteredMuscles.map(muscle => `
-            <tr>
-                <td>${muscle.name}</td>
-                <td>
-                    <span class="type-badge type-${muscle.type}">
-                        ${muscle.type === 'group' ? 'Grupo' : 'Subgrupo'}
-                    </span>
-                </td>
-                <td>${muscle.parent_name || '-'}</td>
-                <td>
-                    <span class="exercises-count">
-                        ${muscle.exercises_count} ejercicios
-                    </span>
-                </td>
-                <td>
-                    <div class="actions-cell">
-                        <button class="action-btn edit-btn" onclick="musculosPage.editMuscle(${muscle.id})" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete-btn" onclick="musculosPage.deleteMuscle(${muscle.id})" title="Eliminar">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
-    }
-
     filterMuscles() {
         const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
-        const typeSelect = document.querySelector('#type-select .selected-value span');
-        const typeFilter = typeSelect?.textContent !== 'Todos los tipos' ? 
-                           typeSelect?.getAttribute('data-value') : '';
-
+        const typeSelect = document.querySelector('#type-select');
+        
+        const typeValue = typeSelect?.getAttribute('data-selected-value') || '';
+        
+        console.log('Filtrando con término:', searchTerm, 'tipo:', typeValue);
+        
         this.filteredMuscles = this.muscles.filter(muscle => {
-            const matchesSearch = muscle.name.toLowerCase().includes(searchTerm);
-            const matchesType = typeFilter ? muscle.type === typeFilter : true;
+            const name = (muscle.name || '').toLowerCase();
+            const muscleType = muscle.muscle_type || '';
+            
+            const matchesSearch = name.includes(searchTerm);
+            const matchesType = typeValue ? muscleType === typeValue : true;
             
             return matchesSearch && matchesType;
         });
 
+        console.log('Resultados filtrados:', this.filteredMuscles.length);
         this.renderTable();
     }
 
     resetFilters() {
-        const typeSelect = document.querySelector('#type-select .selected-value');
-        if (typeSelect) {
-            typeSelect.innerHTML = '<i class="fas fa-list"></i><span>Todos los tipos</span>';
+        const typeSelect = document.querySelector('#type-select');
+        
+        const typeSelectedValue = typeSelect?.querySelector('.selected-value');
+        if (typeSelectedValue) {
+            typeSelectedValue.innerHTML = '<i class="fas fa-list"></i><span>Todos los tipos</span>';
+            typeSelect.removeAttribute('data-selected-value');
         }
         
         const searchInput = document.getElementById('search-input');
@@ -327,61 +438,158 @@ class MusculosPage {
         }
         
         this.filteredMuscles = [...this.muscles];
+        console.log('Filtros reseteados, mostrando:', this.filteredMuscles.length, 'músculos');
         this.renderTable();
     }
 
-    openGroupModal() {
+    openGroupModal(muscleId = null) {
         const modal = document.getElementById('group-modal');
-        if (modal) {
-            document.getElementById('group-modal-title').textContent = 'Nuevo Grupo Muscular';
-            document.getElementById('group-id').value = '';
+        if (!modal) return;
+        
+        const isEdit = !!muscleId;
+        
+        document.getElementById('group-modal-title').textContent = isEdit ? 'Editar Grupo Muscular' : 'Nuevo Grupo Muscular';
+        document.getElementById('group-id').value = muscleId || '';
+        
+        if (isEdit) {
+            this.loadGroupData(muscleId);
+        } else {
             document.getElementById('group-name').value = '';
-            modal.style.display = 'flex';
         }
+        
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
     }
 
     closeGroupModal() {
         const modal = document.getElementById('group-modal');
         if (modal) {
             modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
     }
 
-    openSubgroupModal() {
+    openSubgroupModal(muscleId = null) {
         const modal = document.getElementById('subgroup-modal');
-        if (modal) {
-            document.getElementById('subgroup-modal-title').textContent = 'Nuevo Subgrupo Muscular';
-            document.getElementById('subgroup-id').value = '';
+        if (!modal) return;
+        
+        const isEdit = !!muscleId;
+        
+        document.getElementById('subgroup-modal-title').textContent = isEdit ? 'Editar Subgrupo Muscular' : 'Nuevo Subgrupo Muscular';
+        document.getElementById('subgroup-id').value = muscleId || '';
+        
+        if (isEdit) {
+            this.loadSubgroupData(muscleId);
+        } else {
             document.getElementById('subgroup-name').value = '';
             document.getElementById('subgroup-parent').value = '';
-            modal.style.display = 'flex';
         }
+        
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
     }
 
     closeSubgroupModal() {
         const modal = document.getElementById('subgroup-modal');
         if (modal) {
             modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    loadGroupData(id) {
+        console.log('Cargando datos del grupo ID:', id);
+        const muscle = this.muscles.find(m => m.id == id);
+        if (muscle) {
+            console.log('Grupo encontrado:', muscle);
+            document.getElementById('group-id').value = muscle.id;
+            document.getElementById('group-name').value = muscle.name || '';
+        } else {
+            console.error('Grupo no encontrado con ID:', id);
+            this.showError('Grupo no encontrado');
+        }
+    }
+
+    loadSubgroupData(id) {
+        console.log('Cargando datos del subgrupo ID:', id);
+        const muscle = this.muscles.find(m => m.id == id);
+        if (muscle) {
+            console.log('Subgrupo encontrado:', muscle);
+            document.getElementById('subgroup-id').value = muscle.id;
+            document.getElementById('subgroup-name').value = muscle.name || '';
+            document.getElementById('subgroup-parent').value = muscle.parent || '';
+        } else {
+            console.error('Subgrupo no encontrado con ID:', id);
+            this.showError('Subgrupo no encontrado');
         }
     }
 
     async saveGroup(e) {
         e.preventDefault();
+        console.log('Guardando grupo muscular...');
         
-        const id = document.getElementById('group-id').value;
-        const name = document.getElementById('group-name').value;
+        const name = document.getElementById('group-name').value.trim();
         
         if (!name) {
             this.showError('Por favor, ingresa un nombre para el grupo');
             return;
         }
         
+        const id = document.getElementById('group-id').value;
+        const groupData = {
+            name: name,
+            muscle_type: 'group',
+            parent: null
+        };
+        
+        console.log('Datos a guardar:', groupData);
+        console.log('ID del equipo:', id);
+        
         try {
-            // TODO: Implementar guardado real
-            console.log('Guardando grupo:', { id, name });
+            const options = {
+                method: id ? 'PUT' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken(),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(groupData)
+            };
+
+            const url = id ? `${this.baseApiUrl}${id}/` : this.baseApiUrl;
+            console.log('Enviando a:', url, 'con método:', options.method);
+            
+            const response = await fetch(url, options);
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error del servidor:', errorData);
+                
+                // Mostrar errores de validación del servidor
+                if (errorData) {
+                    let errorMessages = [];
+                    for (const [field, errors] of Object.entries(errorData)) {
+                        if (Array.isArray(errors)) {
+                            errorMessages.push(`${field}: ${errors.join(', ')}`);
+                        } else {
+                            errorMessages.push(`${field}: ${errors}`);
+                        }
+                    }
+                    throw new Error(errorMessages.join('; '));
+                }
+                
+                throw new Error(errorData.detail || errorData.message || `Error ${response.status}`);
+            }
+            
+            const savedGroup = await response.json();
+            console.log('Grupo guardado:', savedGroup);
+            
+            this.showSuccess(id ? 'Grupo actualizado correctamente!' : 'Grupo creado correctamente!');
+            
             this.closeGroupModal();
-            this.showSuccess('Grupo guardado correctamente');
+            // Recargar músculos y grupos
             await this.loadMuscles();
+            await this.loadMuscleGroups();
             
         } catch (error) {
             console.error('Error guardando grupo:', error);
@@ -391,9 +599,9 @@ class MusculosPage {
 
     async saveSubgroup(e) {
         e.preventDefault();
+        console.log('Guardando subgrupo muscular...');
         
-        const id = document.getElementById('subgroup-id').value;
-        const name = document.getElementById('subgroup-name').value;
+        const name = document.getElementById('subgroup-name').value.trim();
         const parent = document.getElementById('subgroup-parent').value;
         
         if (!name || !parent) {
@@ -401,11 +609,59 @@ class MusculosPage {
             return;
         }
         
+        const id = document.getElementById('subgroup-id').value;
+        const subgroupData = {
+            name: name,
+            muscle_type: 'subgroup',
+            parent: parseInt(parent)
+        };
+        
+        console.log('Datos a guardar:', subgroupData);
+        console.log('ID del equipo:', id);
+        
         try {
-            // TODO: Implementar guardado real
-            console.log('Guardando subgrupo:', { id, name, parent });
+            const options = {
+                method: id ? 'PUT' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken(),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(subgroupData)
+            };
+
+            const url = id ? `${this.baseApiUrl}${id}/` : this.baseApiUrl;
+            console.log('Enviando a:', url, 'con método:', options.method);
+            
+            const response = await fetch(url, options);
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error del servidor:', errorData);
+                
+                // Mostrar errores de validación del servidor
+                if (errorData) {
+                    let errorMessages = [];
+                    for (const [field, errors] of Object.entries(errorData)) {
+                        if (Array.isArray(errors)) {
+                            errorMessages.push(`${field}: ${errors.join(', ')}`);
+                        } else {
+                            errorMessages.push(`${field}: ${errors}`);
+                        }
+                    }
+                    throw new Error(errorMessages.join('; '));
+                }
+                
+                throw new Error(errorData.detail || errorData.message || `Error ${response.status}`);
+            }
+            
+            const savedSubgroup = await response.json();
+            console.log('Subgrupo guardado:', savedSubgroup);
+            
+            this.showSuccess(id ? 'Subgrupo actualizado correctamente!' : 'Subgrupo creado correctamente!');
+            
             this.closeSubgroupModal();
-            this.showSuccess('Subgrupo guardado correctamente');
+            // Recargar músculos
             await this.loadMuscles();
             
         } catch (error) {
@@ -415,40 +671,84 @@ class MusculosPage {
     }
 
     editMuscle(id) {
-        const muscle = this.muscles.find(m => m.id === id);
-        if (!muscle) return;
+        const muscle = this.muscles.find(m => m.id == id);
+        if (!muscle) {
+            this.showError('Músculo no encontrado');
+            return;
+        }
 
-        if (muscle.type === 'group') {
-            this.openGroupModal();
-            document.getElementById('group-modal-title').textContent = 'Editar Grupo Muscular';
-            document.getElementById('group-id').value = muscle.id;
-            document.getElementById('group-name').value = muscle.name;
+        if (muscle.muscle_type === 'group') {
+            this.openGroupModal(id);
         } else {
-            this.openSubgroupModal();
-            document.getElementById('subgroup-modal-title').textContent = 'Editar Subgrupo Muscular';
-            document.getElementById('subgroup-id').value = muscle.id;
-            document.getElementById('subgroup-name').value = muscle.name;
-            document.getElementById('subgroup-parent').value = muscle.parent;
+            this.openSubgroupModal(id);
         }
     }
 
     async deleteMuscle(id) {
-        const muscle = this.muscles.find(m => m.id === id);
-        if (!muscle) return;
-
-        const typeName = muscle.type === 'group' ? 'grupo' : 'subgrupo';
-        if (confirm(`¿Estás seguro de que deseas eliminar el ${typeName} "${muscle.name}"? Esta acción no se puede deshacer.`)) {
-            try {
-                // TODO: Implementar eliminación real
-                console.log('Eliminando músculo:', id);
-                this.showSuccess(`${muscle.type === 'group' ? 'Grupo' : 'Subgrupo'} eliminado correctamente`);
-                await this.loadMuscles();
-                
-            } catch (error) {
-                console.error('Error eliminando músculo:', error);
-                this.showError('Error al eliminar el músculo: ' + error.message);
-            }
+        const muscle = this.muscles.find(m => m.id == id);
+        if (!muscle) {
+            this.showError('Músculo no encontrado');
+            return;
         }
+
+        const typeName = muscle.muscle_type === 'group' ? 'grupo' : 'subgrupo';
+        
+        if (!confirm(`¿Estás seguro de que deseas eliminar el ${typeName} "${muscle.name}"? Esta acción no se puede deshacer.`)) {
+            return;
+        }
+
+        try {
+            console.log('Eliminando músculo ID:', id);
+            
+            const response = await fetch(`${this.baseApiUrl}${id}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': this.getCSRFToken(),
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            console.log('Respuesta DELETE:', response.status);
+            
+            if (!response.ok) {
+                let errorMessage = `Error ${response.status}`;
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.detail || errorData.message || errorMessage;
+                } catch (e) {
+                    // No se pudo parsear JSON
+                }
+                throw new Error(errorMessage);
+            }
+            
+            this.showSuccess(`${typeName === 'grupo' ? 'Grupo' : 'Subgrupo'} eliminado correctamente`);
+            
+            // Recargar músculos y grupos (si era grupo, actualizar select)
+            await this.loadMuscles();
+            if (muscle.muscle_type === 'group') {
+                await this.loadMuscleGroups();
+            }
+            
+        } catch (error) {
+            console.error('Error eliminando músculo:', error);
+            this.showError('Error al eliminar el músculo: ' + error.message);
+        }
+    }
+
+    getCSRFToken() {
+        // Primero buscar en un input hidden (en el modal)
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+            return csrfToken.value;
+        }
+        
+        // Fallback: buscar en cookies
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
     }
 
     showError(message) {

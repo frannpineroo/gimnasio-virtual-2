@@ -36,7 +36,7 @@ def sign_up(request):
 @login_required
 def signout(request):
     logout(request)
-    return(redirect('acceso/signin.html'))
+    return(redirect('signin'))
 
 def signin(request):
     if request.method == 'GET':

@@ -1,11 +1,55 @@
-<h1>Registro</h1>
-
-{{ error }}
-
-<form action="/signup/" method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button>
-        Registrarse
-    </button>
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - TRAINING!</title>
+    <link rel="stylesheet" href="{% static 'entrenador/css/pages/signup.css' %}">
+</head>
+<body>
+    <div class="signup-container">
+        <h1 class="signup-title">TRAINING!</h1>
+        <p class="signup-subtitle">Crea tu cuenta para comenzar</p>
+        
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <form method="POST" action="{% url 'signup' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_username">Nombre de usuario:</label>
+                {{ form.username }}
+                <span class="help-text">Máximo 150 caracteres. Letras, números y @/./+/-/_ únicamente.</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_password1">Contraseña:</label>
+                {{ form.password1 }}
+                <ul class="password-requirements">
+                    <li>Mínimo 8 caracteres</li>
+                    <li>No puede ser similar a tu información personal</li>
+                    <li>No puede ser una contraseña común</li>
+                    <li>No puede ser solo números</li>
+                </ul>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_password2">Confirmar contraseña:</label>
+                {{ form.password2 }}
+                <span class="help-text">Ingresa la misma contraseña para verificar.</span>
+            </div>
+            
+            <button type="submit" class="btn-signup">Registrarse</button>
+        </form>
+        
+        <div class="signin-link">
+            ¿Ya tienes cuenta? <a href="{% url 'signin' %}">Inicia sesión aquí</a>
+        </div>
+    </div>
+</body>
+</html>

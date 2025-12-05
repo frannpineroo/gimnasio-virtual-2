@@ -1,63 +1,93 @@
 from django.db import models
 
+
 class MuscleGroup(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+   
     def __str__(self):
         return self.name
-    
+   
     class Meta:
         db_table = 'muscle_groups'
         verbose_name = 'Grupo Muscular'
         verbose_name_plural = 'Grupos Musculares'
 
+
 class MuscleSubgroup(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     muscle_group = models.ForeignKey(
-        MuscleGroup, 
-        on_delete=models.CASCADE, 
+        MuscleGroup,
+        on_delete=models.CASCADE,
         related_name='subgroups'
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    
+   
     def __str__(self):
         return f"{self.muscle_group.name} - {self.name}"
-    
+   
     class Meta:
         db_table = 'muscle_subgroups'
         verbose_name = 'Subgrupo Muscular'
         verbose_name_plural = 'Subgrupos Musculares'
         unique_together = ['name', 'muscle_group']
 
+
 class Exercise(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    DIFFICULTY_CHOICES = [
+        ('beginner', 'Principiante'),
+        ('intermediate', 'Intermedio'),
+        ('advanced', 'Avanzado'),
+    ]
+   
+    name = models.CharField(max_length=100, verbose_name="Nombre")
+    description = models.TextField(verbose_name="Descripción", blank=True, null=True)
+    instructions = models.TextField(verbose_name="Instrucciones", blank=True, null=True)
+    difficulty = models.CharField(
+        max_length=20,
+        choices=DIFFICULTY_CHOICES,
+        default='beginner',
+        verbose_name="Dificultad"
+    )
+    equipment_required = models.CharField(
+        max_length=100,
+        verbose_name="Equipo Requerido",
+        blank=True, null=True
+    )
+    image_url = models.URLField(verbose_name="URL de Imagen", blank=True, null=True)
+    video_url = models.URLField(verbose_name="URL de Video", blank=True, null=True)
     muscle_group = models.ForeignKey(
-        MuscleGroup, 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        MuscleGroup,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
-        related_name='exercises'
+        related_name='exercises',
+        verbose_name="Grupo Muscular"
     )
     muscle_subgroup = models.ForeignKey(
-        MuscleSubgroup, 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        MuscleSubgroup,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
-        related_name='exercises'
+        related_name='exercises',
+        verbose_name="Subgrupo Muscular"
     )
-    
+    is_active = models.BooleanField(default=True, verbose_name="Activo")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+   
     def __str__(self):
         return self.name
+
 
     class Meta:
         db_table = 'exercises'
         verbose_name = 'Ejercicio'
         verbose_name_plural = 'Ejercicios'
+        ordering = ['-created_at']
+
 
 class User(models.Model):
     username = models.CharField(max_length=150, unique=True)
@@ -68,9 +98,10 @@ class User(models.Model):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
-    
+   
     def __str__(self):
         return self.username
+
 
 class Coach(models.Model):
     name = models.CharField(max_length=100)
@@ -87,19 +118,20 @@ class Coach(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='coaches', blank=True, null=True)
-    
+   
     class Meta:
         db_table = 'coaches'
         verbose_name = 'Coach'
         verbose_name_plural = 'Coaches'
         ordering = ['-created_at']
-    
+   
     def __str__(self):
         return f"{self.name} {self.last_name}"
-    
+   
     @property
     def nombre_completo(self):
         return f"{self.name} {self.last_name}"
+
 
 class Client(models.Model):
     name = models.CharField(max_length=100)
@@ -121,12 +153,13 @@ class Client(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='clients', blank=True, null=True)
-    
+   
     def __str__(self):
         return f"{self.name} {self.last_name}"
-    
+   
     class Meta:
         ordering = ['-created_at']
+
 
 class Asignature(models.Model):
     start_date = models.DateField()
@@ -134,9 +167,10 @@ class Asignature(models.Model):
     active = models.BooleanField(default=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='asignatures')
     coach = models.ForeignKey(Coach, on_delete=models.CASCADE, related_name='asignatures')
-    
+   
     def __str__(self):
         return f"Asignatura: {self.client} - {self.coach}"
+
 
 class Reminder(models.Model):
     datetime_reminder = models.DateTimeField()
@@ -145,17 +179,19 @@ class Reminder(models.Model):
         ('no', 'No')
     ], default='no')
     asignature = models.ForeignKey(Asignature, on_delete=models.CASCADE, related_name='reminders')
-    
+   
     def __str__(self):
         return f"Reminder: {self.datetime_reminder}"
+
 
 class TrainingSession(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     notes = models.CharField(max_length=45)
     reminder = models.ForeignKey(Reminder, on_delete=models.CASCADE, related_name='training_sessions')
-    
+   
     def __str__(self):
         return f"Session: {self.create_time}"
+
 
 class Rutine(models.Model):
     name = models.CharField(max_length=200)
@@ -169,24 +205,26 @@ class Rutine(models.Model):
     is_template = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+   
     class Meta:
         db_table = 'routines'
         verbose_name = 'Rutina'
         verbose_name_plural = 'Rutinas'
         ordering = ['-created_at']
-    
+   
     def __str__(self):
         return self.name
+
 
 class DayRutine(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     order = models.CharField(max_length=45)
     rutine = models.ForeignKey(Rutine, on_delete=models.CASCADE, related_name='day_routines')
-    
+   
     def __str__(self):
         return f"{self.name} - {self.rutine.name}"
+
 
 class ExerciseRutine(models.Model):
     series = models.CharField(max_length=45)
@@ -199,9 +237,10 @@ class ExerciseRutine(models.Model):
     ])
     dia_rutine = models.ForeignKey(DayRutine, on_delete=models.CASCADE, related_name='exercise_routines')
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name='exercise_routines')
-    
+   
     def __str__(self):
         return f"{self.exercise.name} - {self.dia_rutine.name}"
+
 
 class ProgressRegister(models.Model):
     body_weight = models.CharField(max_length=255, blank=True, null=True)
@@ -211,8 +250,10 @@ class ProgressRegister(models.Model):
     session = models.ForeignKey(TrainingSession, on_delete=models.CASCADE, related_name='progress_registers')
     rutine_exercise = models.ForeignKey(ExerciseRutine, on_delete=models.CASCADE, related_name='progress_registers')
 
+
     def __str__(self):
         return f"Progress: {self.session} - {self.rutine_exercise}"
+
 
 class Equipment(models.Model):
     name = models.CharField(max_length=100)
@@ -234,29 +275,29 @@ class Equipment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
     def __str__(self):
         return self.name
-    
 
-    # Métodos adicionales para el manejo de musculos
 
+# Este modelo Muscle lo dejamos para uso futuro, pero NO lo usaremos para Exercise
 class Muscle(models.Model):
     TYPE_CHOICES = [
         ('group', 'Grupo Muscular'),
         ('subgroup', 'Subgrupo Muscular'),
     ]
-    
+   
     name = models.CharField(max_length=100, verbose_name="Nombre")
     muscle_type = models.CharField(
-        max_length=10, 
-        choices=TYPE_CHOICES, 
+        max_length=10,
+        choices=TYPE_CHOICES,
         default='subgroup',
         verbose_name="Tipo"
     )
     parent = models.ForeignKey(
-        'self', 
-        on_delete=models.CASCADE, 
-        null=True, 
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
         blank=True,
         related_name='subgroups',
         verbose_name="Grupo Padre",
@@ -266,14 +307,16 @@ class Muscle(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
     class Meta:
         ordering = ['muscle_type', 'name']
         verbose_name = "Músculo"
         verbose_name_plural = "Músculos"
 
+
     def __str__(self):
         return self.name
 
+
     def get_exercises_count(self):
-        # TODO: Implementar relación con ejercicios cuando esté disponible
         return 0

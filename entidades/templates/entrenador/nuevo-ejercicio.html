@@ -1,11 +1,67 @@
 {% extends 'entrenador/base.html' %}
 {% load static %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'entrenador/css/pages/nuevo-ejercicio.css' %}">
-{% endblock %}
 
 {% block title %}Nuevo Ejercicio{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'entrenador/css/components/formularios.css' %}">
+<style>
+    /* Estilos para notificaciones */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 16px 20px;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transform: translateX(150%);
+        transition: transform 0.3s ease;
+        z-index: 10000;
+        max-width: 350px;
+    }
+
+
+    .notification.show {
+        transform: translateX(0);
+    }
+
+
+    .notification-success {
+        border-left: 4px solid #32CD32;
+    }
+
+
+    .notification-error {
+        border-left: 4px solid #dc3545;
+    }
+
+
+    .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+
+    .notification-content i {
+        font-size: 20px;
+    }
+
+
+    .notification-success .notification-content i {
+        color: #32CD32;
+    }
+
+
+    .notification-error .notification-content i {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
 
 {% block content %}
 <main class="main-content">
@@ -18,21 +74,64 @@
                 </a>
             </div>
 
-            {% if mensaje %}
-            <div class="success-message">
-                <i class="fas fa-check-circle"></i> {{ mensaje }}
-            </div>
-            {% endif %}
 
-            <form method="POST">
+            <form method="post" class="form-content" id="new-exercise-form">
                 {% csrf_token %}
-                {{ form.as_p }}
-                
+               
+                <div class="form-section">
+                    <h3 class="form-section-title">Información Básica</h3>
+                   
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Nombre del Ejercicio *</label>
+                            <input type="text" id="name" name="name" class="form-control"
+                                   placeholder="Ej: Sentadilla con barra" required>
+                            {% if form.name.errors %}
+                                <div class="error-message">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+                       
+                        <div class="form-group">
+                            <label for="muscle_group">Grupo Muscular</label>
+                            <select id="muscle_group" name="muscle_group" class="form-select">
+                                <option value="">Selecciona un grupo muscular</option>
+                                <!-- Los grupos musculares se cargarán dinámicamente -->
+                            </select>
+                            {% if form.muscle_group.errors %}
+                                <div class="error-message">{{ form.muscle_group.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                   
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="muscle_subgroup">Subgrupo Muscular</label>
+                            <select id="muscle_subgroup" name="muscle_subgroup" class="form-select">
+                                <option value="">Selecciona un subgrupo muscular</option>
+                                <!-- Los subgrupos musculares se cargarán dinámicamente según el grupo seleccionado -->
+                            </select>
+                            {% if form.muscle_subgroup.errors %}
+                                <div class="error-message">{{ form.muscle_subgroup.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                   
+                    <div class="form-group">
+                        <label for="description">Descripción</label>
+                        <textarea id="description" name="description" class="form-control"
+                                  rows="3" placeholder="Descripción del ejercicio"></textarea>
+                        {% if form.description.errors %}
+                            <div class="error-message">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+
                 <div class="form-actions">
                     <a href="{% url 'entrenador:ejercicios' %}" class="btn-form-cancel">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
-                    <button type="submit" class="btn-form-submit">
+                    <button type="submit" class="btn-form-submit" id="submit-btn">
                         <i class="fas fa-save"></i> Guardar Ejercicio
                     </button>
                 </div>
@@ -40,4 +139,212 @@
         </div>
     </div>
 </main>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+class NuevoEjercicioPage {
+    constructor() {
+        this.muscleGroups = [];
+        this.apiBaseUrl = '/entrenador/api/';
+    }
+
+
+    initialize() {
+        this.initEventListeners();
+        this.loadMuscleGroups();
+    }
+
+
+    initEventListeners() {
+        // Cambio en grupo muscular para cargar subgrupos
+        const muscleGroupSelect = document.getElementById('muscle_group');
+        if (muscleGroupSelect) {
+            muscleGroupSelect.addEventListener('change', (e) => {
+                this.loadSubgroupsForGroup(e.target.value);
+            });
+        }
+
+
+        // Enviar formulario con AJAX
+        const form = document.getElementById('new-exercise-form');
+        if (form) {
+            form.addEventListener('submit', (e) => this.handleSubmit(e));
+        }
+    }
+
+
+    async loadMuscleGroups() {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}muscle-groups/`);
+            if (!response.ok) throw new Error('Error cargando grupos musculares');
+            this.muscleGroups = await response.json();
+            this.populateMuscleGroupSelect();
+        } catch (error) {
+            console.error('Error cargando grupos musculares:', error);
+            this.muscleGroups = [
+                { id: 1, name: 'Pectorales' },
+                { id: 2, name: 'Espalda' },
+                { id: 3, name: 'Hombros' },
+                { id: 4, name: 'Bíceps' },
+                { id: 5, name: 'Tríceps' },
+                { id: 6, name: 'Piernas' },
+                { id: 7, name: 'Abdominales' }
+            ];
+            this.populateMuscleGroupSelect();
+        }
+    }
+
+
+    populateMuscleGroupSelect() {
+        const muscleGroupSelect = document.getElementById('muscle_group');
+        if (!muscleGroupSelect) return;
+
+
+        // Limpiar opciones excepto la primera
+        muscleGroupSelect.innerHTML = '<option value="">Selecciona un grupo muscular</option>';
+
+
+        // Agregar grupos musculares desde la base de datos
+        this.muscleGroups.forEach(group => {
+            const option = document.createElement('option');
+            option.value = group.id;
+            option.textContent = group.name;
+            muscleGroupSelect.appendChild(option);
+        });
+    }
+
+
+    async loadSubgroupsForGroup(muscleGroupId) {
+        const subgroupSelect = document.getElementById('muscle_subgroup');
+        if (!subgroupSelect) return;
+
+
+        // Limpiar opciones excepto la primera
+        subgroupSelect.innerHTML = '<option value="">Selecciona un subgrupo muscular</option>';
+
+
+        if (!muscleGroupId) return;
+
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}muscle-subgroups/?muscle_group=${muscleGroupId}`);
+            if (!response.ok) throw new Error('Error cargando subgrupos');
+           
+            const subgroups = await response.json();
+            subgroups.forEach(subgroup => {
+                const option = document.createElement('option');
+                option.value = subgroup.id;
+                option.textContent = subgroup.name;
+                subgroupSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error cargando subgrupos:', error);
+        }
+    }
+
+
+    async handleSubmit(e) {
+        e.preventDefault();
+       
+        const formData = new FormData(e.target);
+        const exerciseData = {
+            name: formData.get('name'),
+            muscle_group: formData.get('muscle_group') || null,
+            muscle_subgroup: formData.get('muscle_subgroup') || null,
+            description: formData.get('description'),
+        };
+
+
+        // Validaciones
+        if (!exerciseData.name.trim()) {
+            this.showError('El nombre del ejercicio es obligatorio');
+            return;
+        }
+
+
+        const submitBtn = document.getElementById('submit-btn');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+        submitBtn.disabled = true;
+
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}ejercicios/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify(exerciseData)
+            });
+
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Error al guardar el ejercicio');
+            }
+
+
+            this.showNotification('Ejercicio creado correctamente', 'success');
+           
+            // Redirigir después de 1.5 segundos
+            setTimeout(() => {
+                window.location.href = '{% url "entrenador:ejercicios" %}';
+            }, 1500);
+           
+        } catch (error) {
+            console.error('Error al guardar ejercicio:', error);
+            this.showError(error.message);
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+
+
+    getCSRFToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+
+
+    showError(message) {
+        this.showNotification(message, 'error');
+    }
+
+
+    showNotification(message, type = 'success') {
+        // Crear notificación toast
+        const toast = document.createElement('div');
+        toast.className = `notification notification-${type}`;
+        toast.innerHTML = `
+            <div class="notification-content">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+       
+        document.body.appendChild(toast);
+       
+        // Mostrar con animación
+        setTimeout(() => toast.classList.add('show'), 10);
+       
+        // Ocultar después de 3 segundos
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const nuevoEjercicioPage = new NuevoEjercicioPage();
+    nuevoEjercicioPage.initialize();
+});
+</script>
 {% endblock %}

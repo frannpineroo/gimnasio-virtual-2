@@ -1,4 +1,9 @@
 {% extends 'entrenador/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'entrenador/css/pages/nuevo-ejercicio.css' %}">
+{% endblock %}
 
 {% block title %}Nuevo Ejercicio{% endblock %}
 
@@ -13,7 +18,13 @@
                 </a>
             </div>
 
-            <form action="/entrenador/ejercicios/nuevo/" method="post">
+            {% if mensaje %}
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i> {{ mensaje }}
+            </div>
+            {% endif %}
+
+            <form method="POST">
                 {% csrf_token %}
                 {{ form.as_p }}
                 

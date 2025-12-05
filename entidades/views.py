@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 from .forms import ExerciseForm, RutineForm
+from django.contrib.auth.decorators import login_required
 
 def sign_up(request):
     if request.method == 'GET':
@@ -31,7 +32,8 @@ def sign_up(request):
                     'form': UserCreationForm(),
                     'error': 'Las contraseñas no coinciden.'
                 })
-    
+
+@login_required
 def signout(request):
     logout(request)
     return(redirect('acceso/signin.html'))
@@ -52,30 +54,35 @@ def signin(request):
             login(request, user)
             return redirect('home')
 
+@login_required
 def home_view(request):
     try:
         return render(request, 'entrenador/home.html')
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/home.html no encontrado.")
 
+@login_required
 def clients_page(request):
     try:
         return render(request, 'entrenador/clientes.html')
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/clientes.html no encontrado.")
 
+@login_required
 def new_client(request):
     try:
         return render(request, 'entrenador/nuevo-cliente.html')
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/nuevo-cliente.html no encontrado.")
 
+@login_required
 def exercise_page(request):
     try:
         return render(request, 'entrenador/ejercicios.html')
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/ejercicios.html no encontrado.")
 
+@login_required
 def new_exercise(request):
     if request.method == 'POST':
         form = ExerciseForm(request.POST)
@@ -97,24 +104,28 @@ def new_exercise(request):
         'form': form
     })
 
+@login_required
 def trainers_page(request):
     try:
         return render(request, 'entrenador/entrenador.html')
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/entrenador.html no encontrado.")
 
+@login_required
 def new_trainer(request):
     try:
         return render(request, 'entrenador/nuevo-entrenador.html')
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/nuevo-entrenador.html no encontrado.")
 
+@login_required
 def routine_page(request):
     try:
         return render(request, 'entrenador/rutinas.html')
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/rutina.html no encontrado.")
 
+@login_required
 def new_routine(request):
     if request.method == 'POST':
         form = RutineForm(request.POST)
@@ -136,20 +147,29 @@ def new_routine(request):
         'form': form
     })
 
+@login_required
 def equipment_page(request):
     try:
         return render(request, 'entrenador/equipos.html')
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/equipos.html no encontrado.")
 
+@login_required
 def new_equipment(request):
     try:
         return render(request, 'entrenador/nuevo-equipo.html')
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/nuevo-equipo.html no encontrado.")
 
-# Nueva vista para la página de músculos
+@login_required
 def muscles_page(request):
+    try:
+        return render(request, 'entrenador/musculos.html')
+    except TemplateDoesNotExist:
+        return HttpResponseServerError("Template entrenador/musculos.html no encontrado.")
+
+@login_required
+def new_muscles(request):
     try:
         return render(request, 'entrenador/musculos.html')
     except TemplateDoesNotExist:

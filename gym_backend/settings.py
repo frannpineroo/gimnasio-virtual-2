@@ -101,6 +101,7 @@ USE_TZ = True
 
 # Static files configuration - ACTUALIZADO
 STATIC_URL = '/static/'
+LOGIN_URL = '/signin/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Directorios donde buscar archivos estáticos - ACTUALIZADO
@@ -143,17 +144,3 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-# Logging
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
-}

@@ -1,3 +1,4 @@
+# urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
@@ -34,25 +35,24 @@ urlpatterns = [
     path('clientes/', views.clients_page, name='clientes'),
     path('clientes/nuevo/', views.new_client, name='nuevo_cliente'),
 
-
     path('ejercicios/', views.exercise_page, name='ejercicios'),
     path('ejercicios/nuevo/', views.new_exercise, name='nuevo_ejercicio'),
-
 
     path('entrenadores/', views.trainers_page, name='entrenadores'),
     path('entrenadores/nuevo/', views.new_trainer, name='nuevo_entrenador'),
 
-
     path('rutinas/', views.routine_page, name='rutinas'),
     path('rutinas/nuevo/', views.new_routine, name='nueva_rutina'),
-
 
     path('equipos/', views.equipment_page, name='equipos'),
     path('equipos/nuevo/', views.new_equipment, name='nuevo_equipo'),
 
-
     path('musculos/', views.muscles_page, name='musculos'),
 
+    # Autenticación
+    path('signup/', views.sign_up, name='signup'),
+    path('logout/', views.signout, name='signout'),
+    path('signin/', views.signin, name='signin'),
 
     # Endpoints API adicionales
     path('api/clientes/active/', api_views.active_clients, name='active_clients'),

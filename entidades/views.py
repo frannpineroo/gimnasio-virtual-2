@@ -1,12 +1,14 @@
+# views.py
 from django.shortcuts import render, redirect
 from django.http import HttpResponseServerError
 from django.template import TemplateDoesNotExist
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as AuthUser
 from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 from .forms import ExerciseForm, RutineForm
 from django.contrib.auth.decorators import login_required
+from .models import Coach, Client, User as CustomUser
 
 
 def sign_up(request):
@@ -16,18 +18,17 @@ def sign_up(request):
         })
     else:
         if request.POST['password1'] == request.POST['password2']:
-            # registrar usuario
             try:
-                user = User.objects.create_user(
-                username=request.POST['username'],
-                password=request.POST['password1'])
+                user = AuthUser.objects.create_user(
+                    username=request.POST['username'],
+                    password=request.POST['password1'])
                 user.save()
                 login(request, user)
-                return redirect('home')
+                return redirect('entrenador:home')
             except IntegrityError:
                 return render(request, 'acceso/signup.html', {
                     'form': UserCreationForm(),
-                    'error': 'El nombre del usaurio ya existe.'
+                    'error': 'El nombre del usuario ya existe.'
                 })
         return render(request, 'acceso/signup.html', {
                     'form': UserCreationForm(),
@@ -38,7 +39,7 @@ def sign_up(request):
 @login_required
 def signout(request):
     logout(request)
-    return(redirect('signin'))
+    return redirect('entrenador:signin')
 
 
 def signin(request):
@@ -55,13 +56,71 @@ def signin(request):
             })
         else:
             login(request, user)
-            return redirect('home')
+            return redirect('entrenador:home')
+
+
+def get_user_profile_context(request):
+    """Obtiene la información del perfil del usuario actual"""
+    user = request.user
+    context = {}
+    
+    if user.is_authenticated:
+        # Buscar usuario personalizado por username
+        try:
+            custom_user = CustomUser.objects.get(username=user.username)
+            
+            # Intentar obtener el perfil de coach
+            try:
+                coach = Coach.objects.get(user=custom_user)
+                context['user_profile'] = {
+                    'name': coach.name,
+                    'last_name': coach.last_name,
+                    'full_name': f"{coach.name} {coach.last_name}",
+                    'initials': f"{coach.name[0]}{coach.last_name[0]}" if coach.name and coach.last_name else 'US',
+                    'role': 'Entrenador',
+                    'type': 'coach'
+                }
+            except Coach.DoesNotExist:
+                # Intentar obtener el perfil de cliente
+                try:
+                    client = Client.objects.get(user=custom_user)
+                    context['user_profile'] = {
+                        'name': client.name,
+                        'last_name': client.last_name,
+                        'full_name': f"{client.name} {client.last_name}",
+                        'initials': f"{client.name[0]}{client.last_name[0]}" if client.name and client.last_name else 'CL',
+                        'role': 'Cliente',
+                        'type': 'client'
+                    }
+                except Client.DoesNotExist:
+                    # Si no tiene perfil, usar el usuario personalizado
+                    context['user_profile'] = {
+                        'name': custom_user.first_name,
+                        'last_name': custom_user.last_name,
+                        'full_name': f"{custom_user.first_name} {custom_user.last_name}" if custom_user.first_name and custom_user.last_name else custom_user.username,
+                        'initials': f"{custom_user.first_name[0]}{custom_user.last_name[0]}" if custom_user.first_name and custom_user.last_name else custom_user.username[:2].upper(),
+                        'role': 'Usuario',
+                        'type': 'user'
+                    }
+        except CustomUser.DoesNotExist:
+            # Si no existe usuario personalizado, usar el usuario de Django
+            context['user_profile'] = {
+                'name': user.first_name,
+                'last_name': user.last_name,
+                'full_name': f"{user.first_name} {user.last_name}" if user.first_name and user.last_name else user.username,
+                'initials': f"{user.first_name[0]}{user.last_name[0]}" if user.first_name and user.last_name else user.username[:2].upper(),
+                'role': 'Usuario',
+                'type': 'user'
+            }
+    
+    return context
 
 
 @login_required
 def home_view(request):
     try:
-        return render(request, 'entrenador/home.html')
+        context = get_user_profile_context(request)
+        return render(request, 'entrenador/home.html', context)
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/home.html no encontrado.")
 
@@ -69,7 +128,8 @@ def home_view(request):
 @login_required
 def clients_page(request):
     try:
-        return render(request, 'entrenador/clientes.html')
+        context = get_user_profile_context(request)
+        return render(request, 'entrenador/clientes.html', context)
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/clientes.html no encontrado.")
 
@@ -77,7 +137,8 @@ def clients_page(request):
 @login_required
 def new_client(request):
     try:
-        return render(request, 'entrenador/nuevo-cliente.html')
+        context = get_user_profile_context(request)
+        return render(request, 'entrenador/nuevo-cliente.html', context)
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/nuevo-cliente.html no encontrado.")
 
@@ -85,7 +146,8 @@ def new_client(request):
 @login_required
 def exercise_page(request):
     try:
-        return render(request, 'entrenador/ejercicios.html')
+        context = get_user_profile_context(request)
+        return render(request, 'entrenador/ejercicios.html', context)
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/ejercicios.html no encontrado.")
 
@@ -97,28 +159,34 @@ def new_exercise(request):
         if form.is_valid():
             exercise = form.save()
             form = ExerciseForm()
-            return render(request, 'entrenador/nuevo-ejercicio.html', {
+            context = get_user_profile_context(request)
+            context.update({
                 'form': form,
                 'success': True,
                 'mensaje': 'Ejercicio guardado correctamente.'
             })
+            return render(request, 'entrenador/nuevo-ejercicio.html', context)
         else:
-            return render(request, 'entrenador/nuevo-ejercicio.html', {
+            context = get_user_profile_context(request)
+            context.update({
                 'form': form,
                 'error': True
             })
-
+            return render(request, 'entrenador/nuevo-ejercicio.html', context)
 
     form = ExerciseForm()
-    return render(request, 'entrenador/nuevo-ejercicio.html', {
+    context = get_user_profile_context(request)
+    context.update({
         'form': form
     })
+    return render(request, 'entrenador/nuevo-ejercicio.html', context)
 
 
 @login_required
 def trainers_page(request):
     try:
-        return render(request, 'entrenador/entrenador.html')
+        context = get_user_profile_context(request)
+        return render(request, 'entrenador/entrenador.html', context)
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/entrenador.html no encontrado.")
 
@@ -126,7 +194,8 @@ def trainers_page(request):
 @login_required
 def new_trainer(request):
     try:
-        return render(request, 'entrenador/nuevo-entrenador.html')
+        context = get_user_profile_context(request)
+        return render(request, 'entrenador/nuevo-entrenador.html', context)
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/nuevo-entrenador.html no encontrado.")
 
@@ -134,7 +203,8 @@ def new_trainer(request):
 @login_required
 def routine_page(request):
     try:
-        return render(request, 'entrenador/rutinas.html')
+        context = get_user_profile_context(request)
+        return render(request, 'entrenador/rutinas.html', context)
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/rutina.html no encontrado.")
 
@@ -147,26 +217,32 @@ def new_routine(request):
             form.save()
             form = RutineForm()
             mensaje = "Rutina guardada correctamente."
-            return render(request, 'entrenador/nueva-rutina.html', {
+            context = get_user_profile_context(request)
+            context.update({
                 'form': form,
                 'mensaje': mensaje
             })
+            return render(request, 'entrenador/nueva-rutina.html', context)
         else:
-            return render(request, 'entrenador/nueva-rutina.html', {
+            context = get_user_profile_context(request)
+            context.update({
                 'form': form
             })
-
+            return render(request, 'entrenador/nueva-rutina.html', context)
 
     form = RutineForm()
-    return render(request, 'entrenador/nueva-rutina.html', {
+    context = get_user_profile_context(request)
+    context.update({
         'form': form
     })
+    return render(request, 'entrenador/nueva-rutina.html', context)
 
 
 @login_required
 def equipment_page(request):
     try:
-        return render(request, 'entrenador/equipos.html')
+        context = get_user_profile_context(request)
+        return render(request, 'entrenador/equipos.html', context)
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/equipos.html no encontrado.")
 
@@ -174,7 +250,8 @@ def equipment_page(request):
 @login_required
 def new_equipment(request):
     try:
-        return render(request, 'entrenador/nuevo-equipo.html')
+        context = get_user_profile_context(request)
+        return render(request, 'entrenador/nuevo-equipo.html', context)
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/nuevo-equipo.html no encontrado.")
 
@@ -182,14 +259,7 @@ def new_equipment(request):
 @login_required
 def muscles_page(request):
     try:
-        return render(request, 'entrenador/musculos.html')
-    except TemplateDoesNotExist:
-        return HttpResponseServerError("Template entrenador/musculos.html no encontrado.")
-
-
-@login_required
-def new_muscles(request):
-    try:
-        return render(request, 'entrenador/musculos.html')
+        context = get_user_profile_context(request)
+        return render(request, 'entrenador/musculos.html', context)
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/musculos.html no encontrado.")

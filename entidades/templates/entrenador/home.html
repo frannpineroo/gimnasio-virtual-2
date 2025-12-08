@@ -22,7 +22,7 @@
             <div class="stat-card">
                 <div class="icon"><i class="fas fa-users"></i></div>
                 <h3 id="clients-count">0</h3>
-                <p>Clientes Activos</p>
+                <p>Clientes</p>
             </div>
 
             <div class="stat-card">
@@ -45,12 +45,101 @@
 <script>
     // Script para cargar estadísticas en tiempo real
     document.addEventListener('DOMContentLoaded', function() {
-        // Simulación de carga de datos (reemplazar con llamadas API reales)
-        setTimeout(() => {
-            document.getElementById('clients-count').textContent = '12';
-            document.getElementById('exercises-count').textContent = '45';
-            document.getElementById('routines-count').textContent = '28';
-        }, 1000);
+        // Cargar estadísticas reales
+        function loadStats() {
+            // Obtener token CSRF
+            function getCSRFToken() {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, 10) === 'csrftoken=') {
+                            cookieValue = decodeURIComponent(cookie.substring(10));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            const csrftoken = getCSRFToken();
+
+            // Configurar headers para las peticiones
+            const headers = {
+                'Content-Type': 'application/json',
+            };
+            
+            if (csrftoken) {
+                headers['X-CSRFToken'] = csrftoken;
+            }
+
+            // 1. Cargar TODOS los clientes (no solo activos)
+            fetch('/entrenador/api/clientes/', {
+                method: 'GET',
+                headers: headers,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de clientes');
+                }
+                return response.json();
+            })
+            .then(clientes => {
+                // Si la respuesta está paginada, usa results
+                const clientesData = clientes.results || clientes;
+                document.getElementById('clients-count').textContent = clientesData.length;
+            })
+            .catch(error => {
+                console.error('Error al cargar clientes:', error);
+                document.getElementById('clients-count').textContent = '0';
+            });
+
+            // 2. Cargar ejercicios (solo activos)
+            fetch('/entrenador/api/ejercicios/?active_only=true', {
+                method: 'GET',
+                headers: headers,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de ejercicios');
+                }
+                return response.json();
+            })
+            .then(ejercicios => {
+                // Si la respuesta está paginada, usa results
+                const ejerciciosData = ejercicios.results || ejercicios;
+                document.getElementById('exercises-count').textContent = ejerciciosData.length;
+            })
+            .catch(error => {
+                console.error('Error al cargar ejercicios:', error);
+                document.getElementById('exercises-count').textContent = '0';
+            });
+
+            // 3. Cargar rutinas
+            fetch('/entrenador/api/rutinas/', {
+                method: 'GET',
+                headers: headers,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de rutinas');
+                }
+                return response.json();
+            })
+            .then(rutinas => {
+                // Si la respuesta está paginada, usa results
+                const rutinasData = rutinas.results || rutinas;
+                document.getElementById('routines-count').textContent = rutinasData.length;
+            })
+            .catch(error => {
+                console.error('Error al cargar rutinas:', error);
+                document.getElementById('routines-count').textContent = '0';
+            });
+        }
+
+        // Llamar a la función para cargar las estadísticas
+        loadStats();
     });
 </script>
 {% endblock %}

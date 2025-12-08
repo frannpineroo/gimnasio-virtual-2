@@ -1,11 +1,30 @@
+<!-- entidades/templates/entrenador/components/header.html -->
 <div class="header">
     <div class="header-content">
         <div class="user-profile-container">
             <div class="user-profile" id="user-profile">
-                <div class="user-avatar" id="user-avatar">JD</div>
+                <div class="user-avatar" id="user-avatar">
+                    {% if user_profile %}
+                        {{ user_profile.initials }}
+                    {% else %}
+                        US
+                    {% endif %}
+                </div>
                 <div class="user-info">
-                    <h4 id="user-name">Juan Delgado</h4>
-                    <p id="user-role">Entrenador</p>
+                    <h4 id="user-name">
+                        {% if user_profile %}
+                            {{ user_profile.full_name }}
+                        {% else %}
+                            Usuario
+                        {% endif %}
+                    </h4>
+                    <p id="user-role">
+                        {% if user_profile %}
+                            {{ user_profile.role }}
+                        {% else %}
+                            Usuario
+                        {% endif %}
+                    </p>
                 </div>
                 <i class="fas fa-chevron-down" id="user-menu-toggle"></i>
             </div>
@@ -17,7 +36,7 @@
                 </div>
                 <div class="dropdown-item" id="logout">
                     <i class="fas fa-sign-out-alt"></i>
-                    <a href="{% url 'logout' %}" style="text-decoration: none; color: inherit;">
+                    <a href="{% url 'entrenador:signout' %}" style="text-decoration: none; color: inherit;">
                         <span>Cerrar Sesión</span>
                     </a>
                 </div>

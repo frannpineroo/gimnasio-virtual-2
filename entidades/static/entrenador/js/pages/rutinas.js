@@ -5,6 +5,9 @@ class RutinasPage {
         this.routines = [];
         this.filteredRoutines = [];
         this.clients = [];
+        this.apiBaseUrl = '/entrenador/api/';
+        this.currentRoutineId = null;
+        this.searchTimeout = null;
     }
 
     initialize() {
@@ -14,12 +17,13 @@ class RutinasPage {
         console.log('Inicializando página de rutinas');
         
         this.initEventListeners();
-        this.loadClients();
-        this.loadRoutines();
+        this.loadClients().then(() => {
+            this.loadRoutines();
+        });
     }
 
     initEventListeners() {
-        // Filtros
+        // Botones de filtros
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
@@ -60,11 +64,13 @@ class RutinasPage {
         modals.forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
+                    modal.classList.remove('active');
                     modal.style.display = 'none';
                 }
             });
         });
 
+        // Inicializar selects personalizados
         this.initCustomSelects();
     }
 
@@ -127,29 +133,28 @@ class RutinasPage {
 
     async loadClients() {
         try {
-            // Cargar clientes desde la API
-            const response = await fetch('/entrenador/api/clientes/');
-            if (response.ok) {
-                const data = await response.json();
-                this.clients = data.results || data;
-                this.populateClientSelect();
-            }
+            const response = await fetch(`${this.apiBaseUrl}clientes/`);
+            if (!response.ok) throw new Error('Error cargando clientes');
+            this.clients = await response.json();
+            this.populateClientSelect();
         } catch (error) {
             console.error('Error cargando clientes:', error);
+            this.clients = [];
         }
     }
 
     populateClientSelect() {
-        const clientSelect = document.getElementById('client-select');
+        const clientSelect = document.querySelector('#client-select .select-options');
         if (!clientSelect) return;
 
-        const optionsContainer = clientSelect.querySelector('.select-options');
-        // Limpiar opciones existentes (excepto la primera)
-        const firstOption = optionsContainer.querySelector('.select-option:first-child');
-        optionsContainer.innerHTML = '';
-        optionsContainer.appendChild(firstOption);
+        // Limpiar opciones excepto la primera
+        const defaultOption = clientSelect.querySelector('.select-option[data-value=""]');
+        clientSelect.innerHTML = '';
+        if (defaultOption) {
+            clientSelect.appendChild(defaultOption);
+        }
 
-        // Agregar opciones de clientes
+        // Agregar clientes desde la base de datos
         this.clients.forEach(client => {
             const option = document.createElement('div');
             option.className = 'select-option';
@@ -158,51 +163,43 @@ class RutinasPage {
                 <i class="fas fa-user"></i>
                 <span>${client.name} ${client.last_name}</span>
             `;
-            optionsContainer.appendChild(option);
+            
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const text = `${client.name} ${client.last_name}`;
+                const selectedValue = document.querySelector('#client-select .selected-value');
+                selectedValue.innerHTML = `<i class="fas fa-user"></i><span>${text}</span>`;
+                selectedValue.setAttribute('data-value', client.id);
+                
+                document.querySelector('#client-select .select-trigger').classList.remove('active');
+                clientSelect.classList.remove('active');
+                
+                setTimeout(() => {
+                    this.filterRoutines();
+                }, 100);
+            });
+            
+            clientSelect.appendChild(option);
         });
-
-        // Re-inicializar eventos del select
-        this.initCustomSelects();
     }
 
     async loadRoutines() {
         try {
             console.log('Cargando rutinas desde el backend...');
             
-            // TODO: Conectar con API real
-            // const response = await fetch('/entrenador/api/rutinas/');
-            // this.routines = await response.json();
+            const response = await fetch(`${this.apiBaseUrl}rutinas/`);
+            if (!response.ok) {
+                throw new Error('Error al cargar las rutinas');
+            }
             
-            // Datos de ejemplo temporalmente
-            this.routines = [
-                {
-                    id: 1,
-                    name: "Rutina fuerza inicial",
-                    description: "Rutina para principiantes enfocada en fuerza general",
-                    client: { id: 1, name: "Juan", last_name: "Pérez" },
-                    duration: "8 ejercicios",
-                    days: "3 días/semana",
-                    creation_date: "15/05/2023",
-                    teacher: "Profesor A"
-                },
-                {
-                    id: 2,
-                    name: "Rutina volumen",
-                    description: "Rutina para ganancia muscular con enfoque en hipertrofia",
-                    client: { id: 2, name: "María", last_name: "García" },
-                    duration: "10 ejercicios",
-                    days: "4 días/semana",
-                    creation_date: "22/06/2023",
-                    teacher: "Profesor B"
-                }
-            ];
-            
+            this.routines = await response.json();
             this.filteredRoutines = [...this.routines];
             this.renderTable();
             
         } catch (error) {
             console.error('Error cargando rutinas:', error);
             this.showError('Error al cargar las rutinas');
+            this.renderTable();
         }
     }
 
@@ -210,55 +207,73 @@ class RutinasPage {
         const tbody = document.getElementById('routines-table-body');
         if (!tbody) return;
 
+        // Quitar la fila de carga
+        const loadingRow = document.getElementById('loading-row');
+        if (loadingRow) {
+            loadingRow.remove();
+        }
+
         if (this.filteredRoutines.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="8" style="text-align:center; padding: 30px; color: var(--text-secondary);">
-                        No se encontraron rutinas
+                    <td colspan="8" style="text-align:center; padding: 40px; color: #666;">
+                        <i class="fas fa-clipboard-list" style="font-size: 48px; margin-bottom: 15px; display: block;"></i>
+                        <p style="margin: 0; font-size: 16px;">No se encontraron rutinas</p>
+                        <a href="/entrenador/rutinas/nuevo/" style="color: #32CD32; text-decoration: none; margin-top: 10px; display: inline-block;">
+                            <i class="fas fa-plus"></i> Crear primera rutina
+                        </a>
                     </td>
                 </tr>
             `;
             return;
         }
 
-        tbody.innerHTML = this.filteredRoutines.map(routine => `
-            <tr>
-                <td>${routine.name}</td>
-                <td>${routine.description}</td>
-                <td>${routine.client.name} ${routine.client.last_name}</td>
-                <td>${routine.duration}</td>
-                <td>${routine.days}</td>
-                <td>${routine.creation_date}</td>
-                <td>${routine.teacher}</td>
-                <td>
-                    <div class="actions-cell">
-                        <button class="action-btn view-btn" onclick="rutinasPage.viewRoutine(${routine.id})" title="Ver">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="action-btn edit-btn" onclick="rutinasPage.editRoutine(${routine.id})" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete-btn" onclick="rutinasPage.showDeleteModal(${routine.id})" title="Eliminar">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = this.filteredRoutines.map(routine => {
+            const clientName = routine.client_name || 'Sin asignar';
+            const coachName = routine.coach_name ? `Profesor ${routine.coach_name.charAt(0)}` : '-';
+            const createdDate = routine.created_at ? new Date(routine.created_at).toLocaleDateString('es-AR') : '-';
+            const description = routine.description ? 
+                (routine.description.length > 50 ? routine.description.substring(0, 50) + '...' : routine.description) : 
+                'Sin descripción';
+
+            return `
+                <tr data-routine-id="${routine.id}">
+                    <td>${routine.name}</td>
+                    <td>${description}</td>
+                    <td>${clientName}</td>
+                    <td>${routine.time_week || 0} min</td>
+                    <td>${routine.days_per_week || 0} días/semana</td>
+                    <td>${createdDate}</td>
+                    <td>${coachName}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <button class="action-btn view-btn" onclick="window.rutinasPage.viewRoutine(${routine.id})" title="Ver detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn edit-btn" onclick="window.rutinasPage.editRoutine(${routine.id})" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="window.rutinasPage.showDeleteModal(${routine.id})" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
     }
 
     filterRoutines() {
         const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
-        const clientSelect = document.querySelector('#client-select .selected-value span');
-        const clientFilter = clientSelect?.textContent !== 'Todos los clientes' ? 
-                             clientSelect?.getAttribute('data-value') : '';
+        const selectedValue = document.querySelector('#client-select .selected-value');
+        const clientFilterId = selectedValue?.getAttribute('data-value') || '';
 
         this.filteredRoutines = this.routines.filter(routine => {
-            const matchesSearch = routine.name.toLowerCase().includes(searchTerm) || 
-                                 routine.description.toLowerCase().includes(searchTerm);
+            const matchesSearch = routine.name.toLowerCase().includes(searchTerm) ||
+                                 (routine.description && routine.description.toLowerCase().includes(searchTerm));
             
-            const matchesClient = clientFilter ? 
-                routine.client.id == clientFilter : 
+            const matchesClient = clientFilterId ?
+                routine.client == clientFilterId :
                 true;
             
             return matchesSearch && matchesClient;
@@ -271,6 +286,7 @@ class RutinasPage {
         const clientSelect = document.querySelector('#client-select .selected-value');
         if (clientSelect) {
             clientSelect.innerHTML = '<i class="fas fa-list"></i><span>Todos los clientes</span>';
+            clientSelect.removeAttribute('data-value');
         }
         
         const searchInput = document.getElementById('search-input');
@@ -282,22 +298,48 @@ class RutinasPage {
         this.renderTable();
     }
 
-    viewRoutine(id) {
-        const routine = this.routines.find(r => r.id === id);
-        if (routine) {
-            document.getElementById('view-modal-title').textContent = routine.name;
-            document.getElementById('view-client-name').textContent = `${routine.client.name} ${routine.client.last_name}`;
-            document.getElementById('view-description').textContent = routine.description;
-            document.getElementById('view-creation-date').textContent = routine.creation_date;
+    async viewRoutine(id) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}rutinas/${id}/`);
+            if (!response.ok) throw new Error('Error cargando rutina');
             
-            // TODO: Cargar ejercicios de la rutina desde la API
+            const routine = await response.json();
+            
+            // Llenar modal con información
+            document.getElementById('view-modal-title').textContent = routine.name;
+            document.getElementById('view-client-name').textContent = routine.client_name || 'Sin asignar';
+            document.getElementById('view-description').textContent = routine.description || 'Sin descripción';
+            document.getElementById('view-creation-date').textContent = routine.created_at ? 
+                new Date(routine.created_at).toLocaleDateString('es-AR') : '-';
+            
+            // Cargar ejercicios de la rutina
+            const exercisesList = document.getElementById('view-exercises-list');
+            if (routine.exercises && routine.exercises.length > 0) {
+                exercisesList.innerHTML = routine.exercises.map(ex => `
+                    <div class="exercise-item">
+                        <i class="fas fa-dumbbell"></i>
+                        <span>${ex.name || ex}</span>
+                    </div>
+                `).join('');
+            } else {
+                exercisesList.innerHTML = '<p style="color: #666;">No hay ejercicios asignados</p>';
+            }
+            
             this.showViewModal();
+        } catch (error) {
+            console.error('Error cargando rutina:', error);
+            this.showError('Error al cargar la rutina');
         }
+    }
+
+    editRoutine(id) {
+        window.location.href = `/entrenador/rutinas/editar/${id}/`;
     }
 
     showViewModal() {
         const modal = document.getElementById('view-routine-modal');
         if (modal) {
+            modal.classList.add('active');
             modal.style.display = 'flex';
         }
     }
@@ -305,19 +347,16 @@ class RutinasPage {
     hideViewModal() {
         const modal = document.getElementById('view-routine-modal');
         if (modal) {
+            modal.classList.remove('active');
             modal.style.display = 'none';
         }
-    }
-
-    editRoutine(id) {
-        // TODO: Redirigir a la página de edición o abrir modal de edición
-        console.log('Editando rutina:', id);
     }
 
     showDeleteModal(id) {
         this.currentRoutineId = id;
         const modal = document.getElementById('delete-modal');
         if (modal) {
+            modal.classList.add('active');
             modal.style.display = 'flex';
         }
     }
@@ -325,29 +364,67 @@ class RutinasPage {
     hideDeleteModal() {
         const modal = document.getElementById('delete-modal');
         if (modal) {
+            modal.classList.remove('active');
             modal.style.display = 'none';
         }
         this.currentRoutineId = null;
     }
 
     async deleteRoutine() {
-        if (this.currentRoutineId) {
-            // TODO: Implementar eliminación real
-            console.log('Eliminando rutina:', this.currentRoutineId);
+        if (!this.currentRoutineId) return;
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}rutinas/${this.currentRoutineId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': this.getCSRFToken()
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al eliminar la rutina');
+            }
+
             this.hideDeleteModal();
-            this.showSuccess('Rutina eliminada correctamente');
+            this.showNotification('Rutina eliminada correctamente', 'success');
             await this.loadRoutines();
+            
+        } catch (error) {
+            console.error('Error al eliminar rutina:', error);
+            this.showError('Error al eliminar la rutina');
         }
     }
 
-    showError(message) {
-        console.error('Error:', message);
-        alert('Error: ' + message);
+    getCSRFToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
     }
 
-    showSuccess(message) {
-        console.log('Éxito:', message);
-        alert('Éxito: ' + message);
+    showError(message) {
+        this.showNotification(message, 'error');
+    }
+
+    showNotification(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `notification notification-${type}`;
+        toast.innerHTML = `
+            <div class="notification-content">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => toast.classList.add('show'), 10);
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 }
 

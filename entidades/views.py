@@ -9,6 +9,8 @@ from django.db import IntegrityError
 from .forms import ExerciseForm, RutineForm
 from django.contrib.auth.decorators import login_required
 from .models import Coach, Client, User as CustomUser
+from .models import Rutine
+from django.shortcuts import render, redirect, get_object_or_404
 
 
 def sign_up(request):
@@ -201,14 +203,15 @@ def new_trainer(request):
 
 
 @login_required
+@login_required
 def routine_page(request):
     try:
         context = get_user_profile_context(request)
+        # No pasamos rutinas aquí, se cargan via JavaScript/API
         return render(request, 'entrenador/rutinas.html', context)
     except TemplateDoesNotExist:
-        return HttpResponseServerError("Template entrenador/rutina.html no encontrado.")
-
-
+        return HttpResponseServerError("Template entrenador/rutinas.html no encontrado.")
+    
 @login_required
 def new_routine(request):
     if request.method == 'POST':
@@ -263,3 +266,48 @@ def muscles_page(request):
         return render(request, 'entrenador/musculos.html', context)
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/musculos.html no encontrado.")
+
+from django.shortcuts import get_object_or_404
+
+@login_required
+def edit_routine(request, routine_id):
+    rutina = get_object_or_404(Rutine, id=routine_id)
+    
+    if request.method == 'POST':
+        form = RutineForm(request.POST, instance=rutina)
+        if form.is_valid():
+            form.save()
+            context = get_user_profile_context(request)
+            context.update({
+                'form': form,
+                'rutina': rutina,
+                'editing': True,
+                'success': True,
+                'mensaje': 'Rutina actualizada correctamente.'
+            })
+            return render(request, 'entrenador/nueva-rutina.html', context)
+        else:
+            context = get_user_profile_context(request)
+            context.update({
+                'form': form,
+                'rutina': rutina,
+                'editing': True,
+                'error': True
+            })
+            return render(request, 'entrenador/nueva-rutina.html', context)
+    else:
+        form = RutineForm(instance=rutina)
+        context = get_user_profile_context(request)
+        context.update({
+            'form': form,
+            'rutina': rutina,
+            'editing': True
+        })
+        return render(request, 'entrenador/nueva-rutina.html', context)
+
+
+@login_required
+def delete_routine(request, routine_id):
+    rutina = get_object_or_404(Rutine, id=routine_id)
+    rutina.delete()
+    return redirect('entrenador:rutinas')

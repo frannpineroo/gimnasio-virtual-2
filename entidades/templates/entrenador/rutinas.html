@@ -9,6 +9,72 @@
 <link rel="stylesheet" href="{% static 'entrenador/css/components/buttons.css' %}">
 <link rel="stylesheet" href="{% static 'entrenador/css/components/modal.css' %}">
 <link rel="stylesheet" href="{% static 'entrenador/css/pages/rutinas.css' %}">
+<style>
+    /* Estilos para notificaciones */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 16px 20px;
+        border-radius: 8px;
+        background: #1a1a1a;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transform: translateX(150%);
+        transition: transform 0.3s ease;
+        z-index: 10000;
+        max-width: 350px;
+    }
+
+    .notification.show {
+        transform: translateX(0);
+    }
+
+    .notification-success {
+        border-left: 4px solid #32CD32;
+    }
+
+    .notification-error {
+        border-left: 4px solid #dc3545;
+    }
+
+    .notification-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .notification-content i {
+        font-size: 20px;
+    }
+
+    .notification-success .notification-content i {
+        color: #32CD32;
+    }
+
+    .notification-error .notification-content i {
+        color: #dc3545;
+    }
+
+    /* Estilos para el modal activo */
+    .modal.active {
+        display: flex !important;
+    }
+
+    /* Estilos para items de ejercicios en modal */
+    .exercise-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+
+    .exercise-item i {
+        color: #32CD32;
+    }
+</style>
 {% endblock %}
 
 {% block content %}

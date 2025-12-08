@@ -43,6 +43,8 @@ urlpatterns = [
 
     path('rutinas/', views.routine_page, name='rutinas'),
     path('rutinas/nuevo/', views.new_routine, name='nueva_rutina'),
+    path('rutinas/editar/<int:routine_id>/', views.edit_routine, name='editar_rutina'),
+    path('rutinas/eliminar/<int:routine_id>/', views.delete_routine, name='eliminar_rutina'),
 
     path('equipos/', views.equipment_page, name='equipos'),
     path('equipos/nuevo/', views.new_equipment, name='nuevo_equipo'),

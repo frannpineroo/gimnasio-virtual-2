@@ -2,18 +2,21 @@
 {% extends 'cliente/base.html' %}
 {% load static %}
 
+
 {% block title %}Mi Rutina{% endblock %}
+
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'cliente/css/pages/rutina-cliente.css' %}">
 {% endblock %}
 
+
 {% block content %}
 <header class="cabecera-cliente">
     <div class="contenido-cabecera">
         <div class="detalles-cliente">
-            <h1>Juan Pérez</h1>
-            <p>Objetivo: Ganancia muscular • Nivel: Intermedio</p>
+            <h1>{{ client.full_name|default:"Juan Pérez" }}</h1>
+            <p>Objetivo: {{ client.goal|default:"Ganancia muscular" }} • Nivel: {{ client.experience_level|default:"Intermedio" }}</p>
         </div>
         <div class="acciones-cabecera">
             <button class="btn btn-progreso" id="btn-ver-progreso">
@@ -23,30 +26,42 @@
     </div>
 </header>
 
+
 <main class="principal-cliente">
     <!-- Información de la Rutina -->
+    {% if active_routine %}
     <div class="tarjeta-info-rutina tarjeta">
         <div class="cabecera-rutina">
-            <h2 class="titulo-rutina">Rutina Fuerza Inicial</h2>
+            <h2 class="titulo-rutina">{{ active_routine.name }}</h2>
             <div class="meta-rutina">
                 <div class="item-meta">
-                    <span class="valor-meta">4</span>
+                    <span class="valor-meta">{{ active_routine.days_per_week|default:4 }}</span>
                     <span class="etiqueta-meta">Días/Semana</span>
                 </div>
                 <div class="item-meta">
-                    <span class="valor-meta">8</span>
+                    <span class="valor-meta">{{ active_routine.weeks|default:8 }}</span>
                     <span class="etiqueta-meta">Semanas</span>
                 </div>
                 <div class="item-meta">
-                    <span class="valor-meta">12</span>
+                    <span class="valor-meta">{{ active_routine.exercise_count|default:12 }}</span>
                     <span class="etiqueta-meta">Ejercicios</span>
                 </div>
             </div>
         </div>
         <p class="descripcion-rutina">
-            Rutina enfocada en el desarrollo de fuerza general para principiantes. Incluye ejercicios compuestos fundamentales y trabajo accesorio para equilibrar el desarrollo muscular.
+            {{ active_routine.description|default:"Rutina enfocada en el desarrollo de fuerza general para principiantes. Incluye ejercicios compuestos fundamentales y trabajo accesorio para equilibrar el desarrollo muscular." }}
         </p>
     </div>
+    {% else %}
+    <div class="tarjeta-info-rutina tarjeta">
+        <div class="cabecera-rutina">
+            <h2 class="titulo-rutina">Sin Rutina Asignada</h2>
+        </div>
+        <p class="descripcion-rutina">
+            No tienes una rutina activa asignada. Contacta con tu entrenador para que te asigne una rutina personalizada.
+        </p>
+    </div>
+    {% endif %}
 
     <!-- Navegación entre días -->
     <div class="navegacion-dias">
@@ -55,6 +70,7 @@
         <div class="pestaña-dia" data-dia="3">Día 3: Piernas</div>
         <div class="pestaña-dia" data-dia="4">Día 4: Hombros y Abdomen</div>
     </div>
+
 
     <!-- Día 1: Pecho y Tríceps -->
     <div class="ejercicios-dia activa" id="dia-1">
@@ -101,6 +117,7 @@
             </div>
         </div>
 
+
         <!-- Ejercicio 2 -->
         <div class="tarjeta-ejercicio">
             <div class="cabecera-ejercicio">
@@ -136,6 +153,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Día 2: Espalda y Bíceps (oculto inicialmente) -->
     <div class="ejercicios-dia" id="dia-2">
@@ -175,7 +193,8 @@
         </div>
     </div>
 
-    <!-- Registro de Entrenamiento - Solo botón Nuevo Registro -->
+
+    <!-- Registro de Entrenamiento -->
     <div class="registro-entrenamiento tarjeta">
         <div class="cabecera-registro">
             <h3 class="titulo-registro">Registro de Entrenamiento</h3>
@@ -188,11 +207,13 @@
     </div>
 </main>
 
+
 <footer class="pie-cliente">
     <p>TRAINING! • Sistema de Gestión de Rutinas</p>
     <p>© 2023 Todos los derechos reservados</p>
 </footer>
 {% endblock %}
+
 
 {% block extra_js %}
 <script src="{% static 'cliente/js/pages/rutina-cliente.js' %}"></script>

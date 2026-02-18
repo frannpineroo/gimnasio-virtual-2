@@ -13,7 +13,6 @@ const clientesPage = {
 
     initialize() {
         if (this.initialized) {
-            console.log('Clientes page already initialized');
             return;
         }
         
@@ -21,12 +20,10 @@ const clientesPage = {
         this.initModals();
         this.initEventListeners();
         this.loadClients();
-        console.log('Clientes page initialized');
     },
 
     async loadClients() {
         try {
-            console.log('Cargando clientes desde el backend...');
             
             // Mostrar loading
             const tbody = document.getElementById('clients-table-body');
@@ -74,7 +71,6 @@ const clientesPage = {
     initTable() {
         // Si TableManager no está disponible, crear una versión simple
         if (typeof TableManager === 'undefined') {
-            console.log('TableManager no disponible, usando renderizado básico');
             this.renderBasicTable();
             return;
         }
@@ -220,7 +216,6 @@ const clientesPage = {
     },
 
     initModals() {
-        console.log('Inicializando modales...');
         
         const clientModal = document.getElementById('client-modal');
         if (clientModal) {
@@ -272,7 +267,6 @@ const clientesPage = {
     },
 
     initEventListeners() {
-        console.log('Inicializando event listeners...');
         
         // Añadir botón para nuevo cliente
         const newClientBtn = document.querySelector('a.btn.btn-primary[href*="nuevo_cliente"]');
@@ -813,7 +807,6 @@ const clientesPage = {
 
 // Inicialización mejorada
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded - initializing clientes page');
     
     // Inicializar inmediatamente
     try {

@@ -16,7 +16,6 @@ class MusculosPage {
         if (this.initialized) return;
        
         this.initialized = true;
-        console.log('Inicializando página de músculos');
        
         this.initEventListeners();
         this.loadMuscleData();
@@ -24,7 +23,6 @@ class MusculosPage {
 
     async loadMuscleData() {
         try {
-            console.log('Cargando datos de músculos...');
            
             // Mostrar loading
             const tbody = document.getElementById('muscles-table-body');
@@ -42,19 +40,16 @@ class MusculosPage {
             const groupsResponse = await fetch(`${this.apiBaseUrl}muscle-groups/`);
             if (!groupsResponse.ok) throw new Error('Error cargando grupos musculares');
             this.muscleGroups = await groupsResponse.json();
-            console.log('Grupos musculares cargados:', this.muscleGroups.length);
 
             // Cargar subgrupos musculares
             const subgroupsResponse = await fetch(`${this.apiBaseUrl}muscle-subgroups/`);
             if (!subgroupsResponse.ok) throw new Error('Error cargando subgrupos musculares');
             this.muscleSubgroups = await subgroupsResponse.json();
-            console.log('Subgrupos musculares cargados:', this.muscleSubgroups.length);
 
             // Combinar datos para la tabla
             this.combinedMuscles = this.combineMuscleData();
             this.filteredMuscles = [...this.combinedMuscles];
            
-            console.log('Músculos combinados:', this.combinedMuscles.length);
             this.renderTable();
            
         } catch (error) {
@@ -134,7 +129,6 @@ class MusculosPage {
             return;
         }
 
-        console.log('Renderizando tabla con', this.filteredMuscles.length, 'músculos');
        
         if (this.filteredMuscles.length === 0) {
             tbody.innerHTML = `
@@ -215,7 +209,6 @@ class MusculosPage {
     }
 
     initEventListeners() {
-        console.log('Inicializando event listeners...');
        
         // Botones de acción
         const addGroupBtn = document.getElementById('add-group-btn');

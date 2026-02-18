@@ -13,7 +13,6 @@ class EquiposPage {
         if (this.initialized) return;
         
         this.initialized = true;
-        console.log('Inicializando página de equipos');
         
         this.initModals();
         this.initEventListeners();
@@ -22,7 +21,6 @@ class EquiposPage {
 
     async loadEquipment() {
         try {
-            console.log('Cargando equipos desde:', this.baseApiUrl);
             
             // Mostrar loading
             const tbody = document.getElementById('equipment-table-body');
@@ -39,34 +37,27 @@ class EquiposPage {
             // Conectar con API real
             const response = await fetch(this.baseApiUrl);
             
-            console.log('Respuesta HTTP:', response.status, response.statusText);
             
             if (!response.ok) {
                 throw new Error(`Error ${response.status}: ${response.statusText}`);
             }
             
             const data = await response.json();
-            console.log('Datos recibidos de API:', data);
             
             // Manejar diferentes formatos de respuesta
             let equipmentData = data;
             
             if (data && typeof data === 'object' && data.results && Array.isArray(data.results)) {
                 equipmentData = data.results;
-                console.log('Usando datos paginados, total:', equipmentData.length);
             } else if (Array.isArray(data)) {
-                console.log('Usando array directo, total:', equipmentData.length);
             } else if (data && typeof data === 'object' && !Array.isArray(data)) {
                 equipmentData = [data];
-                console.log('Convertido objeto único a array');
             } else {
-                console.warn('Formato de datos inesperado:', data);
                 equipmentData = [];
             }
             
             this.equipment = equipmentData;
             this.filteredEquipment = [...this.equipment];
-            console.log('Equipos cargados:', this.equipment.length);
             
             this.renderTable();
             
@@ -94,8 +85,6 @@ class EquiposPage {
             console.error('No se encontró el tbody con id equipment-table-body');
             return;
         }
-
-        console.log('Renderizando tabla con', this.filteredEquipment.length, 'equipos');
         
         if (this.filteredEquipment.length === 0) {
             tbody.innerHTML = `
@@ -211,8 +200,7 @@ class EquiposPage {
     }
 
     initModals() {
-        console.log('Inicializando modales...');
-        
+
         // Modal de equipo (solo para editar)
         const equipmentModal = document.getElementById('equipment-modal');
         if (equipmentModal) {
@@ -251,10 +239,6 @@ class EquiposPage {
     }
 
     initEventListeners() {
-        console.log('Inicializando event listeners...');
-        
-        // ⛔⛔⛔ NO HAY CÓDIGO PARA EL BOTÓN "Agregar Equipo" ⛔⛔⛔
-        // El botón ahora es un enlace (<a>) que redirige automáticamente
         
         // Modal de equipo (editar)
         const closeModal = document.getElementById('close-modal');

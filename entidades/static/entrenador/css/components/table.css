@@ -4,14 +4,32 @@
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-md);
     border: 1px solid var(--card-border);
-    overflow: hidden;
+    overflow-x: auto;
     margin-top: var(--spacing-lg);
+}
+
+.table-container::-webkit-scrollbar {
+    height: 6px; 
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: var(--primary-color); 
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(50, 205, 50, 0.7);
 }
 
 .data-table {
     width: 100%;
     border-collapse: collapse;
     font-size: var(--font-size-normal);
+    min-width: 800px;
 }
 
 .data-table thead {
@@ -100,15 +118,4 @@
 .status-inactive {
     background-color: rgba(220, 53, 69, 0.2);
     color: #dc3545;
-}
-
-/* RESPONSIVE TABLAS */
-@media (max-width: 768px) {
-    .table-container {
-        overflow-x: auto;
-    }
-    
-    .data-table {
-        min-width: 800px;
-    }
 }

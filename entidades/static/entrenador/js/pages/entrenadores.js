@@ -13,7 +13,6 @@ class EntrenadoresPage {
         if (this.initialized) return;
         
         this.initialized = true;
-        console.log('Inicializando página de entrenadores');
         
         this.initModals();
         this.initEventListeners();
@@ -22,7 +21,6 @@ class EntrenadoresPage {
 
     async loadCoaches() {
         try {
-            console.log('Cargando entrenadores desde:', this.baseApiUrl);
             
             // Mostrar loading
             const tbody = document.getElementById('coaches-table-body');
@@ -39,39 +37,31 @@ class EntrenadoresPage {
             // Conectar con API real
             const response = await fetch(this.baseApiUrl);
             
-            console.log('Respuesta HTTP:', response.status, response.statusText);
             
             if (!response.ok) {
                 throw new Error(`Error ${response.status}: ${response.statusText}`);
             }
             
             const data = await response.json();
-            console.log('Datos recibidos de API:', data);
             
             // Manejar diferentes formatos de respuesta
             let coachesData = data;
             
             if (data && typeof data === 'object' && data.results && Array.isArray(data.results)) {
                 coachesData = data.results;
-                console.log('Usando datos paginados, total:', coachesData.length);
             } else if (Array.isArray(data)) {
-                console.log('Usando array directo, total:', coachesData.length);
             } else if (data && typeof data === 'object' && !Array.isArray(data)) {
                 coachesData = [data];
-                console.log('Convertido objeto único a array');
             } else {
-                console.warn('Formato de datos inesperado:', data);
                 coachesData = [];
             }
             
             this.coaches = coachesData;
             this.filteredCoaches = [...this.coaches];
-            console.log('Entrenadores cargados:', this.coaches.length);
             
             this.renderTable();
             
         } catch (error) {
-            console.error('Error cargando entrenadores:', error);
             this.showError('Error al cargar los entrenadores. Verifica la conexión con el servidor.');
             
             const tbody = document.getElementById('coaches-table-body');
@@ -91,11 +81,9 @@ class EntrenadoresPage {
     renderTable() {
         const tbody = document.getElementById('coaches-table-body');
         if (!tbody) {
-            console.error('No se encontró el tbody con id coaches-table-body');
             return;
         }
 
-        console.log('Renderizando tabla con', this.filteredCoaches.length, 'entrenadores');
         
         if (this.filteredCoaches.length === 0) {
             tbody.innerHTML = `
@@ -191,7 +179,6 @@ class EntrenadoresPage {
     }
 
     initModals() {
-        console.log('Inicializando modales...');
         
         // Modal de entrenador
         const coachModal = document.getElementById('coach-modal');
@@ -232,7 +219,6 @@ class EntrenadoresPage {
     }
 
     initEventListeners() {
-        console.log('Inicializando event listeners...');
         
         // Modal de entrenador
         const closeModal = document.getElementById('close-modal');

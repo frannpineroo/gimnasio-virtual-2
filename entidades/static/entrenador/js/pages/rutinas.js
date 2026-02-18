@@ -14,7 +14,6 @@ class RutinasPage {
         if (this.initialized) return;
         
         this.initialized = true;
-        console.log('Inicializando página de rutinas');
         
         this.initEventListeners();
         this.loadClients().then(() => {
@@ -185,7 +184,6 @@ class RutinasPage {
 
     async loadRoutines() {
         try {
-            console.log('Cargando rutinas desde el backend...');
             
             const response = await fetch(`${this.apiBaseUrl}rutinas/`);
             if (!response.ok) {

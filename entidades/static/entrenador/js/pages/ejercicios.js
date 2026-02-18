@@ -16,7 +16,6 @@ class EjerciciosPage {
         if (this.initialized) return;
        
         this.initialized = true;
-        console.log('Inicializando página de ejercicios');
        
         this.initEventListeners();
         this.loadMuscleGroups().then(() => {
@@ -293,7 +292,6 @@ class EjerciciosPage {
 
     async loadExercises() {
         try {
-            console.log('Cargando ejercicios desde el backend...');
            
             const response = await fetch(`${this.apiBaseUrl}ejercicios/`);
             if (!response.ok) {

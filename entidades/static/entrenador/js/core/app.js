@@ -30,7 +30,6 @@ class App {
     }
 
     initializePageSpecific() {
-        console.log('Initializing page:', this.currentPage);
         
         const pageScripts = {
             'index': () => this.loadDashboard(),
@@ -51,41 +50,35 @@ class App {
 
     initializeClientesPage() {
         if (window.clientesPage && typeof window.clientesPage.initialize === 'function') {
-            console.log('Initializing clientes page');
             window.clientesPage.initialize();
         }
     }
 
     initializeEjerciciosPage() {
         if (window.ejerciciosPage && typeof window.ejerciciosPage.initialize === 'function') {
-            console.log('Initializing ejercicios page');
             window.ejerciciosPage.initialize();
         }
     }
 
     initializeRutinasPage() {
         if (window.rutinasPage && typeof window.rutinasPage.initialize === 'function') {
-            console.log('Initializing rutinas page');
             window.rutinasPage.initialize();
         }
     }
 
     initializeEntrenadoresPage() {
         if (window.entrenadoresPage && typeof window.entrenadoresPage.initialize === 'function') {
-            console.log('Initializing entrenadores page');
             window.entrenadoresPage.initialize();
         }
     }
 
     initializeEquipamientoPage() {
         if (window.equipamientoPage && typeof window.equipamientoPage.initialize === 'function') {
-            console.log('Initializing equipamiento page');
             window.equipamientoPage.initialize();
         }
     }
 
     loadDashboard() {
-        console.log('Dashboard loaded - Django version');
     }
 
     getCurrentPage() {

@@ -1,5 +1,26 @@
 from django.db import models
+from django.contrib.auth.models import User as AuthUser
 
+
+class UserProfile(models.Model):
+    COACH = 'coach'
+    CLIENT = 'client'
+    ROLE_CHOICES = [
+        (COACH, 'Entrenador'),
+        (CLIENT, 'Cliente'),
+    ]
+    user = models.OneToOneField(
+        AuthUser,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=CLIENT)
+
+    class Meta:
+        db_table = 'user_profiles'
+
+    def __str__(self):
+        return f"{self.user.username} - {self.role}"
 
 class MuscleGroup(models.Model):
     name = models.CharField(max_length=100, unique=True)

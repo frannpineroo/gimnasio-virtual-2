@@ -58,4 +58,10 @@ urlpatterns = [
 
     # Endpoints API adicionales
     path('api/clientes/active/', api_views.active_clients, name='active_clients'),
+
+    # Vistas del cliente
+    path('cliente/', views.cliente_home, name='cliente_home'),
+    path('cliente/entrenamiento/', views.cliente_entrenamiento, name='cliente_entrenamiento'),
+    path('/progreso/', views.cliente_progreso, name='cliente_progreso'),
+    path('cliente/progreso/nuevo/', views.cliente_nuevo_registro, name='cliente_nuevo_registro'),
 ]

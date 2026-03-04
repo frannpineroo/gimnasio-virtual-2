@@ -9,9 +9,23 @@ from django.db import IntegrityError
 from .forms import ExerciseForm, RutineForm
 from django.contrib.auth.decorators import login_required
 from .models import Coach, Client, User as CustomUser
-from .models import Rutine
+from functools import wraps
+from .models import Rutine, UserProfile
 from django.shortcuts import render, redirect, get_object_or_404
 
+
+def coach_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('entrenador:signin')
+        try:
+            if request.user.profile.role == UserProfile.CLIENT:
+                return redirect('entrenador:cliente_home')
+        except UserProfile.DoesNotExist:
+            pass
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 def sign_up(request):
     if request.method == 'GET':
@@ -23,8 +37,10 @@ def sign_up(request):
             try:
                 user = AuthUser.objects.create_user(
                     username=request.POST['username'],
-                    password=request.POST['password1'])
-                user.save()
+                    password=request.POST['password1']
+                )
+                # El signup publico siempre crea coaches
+                UserProfile.objects.create(user=user, role=UserProfile.COACH)
                 login(request, user)
                 return redirect('entrenador:home')
             except IntegrityError:
@@ -50,7 +66,11 @@ def signin(request):
             'form': AuthenticationForm()
         })
     else:
-        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        user = authenticate(
+            request,
+            username=request.POST['username'],
+            password=request.POST['password']
+        )
         if user is None:
             return render(request, 'acceso/signin.html', {
                 'form': AuthenticationForm(),
@@ -58,6 +78,12 @@ def signin(request):
             })
         else:
             login(request, user)
+            try:
+                if user.profile.role == UserProfile.CLIENT:
+                    return redirect('entrenador:cliente_home')
+            except UserProfile.DoesNotExist:
+                pass
+
             return redirect('entrenador:home')
 
 
@@ -118,7 +144,7 @@ def get_user_profile_context(request):
     return context
 
 
-@login_required
+@coach_required
 def home_view(request):
     try:
         context = get_user_profile_context(request)
@@ -127,7 +153,7 @@ def home_view(request):
         return HttpResponseServerError("Template entrenador/home.html no encontrado.")
 
 
-@login_required
+@coach_required
 def clients_page(request):
     try:
         context = get_user_profile_context(request)
@@ -136,7 +162,7 @@ def clients_page(request):
         return HttpResponseServerError("Template entrenador/clientes.html no encontrado.")
 
 
-@login_required
+@coach_required
 def new_client(request):
     try:
         context = get_user_profile_context(request)
@@ -145,7 +171,7 @@ def new_client(request):
         return HttpResponseServerError("Template entrenador/nuevo-cliente.html no encontrado.")
 
 
-@login_required
+@coach_required
 def exercise_page(request):
     try:
         context = get_user_profile_context(request)
@@ -154,7 +180,7 @@ def exercise_page(request):
         return HttpResponseServerError("Template entrenador/ejercicios.html no encontrado.")
 
 
-@login_required
+@coach_required
 def new_exercise(request):
     if request.method == 'POST':
         form = ExerciseForm(request.POST)
@@ -184,7 +210,7 @@ def new_exercise(request):
     return render(request, 'entrenador/nuevo-ejercicio.html', context)
 
 
-@login_required
+@coach_required
 def trainers_page(request):
     try:
         context = get_user_profile_context(request)
@@ -193,7 +219,7 @@ def trainers_page(request):
         return HttpResponseServerError("Template entrenador/entrenador.html no encontrado.")
 
 
-@login_required
+@coach_required
 def new_trainer(request):
     try:
         context = get_user_profile_context(request)
@@ -202,8 +228,7 @@ def new_trainer(request):
         return HttpResponseServerError("Template entrenador/nuevo-entrenador.html no encontrado.")
 
 
-@login_required
-@login_required
+@coach_required
 def routine_page(request):
     try:
         context = get_user_profile_context(request)
@@ -212,7 +237,7 @@ def routine_page(request):
     except TemplateDoesNotExist:
         return HttpResponseServerError("Template entrenador/rutinas.html no encontrado.")
     
-@login_required
+@coach_required
 def new_routine(request):
     if request.method == 'POST':
         form = RutineForm(request.POST)
@@ -241,7 +266,7 @@ def new_routine(request):
     return render(request, 'entrenador/nueva-rutina.html', context)
 
 
-@login_required
+@coach_required
 def equipment_page(request):
     try:
         context = get_user_profile_context(request)
@@ -250,7 +275,7 @@ def equipment_page(request):
         return HttpResponseServerError("Template entrenador/equipos.html no encontrado.")
 
 
-@login_required
+@coach_required
 def new_equipment(request):
     try:
         context = get_user_profile_context(request)
@@ -259,7 +284,7 @@ def new_equipment(request):
         return HttpResponseServerError("Template entrenador/nuevo-equipo.html no encontrado.")
 
 
-@login_required
+@coach_required
 def muscles_page(request):
     try:
         context = get_user_profile_context(request)
@@ -269,7 +294,7 @@ def muscles_page(request):
 
 from django.shortcuts import get_object_or_404
 
-@login_required
+@coach_required
 def edit_routine(request, routine_id):
     rutina = get_object_or_404(Rutine, id=routine_id)
     
@@ -306,8 +331,44 @@ def edit_routine(request, routine_id):
         return render(request, 'entrenador/nueva-rutina.html', context)
 
 
-@login_required
+@coach_required
 def delete_routine(request, routine_id):
     rutina = get_object_or_404(Rutine, id=routine_id)
     rutina.delete()
     return redirect('entrenador:rutinas')
+
+def cliente_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('entrenador:signin')
+        try:
+            if request.user.profile.role != UserProfile.CLIENT:
+                return redirect('entrenador:home')
+        except UserProfile.DoesNotExist:
+            return redirect('entrenador:signin')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+@cliente_required
+def cliente_home(request):
+    context = get_user_profile_context(request)
+    return render(request, 'cliente/index.html', context)
+
+
+@cliente_required
+def cliente_entrenamiento(request):
+    context = get_user_profile_context(request)
+    return render(request, 'cliente/entrenamiento.html', context)
+
+
+@cliente_required
+def cliente_progreso(request):
+    context = get_user_profile_context(request)
+    return render(request, 'cliente/progreso.html', context)
+
+
+@cliente_required
+def cliente_nuevo_registro(request):
+    context = get_user_profile_context(request)
+    return render(request, 'cliente/nuevo-registro.html', context)

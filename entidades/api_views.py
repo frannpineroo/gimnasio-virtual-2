@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as AuthUser
 from .serializers import (
     ExerciseSerializer, MuscleGroupSerializer, MuscleSubgroupSerializer,
     UserSerializer, CoachSerializer, ClientSerializer, AsignatureSerializer,
@@ -14,7 +14,7 @@ from .serializers import (
 from .models import (
     Exercise, MuscleGroup, MuscleSubgroup, User, Coach, Client,
     Asignature, Reminder, TrainingSession, Rutine, DayRutine,
-    ExerciseRutine, ProgressRegister, Equipment, Muscle
+    ExerciseRutine, ProgressRegister, Equipment, Muscle, UserProfile
 )
 
 
@@ -86,6 +86,40 @@ class ClientViewSet(viewsets.ModelViewSet):
     serializer_class = ClientSerializer
     permission_classes = [IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        client = serializer.save()
+
+        # Crear el auth_user solo si tiene el email
+        if client.email:
+            base_username = client.email.split('@')[0]
+            username = base_username
+            counter = 1
+            # Evitar duplicados
+            while AuthUser.objects.filter(username=username).exists():
+                username = f"{base_username}{counter}"
+                counter += 1
+
+            temp_password = client.dni if client.dni else "contra1234"
+
+            auth_user = AuthUser.objects.create_user(
+                username=username,
+                email=client.email,
+                password=temp_password,
+                first_name=client.name,
+                last_name=client.last_name
+            )
+
+            UserProfile.objects.create(user=auth_user, role=UserProfile.CLIENT)
+
+            custom_user = User.objects.filter(username=username).first()
+            if custom_user:
+                client.user = custom_user
+                client.save()
+        
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class AsignatureViewSet(viewsets.ModelViewSet):
     queryset = Asignature.objects.all()

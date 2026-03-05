@@ -150,11 +150,25 @@ class DayRutineViewSet(viewsets.ModelViewSet):
     serializer_class = DayRutineSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        queryset = DayRutine.objects.all()
+        rutine = self.request.query_params.get('rutine')
+        if rutine:
+            queryset = queryset.filter(rutine_id=rutine)
+        return queryset
+
 
 class ExerciseRutineViewSet(viewsets.ModelViewSet):
     queryset = ExerciseRutine.objects.all()
     serializer_class = ExerciseRutineSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = ExerciseRutine.objects.all()
+        dia_rutine = self.request.query_params.get('dia_rutine')
+        if dia_rutine:
+            queryset = queryset.filter(dia_rutine_id=dia_rutine)
+        return queryset
 
 
 class ProgressRegisterViewSet(viewsets.ModelViewSet):

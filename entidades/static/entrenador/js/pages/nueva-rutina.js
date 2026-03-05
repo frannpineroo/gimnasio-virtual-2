@@ -1,843 +1,441 @@
-// nueva-rutina.js - VERSIÓN COMPLETA DEL REPOSITORIO VIEJO ADAPTADA
+// nueva-rutina.js — Usa la API real del backend
 
-// PÁGINA DE NUEVA RUTINA
-const nuevaRutinaPage = {
-    // Estados
-    currentRoutine: null,
-    currentDay: 1,
-    selectedExercises: [],
-    currentExercise: null,
-    editingExercise: null,
-    exercises: [],
-    exercisesModalManager: null,
-    configModalManager: null,
-    initialized: false,
+const RutinaBuilder = {
+    rutinaId: null,       // ID de la rutina ya guardada (modo edición)
+    diasData: {},         // { 1: { dayRutineId: null, ejercicios: [] }, ... }
+    diaActual: 1,
+    ejerciciosDisponibles: [],
 
-    initialize() {
-        if (this.initialized) return;
-        
-        this.initialized = true;
-        this.loadExercises();
-        this.initModals();
-        this.initEventListeners();
-        this.checkEditMode();
-        console.log('Nueva Rutina page initialized');
-    },
+    async init() {
+        this.bindFormDays();
+        this.bindGuardar();
+        await this.cargarEjercicios();
 
-    loadExercises() {
-        // Cargar ejercicios desde localStorage
-        this.exercises = Storage.get('ejercicios') || [
-            {
-                id: 1,
-                nombre: "Press de Banca",
-                descripcion: "Ejercicio para desarrollar el pecho",
-                grupoMuscular: "pecho",
-                tipo: "fuerza",
-                equipamiento: "barra, banco",
-                imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=60&h=60&fit=crop",
-                dificultad: "intermedia"
-            },
-            {
-                id: 2,
-                nombre: "Sentadillas",
-                descripcion: "Ejercicio fundamental para piernas",
-                grupoMuscular: "piernas",
-                tipo: "fuerza",
-                equipamiento: "barra, rack",
-                imagen: "https://images.unsplash.com/photo-1549060279-7e168fce7090?w=60&h=60&fit=crop",
-                dificultad: "intermedia"
-            },
-            {
-                id: 3,
-                nombre: "Dominadas",
-                descripcion: "Ejercicio para espalda y brazos",
-                grupoMuscular: "espalda",
-                tipo: "fuerza",
-                equipamiento: "barra de dominadas",
-                imagen: "https://images.unsplash.com/photo-1598974357801-cbca100e5d10?w=60&h=60&fit=crop",
-                dificultad: "avanzada"
-            },
-            {
-                id: 4,
-                nombre: "Press Militar",
-                descripcion: "Ejercicio para hombros",
-                grupoMuscular: "hombros",
-                tipo: "fuerza",
-                equipamiento: "barra, rack",
-                imagen: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=60&h=60&fit=crop",
-                dificultad: "intermedia"
-            },
-            {
-                id: 5,
-                nombre: "Peso Muerto",
-                descripcion: "Ejercicio completo para espalda y piernas",
-                grupoMuscular: "espalda",
-                tipo: "fuerza",
-                equipamiento: "barra, discos",
-                imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=60&h=60&fit=crop",
-                dificultad: "avanzada"
-            },
-            {
-                id: 6,
-                nombre: "Curl de Bíceps",
-                descripcion: "Ejercicio para bíceps",
-                grupoMuscular: "brazos",
-                tipo: "fuerza",
-                equipamiento: "mancuernas",
-                imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=60&h=60&fit=crop",
-                dificultad: "principiante"
-            },
-            {
-                id: 7,
-                nombre: "Fondos en Paralelas",
-                descripcion: "Ejercicio para pecho y tríceps",
-                grupoMuscular: "pecho",
-                tipo: "fuerza",
-                equipamiento: "paralelas",
-                imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=60&h=60&fit=crop",
-                dificultad: "intermedia"
-            },
-            {
-                id: 8,
-                nombre: "Plancha",
-                descripcion: "Ejercicio isométrico para abdomen",
-                grupoMuscular: "abdomen",
-                tipo: "isometria",
-                equipamiento: "ninguno",
-                imagen: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=60&h=60&fit=crop",
-                dificultad: "principiante"
-            }
-        ];
-
-        // Guardar ejercicios si no existen
-        if (!Storage.get('ejercicios')) {
-            Storage.set('ejercicios', this.exercises);
-        }
-    },
-
-    initModals() {
-        // Inicializar modal manager si existe
-        if (typeof ModalManager !== 'undefined') {
-            this.exercisesModalManager = new ModalManager('exercises-modal');
-            this.configModalManager = new ModalManager('exercise-config-modal');
-        } else {
-            // Fallback manual para modales
-            this.initModalFallback();
-        }
-        
-        console.log('Modals initialized');
-    },
-
-    initModalFallback() {
-        // Manejo manual de modales
-        const exercisesModal = document.getElementById('exercises-modal');
-        const configModal = document.getElementById('exercise-config-modal');
-        
-        if (exercisesModal) {
-            this.exercisesModalManager = {
-                show: () => {
-                    exercisesModal.style.display = 'flex';
-                    setTimeout(() => exercisesModal.classList.add('show'), 10);
-                },
-                hide: () => {
-                    exercisesModal.classList.remove('show');
-                    setTimeout(() => {
-                        exercisesModal.style.display = 'none';
-                    }, 300);
-                }
-            };
-        }
-        
-        if (configModal) {
-            this.configModalManager = {
-                show: () => {
-                    configModal.style.display = 'flex';
-                    setTimeout(() => configModal.classList.add('show'), 10);
-                },
-                hide: () => {
-                    configModal.classList.remove('show');
-                    setTimeout(() => {
-                        configModal.style.display = 'none';
-                    }, 300);
-                }
-            };
-        }
-    },
-
-    initEventListeners() {
-        // Guardar rutina
-        const saveBtn = document.getElementById('save-routine-btn');
-        if (saveBtn) {
-            saveBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.saveRoutine();
-            });
-        }
-
-        // Cambio de días por semana
-        const daysSelect = document.getElementById('routine-days');
-        if (daysSelect) {
-            daysSelect.addEventListener('change', (e) => {
-                console.log('Days select changed to:', e.target.value);
-                this.generateDays(parseInt(e.target.value));
-            });
-        }
-
-        // Modal de ejercicios
-        this.initExercisesModalEvents();
-        
-        // Modal de configuración
-        this.initConfigModalEvents();
-
-        // Filtros de ejercicios
-        this.initExerciseFilters();
-        
-        console.log('Event listeners initialized');
-    },
-
-    initExercisesModalEvents() {
-        const closeModal = document.getElementById('close-exercises-modal');
-        const cancelSelect = document.getElementById('cancel-exercise-select');
-        const confirmSelect = document.getElementById('confirm-exercise-select');
-
-        if (closeModal) closeModal.addEventListener('click', () => this.closeExercisesModal());
-        if (cancelSelect) cancelSelect.addEventListener('click', () => this.closeExercisesModal());
-        if (confirmSelect) confirmSelect.addEventListener('click', () => this.addSelectedExercises());
-    },
-
-    initConfigModalEvents() {
-        const closeModal = document.getElementById('close-exercise-config-modal');
-        const cancelConfig = document.getElementById('cancel-exercise-config');
-        const saveConfig = document.getElementById('save-exercise-config');
-
-        if (closeModal) closeModal.addEventListener('click', () => this.closeConfigModal());
-        if (cancelConfig) cancelConfig.addEventListener('click', () => this.closeConfigModal());
-        if (saveConfig) saveConfig.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.saveExerciseConfig();
-        });
-    },
-
-    initExerciseFilters() {
-        const searchInput = document.getElementById('exercise-search');
-        const muscleFilter = document.getElementById('muscle-group-filter');
-
-        if (searchInput) {
-            searchInput.addEventListener('input', Helpers.debounce(() => {
-                this.loadExercisesModal();
-            }, 300));
-        }
-
-        if (muscleFilter) {
-            muscleFilter.addEventListener('change', () => {
-                this.loadExercisesModal();
-            });
-        }
-    },
-
-    checkEditMode() {
+        // Modo edición: si la URL tiene ?id=X o el template pasa el id
         const urlParams = new URLSearchParams(window.location.search);
-        const routineId = urlParams.get('id');
-
-        if (routineId) {
-            this.loadRoutineForEdit(routineId);
-        } else {
-            this.initializeNewRoutine();
+        const id = urlParams.get('id');
+        if (id) {
+            this.rutinaId = id;
+            await this.cargarRutinaExistente(id);
         }
     },
 
-    initializeNewRoutine() {
-        this.currentRoutine = {
-            id: Helpers.generateId(),
-            nombre: '',
-            descripcion: '',
-            nivel: '',
-            duracion: '45-60 min',
-            diasSemana: 0,
-            ejercicios: 0,
-            duracionSemanas: 4,
-            objetivo: [],
-            tipo: 'template',
-            dias: [],
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-        };
+    // ─── CARGAR EJERCICIOS DESDE LA API ───────────────────────────────────────
 
-        document.getElementById('page-title').textContent = 'Nueva Rutina';
-    },
-
-    loadRoutineForEdit(routineId) {
-        const routines = Storage.get('rutinas') || [];
-        const routine = routines.find(r => r.id == routineId);
-
-        if (routine) {
-            this.currentRoutine = JSON.parse(JSON.stringify(routine));
-            this.populateForm();
-            this.generateDays(routine.diasSemana);
-            this.loadDaysData();
-            document.getElementById('page-title').textContent = 'Editar Rutina';
-        } else {
-            alert('Rutina no encontrada');
-            this.initializeNewRoutine();
+    async cargarEjercicios() {
+        try {
+            const res = await fetch('/entrenador/api/ejercicios/?active_only=true');
+            const data = await res.json();
+            this.ejerciciosDisponibles = data.results || data;
+        } catch (e) {
+            console.error('Error cargando ejercicios:', e);
         }
     },
 
-    populateForm() {
-        document.getElementById('routine-name').value = this.currentRoutine.nombre || '';
-        document.getElementById('routine-description').value = this.currentRoutine.descripcion || '';
-        document.getElementById('routine-level').value = this.currentRoutine.nivel || '';
-        document.getElementById('routine-days').value = this.currentRoutine.diasSemana || '';
-        document.getElementById('routine-weeks').value = this.currentRoutine.duracionSemanas || '';
+    // ─── DÍAS ─────────────────────────────────────────────────────────────────
 
-        // Objetivos
-        const objectives = document.querySelectorAll('input[name="objective"]');
-        objectives.forEach(checkbox => {
-            checkbox.checked = this.currentRoutine.objetivo.includes(checkbox.value);
-        });
-    },
-
-    generateDays(daysCount) {
-        console.log('Generating days:', daysCount);
-        
-        const daysSelector = document.getElementById('days-selector');
-        const daysContainer = document.getElementById('days-container');
-        const emptyState = document.getElementById('empty-days-state');
-
-        if (!daysCount || daysCount == 0) {
-            console.log('No days selected, showing empty state');
-            daysSelector.innerHTML = '';
-            daysContainer.innerHTML = '';
-            if (emptyState) {
-                emptyState.style.display = 'block';
-                daysContainer.appendChild(emptyState);
-            }
-            return;
-        }
-
-        // Ocultar estado vacío
-        if (emptyState) emptyState.style.display = 'none';
-
-        // Generar pestañas de días
-        let tabsHTML = '';
-        let daysHTML = '';
-
-        for (let i = 1; i <= daysCount; i++) {
-            const isActive = i === 1;
-            tabsHTML += `
-                <button class="day-tab ${isActive ? 'active' : ''}" data-day="${i}">
-                    Día ${i}
-                </button>
-            `;
-
-            daysHTML += `
-                <div class="day-content ${isActive ? 'active' : ''}" id="day-${i}">
-                    <div class="day-header">
-                        <h4 class="day-title">Día ${i} - Configuración de Ejercicios</h4>
-                        <button type="button" class="btn btn-primary btn-sm" onclick="nuevaRutinaPage.openExercisesModal(${i})">
-                            <i class="fas fa-plus"></i> Agregar Ejercicios
-                        </button>
-                    </div>
-                    <div class="day-exercises">
-                        <div class="added-exercises" id="exercises-day-${i}">
-                            <div class="empty-day">
-                                <i class="fas fa-dumbbell"></i>
-                                <h3>No hay ejercicios agregados</h3>
-                                <p>Haz clic en "Agregar Ejercicios" para comenzar.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        daysSelector.innerHTML = tabsHTML;
-        daysContainer.innerHTML = daysHTML;
-
-        // Agregar event listeners a las pestañas
-        document.querySelectorAll('.day-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                const day = e.currentTarget.getAttribute('data-day');
-                this.switchDay(day);
+    bindFormDays() {
+        const select = document.getElementById('id_days_per_week');
+        if (select) {
+            select.addEventListener('change', () => {
+                this.generarDias(parseInt(select.value) || 0);
             });
-        });
-
-        // Actualizar días en la rutina actual
-        this.currentRoutine.diasSemana = parseInt(daysCount);
-        this.initializeDaysData();
-        
-        console.log('Days generated successfully');
-    },
-
-    initializeDaysData() {
-        if (!this.currentRoutine.dias) {
-            this.currentRoutine.dias = [];
-        }
-
-        // Inicializar días vacíos si no existen
-        for (let i = 1; i <= this.currentRoutine.diasSemana; i++) {
-            const existingDay = this.currentRoutine.dias.find(d => d.dia === i);
-            if (!existingDay) {
-                this.currentRoutine.dias.push({
-                    dia: i,
-                    nombre: `Día ${i}`,
-                    ejercicios: []
-                });
-            }
-        }
-
-        // Remover días extras si se redujo la cantidad
-        this.currentRoutine.dias = this.currentRoutine.dias.filter(d => d.dia <= this.currentRoutine.diasSemana);
-        
-        console.log('Days data initialized:', this.currentRoutine.dias);
-    },
-
-    loadDaysData() {
-        if (!this.currentRoutine.dias) return;
-
-        this.currentRoutine.dias.forEach(day => {
-            this.renderDayExercises(day.dia, day.ejercicios);
-        });
-    },
-
-    switchDay(dayNumber) {
-        console.log('Switching to day:', dayNumber);
-        
-        // Remover clase active de todas las pestañas y contenidos
-        document.querySelectorAll('.day-tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        document.querySelectorAll('.day-content').forEach(content => {
-            content.classList.remove('active');
-        });
-
-        // Activar pestaña y contenido seleccionado
-        const selectedTab = document.querySelector(`.day-tab[data-day="${dayNumber}"]`);
-        const selectedContent = document.getElementById(`day-${dayNumber}`);
-
-        if (selectedTab && selectedContent) {
-            selectedTab.classList.add('active');
-            selectedContent.classList.add('active');
-            this.currentDay = parseInt(dayNumber);
-            console.log('Switched to day:', dayNumber);
-        } else {
-            console.error('Could not find day elements for day:', dayNumber);
         }
     },
 
-    openExercisesModal(day) {
-        this.currentDay = day;
-        this.selectedExercises = [];
-        document.getElementById('exercises-modal-title').textContent = `Seleccionar Ejercicios - Día ${day}`;
-        this.loadExercisesModal();
-        console.log('Showing exercises modal for day:', day);
-        this.exercisesModalManager.show();
-    },
-
-    loadExercisesModal() {
-        const searchTerm = document.getElementById('exercise-search')?.value.toLowerCase() || '';
-        const muscleGroup = document.getElementById('muscle-group-filter')?.value || '';
-
-        const filteredExercises = this.exercises.filter(exercise => {
-            const matchesSearch = exercise.nombre.toLowerCase().includes(searchTerm) ||
-                                exercise.descripcion.toLowerCase().includes(searchTerm);
-            const matchesMuscle = muscleGroup ? exercise.grupoMuscular === muscleGroup : true;
-            
-            return matchesSearch && matchesMuscle;
-        });
-
-        this.renderExercisesGrid(filteredExercises);
-    },
-
-    renderExercisesGrid(exercises) {
-        const grid = document.getElementById('exercises-grid');
-        if (!grid) return;
-        
-        if (exercises.length === 0) {
-            grid.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-dumbbell"></i>
-                    <h3>No se encontraron ejercicios</h3>
-                    <p>No hay ejercicios que coincidan con los filtros seleccionados.</p>
-                </div>
-            `;
-            return;
-        }
-
-        grid.innerHTML = exercises.map(exercise => `
-            <div class="exercise-card ${this.selectedExercises.includes(exercise.id) ? 'selected' : ''}" 
-                 onclick="nuevaRutinaPage.toggleExerciseSelection(${exercise.id})">
-                <div class="exercise-checkbox"></div>
-                <img src="${exercise.imagen}" alt="${exercise.nombre}" class="exercise-image" onerror="this.src='https://via.placeholder.com/60?text=Ejercicio'">
-                <div class="exercise-info">
-                    <div class="exercise-name">${exercise.nombre}</div>
-                    <div class="exercise-meta">
-                        <span><i class="fas fa-dumbbell"></i> ${exercise.grupoMuscular}</span>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-
-        this.updateConfirmButton();
-    },
-
-    toggleExerciseSelection(exerciseId) {
-        const index = this.selectedExercises.indexOf(exerciseId);
-        
-        if (index === -1) {
-            this.selectedExercises.push(exerciseId);
-        } else {
-            this.selectedExercises.splice(index, 1);
-        }
-
-        this.renderExercisesGrid(this.exercises.filter(ex => 
-            ex.nombre.toLowerCase().includes(document.getElementById('exercise-search')?.value.toLowerCase() || '')
-        ));
-    },
-
-    updateConfirmButton() {
-        const confirmBtn = document.getElementById('confirm-exercise-select');
-        if (confirmBtn) {
-            confirmBtn.disabled = this.selectedExercises.length === 0;
-        }
-    },
-
-    addSelectedExercises() {
-        if (this.selectedExercises.length === 0) {
-            alert('Selecciona al menos un ejercicio');
-            return;
-        }
-
-        const selectedExercisesData = this.exercises.filter(ex => 
-            this.selectedExercises.includes(ex.id)
-        );
-
-        // Agregar ejercicios al día actual
-        const currentDayData = this.currentRoutine.dias.find(d => d.dia === this.currentDay);
-        if (currentDayData) {
-            selectedExercisesData.forEach(exercise => {
-                // Verificar si el ejercicio ya existe en el día
-                const existingExercise = currentDayData.ejercicios.find(e => e.ejercicioId === exercise.id);
-                if (!existingExercise) {
-                    currentDayData.ejercicios.push({
-                        ejercicioId: exercise.id,
-                        ejercicio: exercise,
-                        series: 3,
-                        repeticiones: '8-12',
-                        descanso: '60s',
-                        notas: ''
-                    });
-                }
-            });
-
-            this.renderDayExercises(this.currentDay, currentDayData.ejercicios);
-            this.closeExercisesModal();
-        }
-    },
-
-    renderDayExercises(day, exercises) {
-        const container = document.getElementById(`exercises-day-${day}`);
+    generarDias(cantidad) {
+        const container = document.getElementById('dias-container');
         if (!container) return;
 
-        if (exercises.length === 0) {
-            container.innerHTML = `
-                <div class="empty-day">
-                    <i class="fas fa-dumbbell"></i>
-                    <h3>No hay ejercicios agregados</h3>
-                    <p>Haz clic en "Agregar Ejercicios" para comenzar.</p>
+        // Preservar ejercicios ya cargados
+        const diasPrevios = { ...this.diasData };
+        this.diasData = {};
+        container.innerHTML = '';
+
+        if (cantidad === 0) return;
+
+        // Tabs
+        const tabsDiv = document.createElement('div');
+        tabsDiv.className = 'dias-tabs';
+
+        for (let i = 1; i <= cantidad; i++) {
+            this.diasData[i] = diasPrevios[i] || { dayRutineId: null, ejercicios: [] };
+
+            // Tab
+            const tab = document.createElement('button');
+            tab.type = 'button';
+            tab.className = 'dia-tab' + (i === 1 ? ' active' : '');
+            tab.textContent = `Día ${i}`;
+            tab.dataset.dia = i;
+            tab.addEventListener('click', () => this.switchDia(i));
+            tabsDiv.appendChild(tab);
+
+            // Panel
+            const panel = document.createElement('div');
+            panel.className = 'dia-panel' + (i === 1 ? ' active' : '');
+            panel.id = `dia-panel-${i}`;
+            panel.innerHTML = `
+                <div class="dia-header">
+                    <h4>Día ${i}</h4>
+                    <button type="button" class="btn-agregar-ejercicio" onclick="RutinaBuilder.abrirModal(${i})">
+                        + Agregar ejercicio
+                    </button>
+                </div>
+                <div class="ejercicios-lista" id="ejercicios-dia-${i}">
+                    <p class="empty-msg">No hay ejercicios agregados.</p>
                 </div>
             `;
+            container.appendChild(tabsDiv);
+            container.appendChild(panel);
+        }
+
+        // Fix: el tabsDiv se agrega dentro del loop, lo corregimos
+        container.innerHTML = '';
+        container.appendChild(tabsDiv);
+        for (let i = 1; i <= cantidad; i++) {
+            const panel = document.getElementById(`dia-panel-${i}`) || this._crearPanel(i, cantidad);
+            container.appendChild(panel);
+        }
+
+        this.switchDia(1);
+        this.renderTodosLosDias();
+    },
+
+    _crearPanel(i, cantidad) {
+        const panel = document.createElement('div');
+        panel.className = 'dia-panel' + (i === 1 ? ' active' : '');
+        panel.id = `dia-panel-${i}`;
+        panel.innerHTML = `
+            <div class="dia-header">
+                <h4>Día ${i}</h4>
+                <button type="button" class="btn-agregar-ejercicio" onclick="RutinaBuilder.abrirModal(${i})">
+                    + Agregar ejercicio
+                </button>
+            </div>
+            <div class="ejercicios-lista" id="ejercicios-dia-${i}">
+                <p class="empty-msg">No hay ejercicios agregados.</p>
+            </div>
+        `;
+        return panel;
+    },
+
+    switchDia(dia) {
+        this.diaActual = dia;
+        document.querySelectorAll('.dia-tab').forEach(t => {
+            t.classList.toggle('active', parseInt(t.dataset.dia) === dia);
+        });
+        document.querySelectorAll('.dia-panel').forEach(p => {
+            p.classList.toggle('active', p.id === `dia-panel-${dia}`);
+        });
+    },
+
+    renderTodosLosDias() {
+        Object.keys(this.diasData).forEach(dia => {
+            this.renderDia(parseInt(dia));
+        });
+    },
+
+    renderDia(dia) {
+        const lista = document.getElementById(`ejercicios-dia-${dia}`);
+        if (!lista) return;
+
+        const ejercicios = this.diasData[dia]?.ejercicios || [];
+
+        if (ejercicios.length === 0) {
+            lista.innerHTML = '<p class="empty-msg">No hay ejercicios agregados.</p>';
             return;
         }
 
-        container.innerHTML = exercises.map((exercise, index) => `
-            <div class="added-exercise" data-exercise-index="${index}">
-                <img src="${exercise.ejercicio.imagen}" alt="${exercise.ejercicio.nombre}" class="exercise-image" onerror="this.src='https://via.placeholder.com/60?text=Ejercicio'">
-                <div class="exercise-info">
-                    <div class="exercise-name">${exercise.ejercicio.nombre}</div>
-                    <div class="exercise-config-info">
-                        <span><i class="fas fa-layer-group"></i> ${exercise.series} series</span>
-                        <span><i class="fas fa-redo"></i> ${exercise.repeticiones} reps</span>
-                        <span><i class="fas fa-clock"></i> ${exercise.descanso}</span>
-                        ${exercise.notas ? `<span><i class="fas fa-sticky-note"></i> ${exercise.notas}</span>` : ''}
-                    </div>
+        lista.innerHTML = ejercicios.map((ej, idx) => `
+            <div class="ejercicio-row">
+                <div class="ejercicio-info">
+                    <span class="ejercicio-nombre">${ej.nombre}</span>
+                    <span class="ejercicio-grupo">${ej.grupoMuscular || ''}</span>
                 </div>
-                <div class="exercise-actions">
-                    <button class="btn-configure" onclick="nuevaRutinaPage.configureExercise(${day}, ${index})">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                    <button class="btn-remove" onclick="nuevaRutinaPage.removeExercise(${day}, ${index})">
-                        <i class="fas fa-times"></i>
-                    </button>
+                <div class="ejercicio-config">
+                    <label>Series
+                        <input type="number" min="1" max="10" value="${ej.series}"
+                            onchange="RutinaBuilder.actualizarConfig(${dia}, ${idx}, 'series', this.value)">
+                    </label>
+                    <label>Repeticiones
+                        <input type="text" value="${ej.repeticiones}" placeholder="ej: 8-12"
+                            onchange="RutinaBuilder.actualizarConfig(${dia}, ${idx}, 'repeticiones', this.value)">
+                    </label>
+                    <label>Tipo de serie
+                        <select onchange="RutinaBuilder.actualizarConfig(${dia}, ${idx}, 'tipo_serie', this.value)">
+                            <option value="normal" ${ej.tipo_serie === 'normal' ? 'selected' : ''}>Normal</option>
+                            <option value="drop_set" ${ej.tipo_serie === 'drop_set' ? 'selected' : ''}>Drop Set</option>
+                            <option value="superset" ${ej.tipo_serie === 'superset' ? 'selected' : ''}>Superset</option>
+                            <option value="giant_set" ${ej.tipo_serie === 'giant_set' ? 'selected' : ''}>Giant Set</option>
+                        </select>
+                    </label>
                 </div>
+                <button type="button" class="btn-quitar" onclick="RutinaBuilder.quitarEjercicio(${dia}, ${idx})">✕</button>
             </div>
         `).join('');
     },
 
-    configureExercise(day, exerciseIndex) {
-        console.log('Configuring exercise - Day:', day, 'Index:', exerciseIndex);
-        
-        const dayData = this.currentRoutine.dias.find(d => d.dia === day);
-        if (!dayData || !dayData.ejercicios[exerciseIndex]) {
-            console.error('Exercise not found:', {day, exerciseIndex});
-            return;
+    actualizarConfig(dia, idx, campo, valor) {
+        if (this.diasData[dia]?.ejercicios[idx]) {
+            this.diasData[dia].ejercicios[idx][campo] = campo === 'series' ? parseInt(valor) : valor;
         }
-
-        this.editingExercise = { day, exerciseIndex };
-        this.currentExercise = dayData.ejercicios[exerciseIndex];
-        
-        console.log('Current exercise:', this.currentExercise);
-        this.openConfigModal();
     },
 
-    openConfigModal() {
-        if (!this.currentExercise) {
-            console.error('No current exercise to configure');
+    quitarEjercicio(dia, idx) {
+        this.diasData[dia].ejercicios.splice(idx, 1);
+        this.renderDia(dia);
+    },
+
+    // ─── MODAL DE EJERCICIOS ──────────────────────────────────────────────────
+
+    abrirModal(dia) {
+        this.diaActual = dia;
+        const modal = document.getElementById('modal-ejercicios');
+        if (!modal) return;
+
+        this.renderGridEjercicios('');
+        document.getElementById('buscador-ejercicio').value = '';
+        modal.style.display = 'flex';
+    },
+
+    cerrarModal() {
+        const modal = document.getElementById('modal-ejercicios');
+        if (modal) modal.style.display = 'none';
+    },
+
+    renderGridEjercicios(filtro) {
+        const grid = document.getElementById('grid-ejercicios');
+        if (!grid) return;
+
+        const filtrados = this.ejerciciosDisponibles.filter(e =>
+            e.name.toLowerCase().includes(filtro.toLowerCase())
+        );
+
+        if (filtrados.length === 0) {
+            grid.innerHTML = '<p class="empty-msg">No se encontraron ejercicios.</p>';
             return;
         }
 
-        console.log('Opening config modal for:', this.currentExercise.ejercicio.nombre);
-        
-        // Llenar el modal con los datos actuales
-        document.getElementById('exercise-config-title').textContent = `Configurar ${this.currentExercise.ejercicio.nombre}`;
-        
-        // Vista previa
-        const preview = document.getElementById('exercise-preview');
-        preview.innerHTML = `
-            <img src="${this.currentExercise.ejercicio.imagen}" alt="${this.currentExercise.ejercicio.nombre}" class="exercise-image" onerror="this.src='https://via.placeholder.com/60?text=Ejercicio'">
-            <div class="exercise-info">
-                <div class="exercise-name">${this.currentExercise.ejercicio.nombre}</div>
-                <div class="exercise-meta">
-                    <span><i class="fas fa-dumbbell"></i> ${this.currentExercise.ejercicio.grupoMuscular}</span>
-                </div>
+        grid.innerHTML = filtrados.map(e => `
+            <div class="ejercicio-card" onclick="RutinaBuilder.agregarEjercicio(${e.id}, '${e.name.replace(/'/g, "\\'")}', '${e.muscle_group_name || ''}')">
+                <div class="ejercicio-card-nombre">${e.name}</div>
+                <div class="ejercicio-card-grupo">${e.muscle_group_name || 'Sin grupo'}</div>
+                <div class="ejercicio-card-dificultad">${e.difficulty_display || e.difficulty}</div>
             </div>
-        `;
-
-        // Llenar formulario
-        document.getElementById('exercise-sets').value = this.currentExercise.series;
-        document.getElementById('exercise-reps').value = this.currentExercise.repeticiones;
-        document.getElementById('exercise-rest').value = this.currentExercise.descanso;
-        document.getElementById('exercise-notes').value = this.currentExercise.notas || '';
-
-        console.log('Showing config modal');
-        this.configModalManager.show();
+        `).join('');
     },
 
-    saveExerciseConfig() {
-        if (!this.currentExercise || !this.editingExercise) return;
-
-        const sets = document.getElementById('exercise-sets').value;
-        const reps = document.getElementById('exercise-reps').value;
-        const rest = document.getElementById('exercise-rest').value;
-        const notes = document.getElementById('exercise-notes').value;
-
-        if (!sets || !reps || !rest) {
-            alert('Por favor, completa todos los campos obligatorios.');
+    agregarEjercicio(id, nombre, grupoMuscular) {
+        const dia = this.diaActual;
+        const yaExiste = this.diasData[dia]?.ejercicios.find(e => e.ejercicioId === id);
+        if (yaExiste) {
+            alert(`"${nombre}" ya está en el Día ${dia}.`);
             return;
         }
 
-        // Actualizar el ejercicio
-        const dayData = this.currentRoutine.dias.find(d => d.dia === this.editingExercise.day);
-        if (dayData && dayData.ejercicios[this.editingExercise.exerciseIndex]) {
-            dayData.ejercicios[this.editingExercise.exerciseIndex] = {
-                ...dayData.ejercicios[this.editingExercise.exerciseIndex],
-                series: parseInt(sets),
-                repeticiones: reps,
-                descanso: rest,
-                notas: notes
+        this.diasData[dia].ejercicios.push({
+            ejercicioId: id,
+            nombre,
+            grupoMuscular,
+            series: 3,
+            repeticiones: '8-12',
+            tipo_serie: 'normal'
+        });
+
+        this.renderDia(dia);
+        this.cerrarModal();
+    },
+
+    // ─── GUARDAR TODO ─────────────────────────────────────────────────────────
+
+    bindGuardar() {
+        const btn = document.getElementById('btn-guardar-rutina');
+        if (btn) {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await this.guardar();
+            });
+        }
+    },
+
+    async guardar() {
+        const nombre = document.getElementById('id_name')?.value?.trim();
+        const diasSemana = document.getElementById('id_days_per_week')?.value;
+
+        if (!nombre) {
+            alert('El nombre de la rutina es obligatorio.');
+            return;
+        }
+
+        const btn = document.getElementById('btn-guardar-rutina');
+        btn.disabled = true;
+        btn.textContent = 'Guardando...';
+
+        try {
+            // 1. Crear o actualizar la Rutina
+            const rutinaPayload = {
+                name: nombre,
+                description: document.getElementById('id_description')?.value || '',
+                time_week: parseInt(diasSemana) || 0,
+                days_per_week: parseInt(diasSemana) || 0,
+                goal: document.getElementById('id_goal')?.value || '',
+                coach: document.getElementById('id_coach')?.value || null,
+                client: document.getElementById('id_client')?.value || null,
+                is_template: document.getElementById('id_is_template')?.checked || false,
             };
-        }
 
-        this.renderDayExercises(this.editingExercise.day, dayData.ejercicios);
-        this.closeConfigModal();
-    },
-
-    removeExercise(day, exerciseIndex) {
-        if (confirm('¿Estás seguro de que deseas eliminar este ejercicio de la rutina?')) {
-            const dayData = this.currentRoutine.dias.find(d => d.dia === day);
-            if (dayData) {
-                dayData.ejercicios.splice(exerciseIndex, 1);
-                this.renderDayExercises(day, dayData.ejercicios);
+            let rutinaRes;
+            if (this.rutinaId) {
+                rutinaRes = await fetch(`/entrenador/api/rutinas/${this.rutinaId}/`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': this.getCsrf() },
+                    body: JSON.stringify(rutinaPayload)
+                });
+            } else {
+                rutinaRes = await fetch('/entrenador/api/rutinas/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': this.getCsrf() },
+                    body: JSON.stringify(rutinaPayload)
+                });
             }
-        }
-    },
 
-    closeExercisesModal() {
-        this.exercisesModalManager.hide();
-        this.selectedExercises = [];
-    },
-
-    closeConfigModal() {
-        this.configModalManager.hide();
-        this.currentExercise = null;
-        this.editingExercise = null;
-    },
-
-    saveRoutine() {
-        // Validar formulario
-        if (!this.validateForm()) return;
-
-        // Recolectar datos del formulario
-        this.collectFormData();
-
-        // Calcular total de ejercicios
-        this.calculateTotalExercises();
-
-        // Guardar en localStorage
-        this.saveToStorage();
-
-        alert('Rutina guardada correctamente!');
-        // Redireccionar usando Django
-        window.location.href = '/entrenador/rutinas/'; // Ajusta esta URL según tu configuración
-    },
-
-    validateForm() {
-        const name = document.getElementById('routine-name').value;
-        const level = document.getElementById('routine-level').value;
-        const days = document.getElementById('routine-days').value;
-        const weeks = document.getElementById('routine-weeks').value;
-
-        if (!name || !level || !days || !weeks) {
-            alert('Por favor, completa todos los campos obligatorios.');
-            return false;
-        }
-
-        // Verificar que todos los días tengan al menos un ejercicio
-        for (let day of this.currentRoutine.dias) {
-            if (day.ejercicios.length === 0) {
-                alert(`El Día ${day.dia} no tiene ejercicios agregados.`);
-                this.switchDay(day.dia);
-                return false;
+            if (!rutinaRes.ok) {
+                const err = await rutinaRes.json();
+                throw new Error(JSON.stringify(err));
             }
+
+            const rutina = await rutinaRes.json();
+            this.rutinaId = rutina.id;
+
+            // 2. Crear DayRutine + ExerciseRutine por cada día
+            for (const [diaNum, diaData] of Object.entries(this.diasData)) {
+                let dayRutineId = diaData.dayRutineId;
+
+                if (!dayRutineId) {
+                    const dayRes = await fetch('/entrenador/api/dias-rutina/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': this.getCsrf() },
+                        body: JSON.stringify({
+                            name: `Día ${diaNum}`,
+                            description: '',
+                            order: diaNum,
+                            rutine: this.rutinaId
+                        })
+                    });
+
+                    if (!dayRes.ok) throw new Error('Error creando día ' + diaNum);
+                    const dayData2 = await dayRes.json();
+                    dayRutineId = dayData2.id;
+                    this.diasData[diaNum].dayRutineId = dayRutineId;
+                }
+
+                // 3. Crear ExerciseRutine por cada ejercicio del día
+                for (const ej of diaData.ejercicios) {
+                    if (ej.exerciseRutineId) continue; // ya guardado
+
+                    const ejRes = await fetch('/entrenador/api/ejercicios-rutina/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': this.getCsrf() },
+                        body: JSON.stringify({
+                            series: String(ej.series),
+                            repetitions: String(ej.repeticiones),
+                            type_serie: ej.tipo_serie,
+                            dia_rutine: dayRutineId,
+                            exercise: ej.ejercicioId
+                        })
+                    });
+
+                    if (!ejRes.ok) throw new Error('Error guardando ejercicio ' + ej.nombre);
+                    const ejData = await ejRes.json();
+                    ej.exerciseRutineId = ejData.id;
+                }
+            }
+
+            alert('¡Rutina guardada correctamente!');
+            window.location.href = '/entrenador/rutinas/';
+
+        } catch (err) {
+            console.error('Error guardando rutina:', err);
+            alert('Hubo un error al guardar: ' + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Guardar Rutina';
         }
-
-        return true;
     },
 
-    collectFormData() {
-        this.currentRoutine.nombre = document.getElementById('routine-name').value;
-        this.currentRoutine.descripcion = document.getElementById('routine-description').value;
-        this.currentRoutine.nivel = document.getElementById('routine-level').value;
-        this.currentRoutine.duracionSemanas = parseInt(document.getElementById('routine-weeks').value);
-        this.currentRoutine.updated_at = new Date().toISOString();
+    // ─── MODO EDICIÓN ─────────────────────────────────────────────────────────
 
-        // Objetivos
-        const objectives = [];
-        document.querySelectorAll('input[name="objective"]:checked').forEach(checkbox => {
-            objectives.push(checkbox.value);
-        });
-        this.currentRoutine.objetivo = objectives;
-    },
+    async cargarRutinaExistente(id) {
+        try {
+            const [rutinaRes, diasRes] = await Promise.all([
+                fetch(`/entrenador/api/rutinas/${id}/`),
+                fetch(`/entrenador/api/dias-rutina/?rutine=${id}`)
+            ]);
+            const rutina = await rutinaRes.json();
+            const dias = await diasRes.json();
 
-    calculateTotalExercises() {
-        let total = 0;
-        this.currentRoutine.dias.forEach(day => {
-            total += day.ejercicios.length;
-        });
-        this.currentRoutine.ejercicios = total;
-    },
+            // Poblar campos del form
+            if (document.getElementById('id_name')) document.getElementById('id_name').value = rutina.name;
+            if (document.getElementById('id_description')) document.getElementById('id_description').value = rutina.description || '';
+            if (document.getElementById('id_days_per_week')) document.getElementById('id_days_per_week').value = rutina.days_per_week;
+            if (document.getElementById('id_goal')) document.getElementById('id_goal').value = rutina.goal || '';
 
-    saveToStorage() {
-        const routines = Storage.get('rutinas') || [];
-        
-        // Buscar si ya existe la rutina
-        const existingIndex = routines.findIndex(r => r.id === this.currentRoutine.id);
-        
-        if (existingIndex !== -1) {
-            // Actualizar rutina existente
-            routines[existingIndex] = this.currentRoutine;
-        } else {
-            // Agregar nueva rutina
-            routines.push(this.currentRoutine);
+            // Generar días
+            this.generarDias(rutina.days_per_week);
+
+            // Cargar ejercicios de cada día
+            const diasList = dias.results || dias;
+            for (const dia of diasList) {
+                const ejRes = await fetch(`/entrenador/api/ejercicios-rutina/?dia_rutine=${dia.id}`);
+                const ejercicios = await ejRes.json();
+                const diaNum = parseInt(dia.order);
+
+                if (!this.diasData[diaNum]) continue;
+                this.diasData[diaNum].dayRutineId = dia.id;
+
+                const ejList = ejercicios.results || ejercicios;
+                for (const ej of ejList) {
+                    const ejInfo = this.ejerciciosDisponibles.find(e => e.id === ej.exercise);
+                    this.diasData[diaNum].ejercicios.push({
+                        ejercicioId: ej.exercise,
+                        nombre: ejInfo?.name || `Ejercicio ${ej.exercise}`,
+                        grupoMuscular: ejInfo?.muscle_group_name || '',
+                        series: parseInt(ej.series),
+                        repeticiones: ej.repetitions,
+                        tipo_serie: ej.type_serie,
+                        exerciseRutineId: ej.id
+                    });
+                }
+            }
+
+            this.renderTodosLosDias();
+        } catch (e) {
+            console.error('Error cargando rutina:', e);
         }
+    },
 
-        Storage.set('rutinas', routines);
+    // ─── HELPERS ──────────────────────────────────────────────────────────────
+
+    getCsrf() {
+        return document.cookie.split(';')
+            .find(c => c.trim().startsWith('csrftoken='))
+            ?.split('=')[1] || '';
     }
 };
 
-// Helper functions - Si no existen, las creamos
-if (typeof Helpers === 'undefined') {
-    const Helpers = {
-        debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        },
+// Buscador del modal
+document.addEventListener('DOMContentLoaded', () => {
+    RutinaBuilder.init();
 
-        generateId() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2);
-        }
-    };
-    window.Helpers = Helpers;
-}
-
-// Storage utility - Si no existe, la creamos
-if (typeof Storage === 'undefined') {
-    const Storage = {
-        get(key) {
-            const item = localStorage.getItem(key);
-            return item ? JSON.parse(item) : null;
-        },
-        
-        set(key, value) {
-            localStorage.setItem(key, JSON.stringify(value));
-        }
-    };
-    window.Storage = Storage;
-}
-
-// ModalManager - Si no existe, lo creamos
-if (typeof ModalManager === 'undefined') {
-    class ModalManager {
-        constructor(modalId) {
-            this.modal = document.getElementById(modalId);
-        }
-        
-        show() {
-            if (this.modal) {
-                this.modal.style.display = 'flex';
-                setTimeout(() => this.modal.classList.add('show'), 10);
-            }
-        }
-        
-        hide() {
-            if (this.modal) {
-                this.modal.classList.remove('show');
-                setTimeout(() => {
-                    this.modal.style.display = 'none';
-                }, 300);
-            }
-        }
-    }
-    window.ModalManager = ModalManager;
-}
-
-// Inicialización automática
-(function() {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeNuevaRutinaPage();
+    const buscador = document.getElementById('buscador-ejercicio');
+    if (buscador) {
+        buscador.addEventListener('input', (e) => {
+            RutinaBuilder.renderGridEjercicios(e.target.value);
         });
-    } else {
-        initializeNuevaRutinaPage();
     }
 
-    function initializeNuevaRutinaPage() {
-        if (window.nuevaRutinaPage && window.nuevaRutinaPage.initialized) return;
-        
-        setTimeout(() => {
-            if (window.nuevaRutinaPage) {
-                console.log('Auto-initializing nueva rutina page');
-                window.nuevaRutinaPage.initialize();
-            }
-        }, 200);
+    const cerrarModal = document.getElementById('cerrar-modal-ejercicios');
+    if (cerrarModal) {
+        cerrarModal.addEventListener('click', () => RutinaBuilder.cerrarModal());
     }
-})();
-
-// Hacer disponible globalmente
-window.nuevaRutinaPage = nuevaRutinaPage;
+});

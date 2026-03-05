@@ -239,32 +239,13 @@ def routine_page(request):
     
 @coach_required
 def new_routine(request):
-    if request.method == 'POST':
-        form = RutineForm(request.POST)
-        if form.is_valid():
-            form.save()
-            form = RutineForm()
-            mensaje = "Rutina guardada correctamente."
-            context = get_user_profile_context(request)
-            context.update({
-                'form': form,
-                'mensaje': mensaje
-            })
-            return render(request, 'entrenador/nueva-rutina.html', context)
-        else:
-            context = get_user_profile_context(request)
-            context.update({
-                'form': form
-            })
-            return render(request, 'entrenador/nueva-rutina.html', context)
-
-    form = RutineForm()
+    from .models import Coach, Client
     context = get_user_profile_context(request)
     context.update({
-        'form': form
+        'coaches': Coach.objects.filter(status='active'),
+        'clients': Client.objects.filter(status='active'),
     })
     return render(request, 'entrenador/nueva-rutina.html', context)
-
 
 @coach_required
 def equipment_page(request):

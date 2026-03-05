@@ -6,6 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - TRAINING!</title>
     <link rel="stylesheet" href="{% static 'entrenador/css/pages/signin.css' %}">
+    <style>
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 2.5rem; /* espacio para el icono */
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 0.75rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            color: #888;
+            transition: color 0.2s;
+        }
+
+        .toggle-password:hover {
+            color: #333;
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
@@ -28,7 +63,22 @@
             
             <div class="form-group">
                 <label for="id_password">Contraseña:</label>
-                {{ form.password }}
+                <div class="password-wrapper">
+                    {{ form.password }}
+                    <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar/ocultar contraseña">
+                        <!-- Ojo abierto (contraseña oculta) -->
+                        <svg id="icon-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <!-- Ojo tachado (contraseña visible) -->
+                        <svg id="icon-eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
             
             <button type="submit" class="btn-login">Iniciar Sesión</button>
@@ -38,5 +88,19 @@
             ¿No tienes cuenta? <a href="{% url 'signup' %}">Regístrate aquí</a>
         </div>
     </div>
+
+    <script>
+        const toggleBtn = document.getElementById('togglePassword');
+        const passwordField = document.getElementById('id_password');
+        const iconEye = document.getElementById('icon-eye');
+        const iconEyeOff = document.getElementById('icon-eye-off');
+
+        toggleBtn.addEventListener('click', () => {
+            const isPassword = passwordField.type === 'password';
+            passwordField.type = isPassword ? 'text' : 'password';
+            iconEye.style.display = isPassword ? 'none' : 'block';
+            iconEyeOff.style.display = isPassword ? 'block' : 'none';
+        });
+    </script>
 </body>
 </html>

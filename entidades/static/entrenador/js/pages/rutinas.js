@@ -296,37 +296,39 @@ class RutinasPage {
         this.renderTable();
     }
 
-    async viewRoutine(id) {
+    async viewRoutine( id ) {
         try {
             const response = await fetch(`${this.apiBaseUrl}rutinas/${id}/`);
-            if (!response.ok) throw new Error('Error cargando rutina');
-            
+            if ( !response.ok ) throw new Error('Error cargando la rutina');
             const routine = await response.json();
-            
-            // Llenar modal con información
-            document.getElementById('view-modal-title').textContent = routine.name;
-            document.getElementById('view-client-name').textContent = routine.client_name || 'Sin asignar';
-            document.getElementById('view-description').textContent = routine.description || 'Sin descripción';
-            document.getElementById('view-creation-date').textContent = routine.created_at ? 
+
+            document.getElementById('view-modal-title').textContent = routine.name;   
+            document.getElementById('view-client-name').textContent = routine.client_name || "Sin asignar";   
+            document.getElementById('view-description').textContent = routine.description || "Sin descripcion";   
+            document.getElementById('view-creation-date').textContent = routine.created_at ?
                 new Date(routine.created_at).toLocaleDateString('es-AR') : '-';
-            
-            // Cargar ejercicios de la rutina
+                
             const exercisesList = document.getElementById('view-exercises-list');
-            if (routine.exercises && routine.exercises.length > 0) {
-                exercisesList.innerHTML = routine.exercises.map(ex => `
+            const todosEjercicios = routine.days_detail?.flatMap(dia => 
+                dia.ejercicios.map(ej => ({ ...ej, dia: dia.name }))
+            ) || [];
+
+            exercisesList.innerHTML = todosEjercicios.length > 0
+                ? todosEjercicios.map(ej => `
                     <div class="exercise-item">
                         <i class="fas fa-dumbbell"></i>
-                        <span>${ex.name || ex}</span>
+                        <span>
+                            <strong>${ej.dia}</strong> — ${ej.exercise_name}
+                            <small style="color:#888"> · ${ej.series} series · ${ej.repetitions} reps · ${ej.type_serie}</small>
+                        </span>
                     </div>
-                `).join('');
-            } else {
-                exercisesList.innerHTML = '<p style="color: #666;">No hay ejercicios asignados</p>';
-            }
-            
+                `).join('')
+                : '<p style="color:#666">No hay ejercicios asignados</p>';
+
             this.showViewModal();
-        } catch (error) {
-            console.error('Error cargando rutina:', error);
-            this.showError('Error al cargar la rutina');
+        } catch ( error ) {
+            console.error('Error cargando rutina:', error)
+            this.showError('Error al cargar la rutina')
         }
     }
 

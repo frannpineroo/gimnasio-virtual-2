@@ -69,10 +69,49 @@ class TrainingSessionSerializer(serializers.ModelSerializer):
 
 
 class RutineSerializer(serializers.ModelSerializer):
+    client_name = serializers.SerializerMethodField()
+    coach_name = serializers.SerializerMethodField()
+    days_detail = serializers.SerializerMethodField()
     class Meta:
         model = Rutine
-        fields = '__all__'
+        fields = [
+            'id', 'name', 'description', 'time_week', 'days_per_week',
+            'goal', 'coach', 'client', 'exercises', 'is_template',
+            'created_at', 'updated_at',
+            'client_name', 'coach_name', 'days_detail'
+        ]
+    
+    def get_client_name(self, obj):
+        if obj.client:
+            return f"{obj.client.name} {obj.client.last_name}"
+        return None
 
+    def get_coach_name(self, obj):
+        if obj.coach:
+            return f"{obj.coach.name} {obj.coach.last_name}"
+        return None
+
+    def get_days_detail(self, obj):
+        days = []
+        for dia in obj.day_routines.all():
+            ejercicios = []
+            for ej in dia.exercise_routines.all():
+                ejercicios.append({
+                    'id': ej.id,
+                    'exercise_id': ej.exercise.id,
+                    'exercise_name': ej.exercise.name,
+                    'muscle_group': ej.exercise.muscle_group.name if ej.exercise.muscle_group else None,
+                    'series': ej.series,
+                    'repetitions': ej.repetitions,
+                    'type_serie': ej.type_serie,
+                })
+            days.append({
+                'id': dia.id,
+                'name': dia.name,
+                'order': dia.order,
+                'ejercicios': ejercicios
+            })
+        return days
 
 class DayRutineSerializer(serializers.ModelSerializer):
     class Meta:

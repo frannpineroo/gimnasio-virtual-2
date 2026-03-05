@@ -333,7 +333,24 @@ def cliente_required(view_func):
 
 @cliente_required
 def cliente_home(request):
+    from .models import Client, Rutine
+
     context = get_user_profile_context(request)
+    client = None
+    active_routine = None
+
+    try:
+        # Buscar el cliente directamente por email del auth_user
+        client = Client.objects.get(email=request.user.email)
+        active_routine = Rutine.objects.filter(client=client).order_by('created_at').first
+    except Client.DoesNotExist:
+        pass
+
+    context.update({
+        'client': client,
+        'active_routine': active_routine,
+    })
+
     return render(request, 'cliente/index.html', context)
 
 

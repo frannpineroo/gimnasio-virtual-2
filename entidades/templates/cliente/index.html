@@ -15,13 +15,10 @@
 <header class="cabecera-cliente">
     <div class="contenido-cabecera">
         <div class="detalles-cliente">
-            <h1>{{ client.full_name|default:"Juan Pérez" }}</h1>
-            <p>Objetivo: {{ client.goal|default:"Ganancia muscular" }} • Nivel: {{ client.experience_level|default:"Intermedio" }}</p>
+            <h1>{{ client.name }} {{ client.last_name }}</h1>
+            <p>Objetivo: {{ client.goal }} • Nivel: {{ client.experience_level }}</p>
         </div>
         <div class="acciones-cabecera">
-            <button class="btn btn-progreso" id="btn-ver-progreso">
-                <i class="fas fa-chart-line"></i> Ver Progreso
-            </button>
         </div>
     </div>
 </header>
@@ -30,28 +27,7 @@
 <main class="principal-cliente">
     <!-- Información de la Rutina -->
     {% if active_routine %}
-    <div class="tarjeta-info-rutina tarjeta">
-        <div class="cabecera-rutina">
-            <h2 class="titulo-rutina">{{ active_routine.name }}</h2>
-            <div class="meta-rutina">
-                <div class="item-meta">
-                    <span class="valor-meta">{{ active_routine.days_per_week|default:4 }}</span>
-                    <span class="etiqueta-meta">Días/Semana</span>
-                </div>
-                <div class="item-meta">
-                    <span class="valor-meta">{{ active_routine.weeks|default:8 }}</span>
-                    <span class="etiqueta-meta">Semanas</span>
-                </div>
-                <div class="item-meta">
-                    <span class="valor-meta">{{ active_routine.exercise_count|default:12 }}</span>
-                    <span class="etiqueta-meta">Ejercicios</span>
-                </div>
-            </div>
-        </div>
-        <p class="descripcion-rutina">
-            {{ active_routine.description|default:"Rutina enfocada en el desarrollo de fuerza general para principiantes. Incluye ejercicios compuestos fundamentales y trabajo accesorio para equilibrar el desarrollo muscular." }}
-        </p>
-    </div>
+    <div class="tarjeta-info-rutina tarjeta" id="rutina-container" data-rutina-id="{{ active_routine.id }}"></div>
     {% else %}
     <div class="tarjeta-info-rutina tarjeta">
         <div class="cabecera-rutina">
@@ -64,153 +40,13 @@
     {% endif %}
 
     <!-- Navegación entre días -->
-    <div class="navegacion-dias">
-        <div class="pestaña-dia activa" data-dia="1">Día 1: Pecho y Tríceps</div>
-        <div class="pestaña-dia" data-dia="2">Día 2: Espalda y Bíceps</div>
-        <div class="pestaña-dia" data-dia="3">Día 3: Piernas</div>
-        <div class="pestaña-dia" data-dia="4">Día 4: Hombros y Abdomen</div>
-    </div>
-
-
-    <!-- Día 1: Pecho y Tríceps -->
-    <div class="ejercicios-dia activa" id="dia-1">
-        <!-- Ejercicio 1 -->
-        <div class="tarjeta-ejercicio">
-            <div class="cabecera-ejercicio">
-                <img src="https://via.placeholder.com/80" alt="Press de banca" class="imagen-ejercicio">
-                <div class="info-ejercicio">
-                    <h3 class="nombre-ejercicio">Press de Banca</h3>
-                    <div class="meta-ejercicio">
-                        <span><i class="fas fa-running"></i> Pectorales</span>
-                        <span><i class="fas fa-dumbbell"></i> Barra</span>
-                        <span><i class="fas fa-clock"></i> 90s descanso</span>
-                    </div>
-                </div>
-            </div>
-            <p class="descripcion-ejercicio">
-                Ejercicio básico para el desarrollo del pectoral. Acostado en un banco plano, bajar la barra al pecho y empujar hacia arriba manteniendo la espalda apoyada.
-            </p>
-            <div class="configuracion-ejercicio">
-                <h4 class="titulo-configuracion">Configuración:</h4>
-                <div class="contenedor-series">
-                    <div class="tarjeta-serie">
-                        <div class="numero-serie">Serie 1</div>
-                        <div class="detalles-serie">8-10 reps</div>
-                    </div>
-                    <div class="tarjeta-serie">
-                        <div class="numero-serie">Serie 2</div>
-                        <div class="detalles-serie">8-10 reps</div>
-                    </div>
-                    <div class="tarjeta-serie">
-                        <div class="numero-serie">Serie 3</div>
-                        <div class="detalles-serie">8-10 reps</div>
-                    </div>
-                    <div class="tarjeta-serie">
-                        <div class="numero-serie">Serie 4</div>
-                        <div class="detalles-serie">8-10 reps</div>
-                    </div>
-                </div>
-                <div class="notas-ejercicio">
-                    <div class="titulo-notas">Notas del entrenador:</div>
-                    <div class="contenido-notas">Mantener los codos a 45° y no arquear excesivamente la espalda baja.</div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Ejercicio 2 -->
-        <div class="tarjeta-ejercicio">
-            <div class="cabecera-ejercicio">
-                <img src="https://via.placeholder.com/80" alt="Fondos en paralelas" class="imagen-ejercicio">
-                <div class="info-ejercicio">
-                    <h3 class="nombre-ejercicio">Fondos en Paralelas</h3>
-                    <div class="meta-ejercicio">
-                        <span><i class="fas fa-running"></i> Tríceps/Pecho</span>
-                        <span><i class="fas fa-dumbbell"></i> Peso Corporal</span>
-                        <span><i class="fas fa-clock"></i> 60s descanso</span>
-                    </div>
-                </div>
-            </div>
-            <p class="descripcion-ejercicio">
-                Ejercicio para tríceps y pectoral inferior. Mantener el torso inclinado ligeramente hacia adelante para mayor énfasis en pectoral.
-            </p>
-            <div class="configuracion-ejercicio">
-                <h4 class="titulo-configuracion">Configuración:</h4>
-                <div class="contenedor-series">
-                    <div class="tarjeta-serie">
-                        <div class="numero-serie">Serie 1</div>
-                        <div class="detalles-serie">10-12 reps</div>
-                    </div>
-                    <div class="tarjeta-serie">
-                        <div class="numero-serie">Serie 2</div>
-                        <div class="detalles-serie">10-12 reps</div>
-                    </div>
-                    <div class="tarjeta-serie">
-                        <div class="numero-serie">Serie 3</div>
-                        <div class="detalles-serie">10-12 reps</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Día 2: Espalda y Bíceps (oculto inicialmente) -->
-    <div class="ejercicios-dia" id="dia-2">
-        <!-- Ejercicios del día 2... -->
-        <div class="tarjeta-ejercicio">
-            <div class="cabecera-ejercicio">
-                <img src="https://via.placeholder.com/80" alt="Dominadas" class="imagen-ejercicio">
-                <div class="info-ejercicio">
-                    <h3 class="nombre-ejercicio">Dominadas</h3>
-                    <div class="meta-ejercicio">
-                        <span><i class="fas fa-running"></i> Espalda</span>
-                        <span><i class="fas fa-dumbbell"></i> Peso Corporal</span>
-                        <span><i class="fas fa-clock"></i> 90s descanso</span>
-                    </div>
-                </div>
-            </div>
-            <p class="descripcion-ejercicio">
-                Ejercicio fundamental para el desarrollo de la espalda. Colgarse de una barra y elevar el cuerpo hasta que la barbilla supere la barra.
-            </p>
-            <div class="configuracion-ejercicio">
-                <h4 class="titulo-configuracion">Configuración:</h4>
-                <div class="contenedor-series">
-                    <div class="tarjeta-serie">
-                        <div class="numero-serie">Serie 1</div>
-                        <div class="detalles-serie">6-8 reps</div>
-                    </div>
-                    <div class="tarjeta-serie">
-                        <div class="numero-serie">Serie 2</div>
-                        <div class="detalles-serie">6-8 reps</div>
-                    </div>
-                    <div class="tarjeta-serie">
-                        <div class="numero-serie">Serie 3</div>
-                        <div class="detalles-serie">6-8 reps</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Registro de Entrenamiento -->
-    <div class="registro-entrenamiento tarjeta">
-        <div class="cabecera-registro">
-            <h3 class="titulo-registro">Registro de Entrenamiento</h3>
-            <div class="acciones-registro">
-                <button class="btn btn-primary" id="btn-nuevo-registro">
-                    <i class="fas fa-plus"></i> Nuevo Registro
-                </button>
-            </div>
-        </div>
-    </div>
+    <div class="navegacion-dias" id="navegacion-dias"></div>
+    <div id="ejercicios-container"></div>
 </main>
 
 
 <footer class="pie-cliente">
     <p>TRAINING! • Sistema de Gestión de Rutinas</p>
-    <p>© 2023 Todos los derechos reservados</p>
 </footer>
 {% endblock %}
 

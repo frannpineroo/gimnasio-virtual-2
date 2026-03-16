@@ -115,5 +115,3 @@ Para producción se usa el proceso especificado en `Procfile`:
 Asegúrate de definir `DATABASE_URL`, `SECRET_KEY`, `ALLOWED_HOSTS`, y `DEBUG=False` en el entorno.
 
 ---
-
-Si querés, puedo agregar ejemplos de payloads para crear clientes/ejercicios/rutinas o detallar cómo funciona el flujo de autenticación (session-based con Django).

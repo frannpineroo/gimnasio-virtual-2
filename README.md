@@ -1,4 +1,4 @@
-# Gimnasio Virtual 2
+# Gimnasio Virtual 
 
 Aplicación web para gestionar entrenadores, clientes, rutinas y ejercicios de un gimnasio (backend en Django + Django REST Framework).
 
